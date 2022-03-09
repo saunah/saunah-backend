@@ -1,6 +1,5 @@
 package ch.saunah.saunahbackend;
 
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +11,8 @@ public class GreetingController {
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
-    @GetMapping(value = {"/", "/{name}"})
-    public Greeting greeting(@PathVariable(value = "name", required = false) Optional<String> name) {
-        return new Greeting(counter.incrementAndGet(), String.format(template, name.orElse("World")));
+    @GetMapping(value = {"greeting/{name}"})
+    public Greeting greeting(@PathVariable(value = "name", required = true) String name) {
+        return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 }

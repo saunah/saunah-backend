@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 public class SaunahBackendApplication {
+
 	public static void main(String[] args) {
 		SpringApplication.run(SaunahBackendApplication.class, args);
 	}
