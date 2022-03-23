@@ -27,6 +27,9 @@ spec:
             - name: http8080
               containerPort: 8080
               protocol: TCP
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ .Values.springProfile }}
         # TODO: Add this later
         #   livenessProbe:
         #     httpGet:

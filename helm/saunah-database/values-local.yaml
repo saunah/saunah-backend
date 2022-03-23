@@ -10,6 +10,10 @@ postgresql:
     existingSecret: saunah-secrets-database
   architecture: replication
   primary:
+    service:
+      type: LoadBalancer
+      ports:
+        postgresql: 5555
     resources:
       requests:
         cpu: 100m

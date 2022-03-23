@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 namespace: class-pm4-2022-7-staging
+springProfile: staging
 
 replicaCount: 1
 

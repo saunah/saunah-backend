@@ -10,6 +10,8 @@ postgresql:
     existingSecret: saunah-secrets-database
   architecture: replication
   primary:
+    service:
+      type: ClusterIP
     resources:
       requests:
         cpu: 100m
