@@ -8,10 +8,13 @@ postgresql:
     enablePostgresUser: false
     username: saunah
     existingSecret: saunah-secrets-database
+    database: saunah
   architecture: replication
   primary:
     service:
       type: ClusterIP
+      ports:
+        postgresql: 5432
     resources:
       requests:
         cpu: 100m
@@ -28,10 +31,7 @@ postgresql:
         cpu: 100m
         memory: 256Mi
   metrics:
-    resources:
-      limits:
-        cpu: 100m
-        memory: 256Mi
+    enabled: false
   volumePersmissions:
     resources:
       limits:

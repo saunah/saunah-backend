@@ -3,15 +3,30 @@
 # Declare variables to be passed into your templates.
 
 namespace: default
-springProfile: local
 
 replicaCount: 1
+
+env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: local
+  - name: SAUNAH_DB_HOST
+    value: saunah-db-postgresql-primary.default.svc.cluster.local
+  - name: SAUNAH_DB_PORT
+    value: "5555"
+  - name: SAUNAH_DB_USER
+    value: saunah
+  - name: SAUNAH_DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-database
+        key: password
+        optional: false
 
 image:
   repository: ghcr.io/saunah/saunah-backend-test
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "0.1.0"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -19,7 +34,7 @@ fullnameOverride: "saunah-backend-local1"
 
 service:
   type: LoadBalancer
-  port: 8080
+  port: 8888
 
 ingress:
   enabled: false

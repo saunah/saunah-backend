@@ -27,6 +27,4 @@ To run docker on Windows you need to install WSL 2 and set it as default.
 
 ## 💾 Running Database on Docker
 
-First you need to pull the mysql image with the following command line: `docker pull mysql/mysql-server:latest`
-
-Then you can execute the following comand to run the database `docker run -p 3306:3306 --name SauNahDB -e MYSQL_ROOT_PASSWORD=root -d mysql:latest`
+Then you can execute the following comand to run the database `docker run -p 5556:5432 --name saunah-db -e POSTGRES_PASSWORD=saunah -e POSTGRES_USER=saunah -e POSTGRES_DB=saunah -d postgres:latest`

@@ -1,10 +1,7 @@
 package ch.saunah.saunahbackend;
 
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
-import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.model.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRepository;
 
 @RestController
 @Controller

@@ -28,8 +28,7 @@ spec:
               containerPort: 8080
               protocol: TCP
           env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: {{ .Values.springProfile }}
+            {{- toYaml .Values.env | nindent 12 }}
         # TODO: Add this later
         #   livenessProbe:
         #     httpGet:
