@@ -18,3 +18,15 @@ Running the application has been tested with both IntelliJ IDEA and VS Code.
 Make sure to configure your IDE to use Java 11 or later.
 
 For VS Code, there is a set of recommended extensions for developing with java, found in `.vscode/extensions.json`. VS Code should automatically prompt for installing the recommended extensions when first opening the project.
+
+## 🐋 Installing Docker Desktop
+
+Download Docker Desktop on the [`Docker Website`](https://docs.docker.com/get-docker/) and install it.
+
+To run docker on Windows you need to install WSL 2 and set it as default.
+
+## 💾 Running Database on Docker
+
+First you need to pull the mysql image with the following command line: `docker pull mysql/mysql-server:latest`
+
+Then you can execute the following comand to run the database `docker run -p 3306:3306 --name SauNahDB -e MYSQL_ROOT_PASSWORD=root -d mysql:latest`
