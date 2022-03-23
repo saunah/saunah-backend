@@ -12,7 +12,8 @@ on:
     branches: [ main ]
 
 jobs:
-  runTests:
+  build:
+    name: Build & Run Tests with Gradle
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -21,7 +22,36 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-    - name: Run Tests with Gradle
-      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+    - name: Build and Test with Gradle
+      uses: gradle/gradle-build-action@v2.1.4
       with:
-        arguments: test
+        arguments: build
+
+  container:
+    runs-on: ubuntu-latest
+    needs: [build]
+    permissions:
+      contents: read
+      packages: write
+    env:
+      SHA8: ${GITHUB_SHA::8}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Create Container
+        uses: gradle/gradle-build-action@v2.1.4
+        with:
+          arguments: bootBuildImage --imageName ghcr.io/saunah/saunah-backend:$SHA8
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to Registry
+        run: docker push ghcr.io/saunah/saunah-backend:$SHA8
+
