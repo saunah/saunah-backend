@@ -44,7 +44,7 @@ jobs:
       - name: Create Container
         uses: gradle/gradle-build-action@v2.1.4
         with:
-          arguments: bootBuildImage --imageName ghcr.io/saunah/saunah-backend:${{ env.GITHUB_SHA_SHORT }}
+          arguments: bootBuildImage --imageName ghcr.io/saunah/saunah-backend:${{ env.GITHUB_SHA }}
 
       - name: Log in to the Container registry
         uses: docker/login-action@v1
@@ -54,5 +54,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push to Registry
-        run: docker push ghcr.io/saunah/saunah-backend:${{ env.GITHUB_SHA_SHORT }}
+        run: docker push ghcr.io/saunah/saunah-backend:${{ env.GITHUB_SHA }}
 
