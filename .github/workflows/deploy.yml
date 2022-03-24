@@ -17,7 +17,7 @@ on:
         type: string
     secrets:
       k8sConfig:
-      required: true
+        required: true
 
 jobs:
   deploy:
