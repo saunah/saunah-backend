@@ -26,7 +26,8 @@ jobs:
         echo "REF_TYPE and REF"
         echo "${{ github.ref_type }}"
         echo "${{ github.ref }}"
-        if [ "${{ github.ref_type }}" == "tag" ] && [ "${{ github.ref }}" == "refs/heads/feature/improve-actions" ]
+        TAG_BRANCH=$(git branch --contains tags/${{ github.ref_name }} | cut -c 3-)
+        if [ "${{ github.ref_type }}" == "tag" ] && [ "$TAG_BRANCH" == "feature/improve-actions" ]
         then
           echo "::set-output name=containerTag::${{ github.ref_name }}"
           echo "::set-output name=k8sContext::init-lab-prod"
