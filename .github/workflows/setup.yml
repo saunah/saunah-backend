@@ -26,7 +26,7 @@ jobs:
     - name: Set Tag Ouput Variable
       id: setConfigs
       run: |
-        if [ ${{ github.ref_type }} == "tag"] && [ ${{ github.ref }} == "refs/heads/main" ]
+        if [ "${{ github.ref_type }}" == "tag" ] && [ "${{ github.ref }}" == "refs/heads/main" ]
         then
           echo "::set-output name=containerTag::${{ github.ref_name }}"
           echo "::set-output name=k8sNamespace::class-pm4-2022-7-prod"
