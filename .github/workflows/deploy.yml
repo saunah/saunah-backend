@@ -35,24 +35,10 @@ jobs:
           kubeconfig: ${{ secrets.k8sConfig }}
           context: ${{ inputs.context }}
 
-      - name: Bake Backend Helm Config
-        uses: azure/k8s-bake@v1
-        with:
-          renderEngine: 'helm'
-          helmChart: './helm/saunah-backend'
-          overrideFiles: "./helm/saunah-backend/${{ inputs.valuesName }}"
-          overrides: |
-            image.tag:${{ inputs.containerTag }}
-          helm-version: 'latest'
-          releaseName: saunah-backend
-        id: bake
-
-      - name: Output Manifest
-        run: cat ${{ steps.bake.outputs.manifestsBundle }}
-
-      - name: Deploy to k8s Cluster
-        uses: Azure/k8s-deploy@v1.2
-        with:
-          action: deploy
-          namespace: ${{ inputs.namespace }}
-          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+      - name: Helm Install
+        run: |
+          helm upgrade --install \
+          -f helm/saunah-backend/${{ valuesName }} \
+          --set image.tag=${{ inputs.containerTag }} \
+          saunah-backend \
+          helm/saunah-backend
