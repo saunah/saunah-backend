@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set Tag Ouput Variable
-      run: >
+      run: |
         if [ ! -z ${{ github.event.pull_request.head.sha }} ]
         then
           echo "::set-output name=containerTag::$(echo ${{ github.event.pull_request.head.sha }} | cut -c 1-7)"
