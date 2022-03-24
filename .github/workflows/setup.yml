@@ -30,6 +30,7 @@ jobs:
         then
           echo "::set-output name=deploymentEnv::prod"
         elif [ ${{ github.ref }} == "refs/heads/feature/improve-actions" ]
+        then
           echo "::set-output name=deploymentEnv::staging"
         else
           echo "::set-output name=deploymentEnv::"
