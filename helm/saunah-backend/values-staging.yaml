@@ -10,7 +10,7 @@ env:
   - name: SPRING_PROFILES_ACTIVE
     value: staging
   - name: SAUNAH_DB_HOST
-    value: saunah-db-postgresql-primary.class-pm4-2022-7-staging.svc.cluster.local
+    value: saunah-database-postgresql-primary.class-pm4-2022-7-staging.svc.cluster.local
   - name: SAUNAH_DB_PORT
     value: "5432"
   - name: SAUNAH_DB_USER
@@ -23,14 +23,14 @@ env:
         optional: false
 
 image:
-  repository: ghcr.io/saunah/saunah-backend-test
+  repository: ghcr.io/saunah/saunah-backend
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: "saunah-backend-test3"
+fullnameOverride: "saunah-backend"
 
 service:
   type: ClusterIP
@@ -42,7 +42,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: saunah-backend-test3.k8s.init-lab.ch
+    - host: saunah-backend-staging.k8s.init-lab.ch
       paths: []
   tls: []
   #  - secretName: chart-example-tls

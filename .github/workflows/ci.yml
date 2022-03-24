@@ -28,6 +28,7 @@ jobs:
         arguments: build
 
   container:
+    name: Create and Publish Container
     runs-on: ubuntu-latest
     needs: [build]
     permissions:
@@ -56,3 +57,34 @@ jobs:
       - name: Push to Registry
         run: docker push ghcr.io/saunah/saunah-backend:${{ env.GITHUB_SHA_SHORT }}
 
+  deploy:
+    name: Deploy Container to Kubernetes Cluster
+    runs-on: ubuntu-latest
+    needs: [container]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set short SHA
+        run: echo "GITHUB_SHA_SHORT=$(echo ${{ github.event.pull_request.head.sha }} | cut -c 1-7)" >> $GITHUB_ENV
+
+      - name: Bake Backend Helm Config
+        uses: azure/k8s-bake@v1
+        with:
+          renderEngine: 'helm'
+          helmChart: './helm/saunah-backend'
+          overrideFiles: './helm/saunah-backend/values-staging.yaml'
+          helm-version: 'latest'
+        id: bake
+
+      - name: Output Manifest
+        run: cat ${{ steps.bake.outputs.manifestsBundle }}
+
+      - name: Deploy to k8s Cluster
+        uses: Azure/k8s-deploy@v1.2
+        with:
+          action: deploy
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          images: |
+            ghcr.io/saunah/saunah-backend:${{ env.GITHUB_SHA_SHORT }}

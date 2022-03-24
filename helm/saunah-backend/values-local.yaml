@@ -10,7 +10,7 @@ env:
   - name: SPRING_PROFILES_ACTIVE
     value: local
   - name: SAUNAH_DB_HOST
-    value: saunah-db-postgresql-primary.default.svc.cluster.local
+    value: saunah-database-postgresql-primary.default.svc.cluster.local
   - name: SAUNAH_DB_PORT
     value: "5555"
   - name: SAUNAH_DB_USER
@@ -23,14 +23,14 @@ env:
         optional: false
 
 image:
-  repository: ghcr.io/saunah/saunah-backend-test
+  repository: ghcr.io/saunah/saunah-backend
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.1.0"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: "saunah-backend-local1"
+fullnameOverride: "saunah-backend"
 
 service:
   type: LoadBalancer
