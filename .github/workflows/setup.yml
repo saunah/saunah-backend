@@ -19,7 +19,7 @@ jobs:
       containerTag: ${{ steps.setConfigs.outputs.containerTag }}
       k8sNamespace: ${{ steps.setConfigs.outputs.k8sNamespace }}
       k8sContext: ${{ steps.setConfigs.outputs.k8sContext }}
-      k8sBackendValues: ${{ steps.setConfigs.outputs.k8sBackendValues }}
+      k8sBackendValues: values-staging.yaml
     steps:
     - uses: actions/checkout@v2
     - name: Set Tag Ouput Variable
