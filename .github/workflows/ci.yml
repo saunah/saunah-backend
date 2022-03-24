@@ -18,9 +18,11 @@ jobs:
       run: |
         if [ ! -z ${{ github.event.pull_request.head.sha }} ]
         then
-          echo ::set-output name=containerTag::$(echo ${{ github.event.pull_request.head.sha }} | cut -c 1-7)
+          echo "::set-output name=containerTag::$(echo ${{ github.event.pull_request.head.sha }} | cut -c 1-7)"
+          echo "::set-output name=test::first"
         else
           echo ::set-output name=containerTag::$(echo ${GITHUB_SHA} | cut -c 1-7)
+          echo "::set-output name=test::second"
         fi
 
 
@@ -40,7 +42,7 @@ jobs:
       with:
         arguments: build
     - name: Echo Version
-      run: echo "${{ needs.setup.outputs.containerTag }}"
+      run: echo "${{ needs.setup.outputs.test }}"
 
   container:
     name: Create and Publish Container
