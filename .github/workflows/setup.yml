@@ -23,6 +23,9 @@ jobs:
     - name: Set Tag Ouput Variable
       id: setConfigs
       run: |
+        echo "REF_TYPE and REF"
+        echo "${{ github.ref_type }}"
+        echo "${{ github.ref }}"
         if [ "${{ github.ref_type }}" == "tag" ] && [ "${{ github.ref }}" == "refs/heads/feature/improve-actions" ]
         then
           echo "::set-output name=containerTag::${{ github.ref_name }}"
