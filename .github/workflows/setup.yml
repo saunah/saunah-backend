@@ -23,7 +23,7 @@ jobs:
     - name: Set Tag Ouput Variable
       id: setConfigs
       run: |
-        if [ "${{ github.ref_type }}" == "tag" ] && [ "${{ github.ref }}" == "refs/heads/main" ]
+        if [ "${{ github.ref_type }}" == "tag" ] && [ "${{ github.ref }}" == "refs/heads/feature/improve-actions" ]
         then
           echo "::set-output name=containerTag::${{ github.ref_name }}"
           echo "::set-output name=k8sContext::init-lab-prod"
