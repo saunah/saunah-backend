@@ -25,7 +25,7 @@ public class GreetingController {
 
     @GetMapping(value = {"greeting/{name}"})
     public Greeting greeting(@PathVariable(value = "name", required = true) String name) {
-        return new Greeting(counter.incrementAndGet(), String.format(template, userRepository));
+        return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 
     @GetMapping(path="user/{id}")
