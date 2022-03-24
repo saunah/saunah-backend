@@ -5,8 +5,6 @@ on:
     outputs:
       containerTag:
         value: ${{ jobs.setup.outputs.containerTag }}
-      k8sNamespace:
-        value: ${{ jobs.setup.outputs.k8sNamespace }}
       k8sContext:
         value: ${{ jobs.setup.outputs.k8sContext }}
       k8sBackendValues:
@@ -18,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       containerTag: ${{ steps.setConfigs.outputs.containerTag }}
-      k8sNamespace: ${{ steps.setConfigs.outputs.k8sNamespace }}
       k8sContext: ${{ steps.setConfigs.outputs.k8sContext }}
       k8sBackendValues: ${{ steps.setConfigs.outputs.k8sBackendValues }}
     steps:
@@ -29,12 +26,10 @@ jobs:
         if [ "${{ github.ref_type }}" == "tag" ] && [ "${{ github.ref }}" == "refs/heads/main" ]
         then
           echo "::set-output name=containerTag::${{ github.ref_name }}"
-          echo "::set-output name=k8sNamespace::class-pm4-2022-7-prod"
           echo "::set-output name=k8sContext::init-lab-prod"
           echo "::set-output name=k8sBackendValues::values-prod.yaml"
         else
           echo "::set-output name=containerTag::$(echo ${{ github.sha }} | cut -c 1-7)"
-          echo "::set-output name=k8sNamespace::class-pm4-2022-7-staging"
           echo "::set-output name=k8sContext::init-lab-staging"
           echo "::set-output name=k8sBackendValues::values-staging.yaml"
         fi

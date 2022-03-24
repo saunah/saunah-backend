@@ -32,7 +32,6 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       containerTag: ${{ needs.setup.outputs.containerTag }}
-      namespace: ${{ needs.setup.outputs.k8sNamespace }}
       context: ${{ needs.setup.outputs.k8sContext }}
       valuesName: ${{ needs.setup.outputs.k8sBackendValues }}
     secrets:

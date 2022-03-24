@@ -6,9 +6,6 @@ on:
       containerTag:
         required: true
         type: string
-      namespace:
-        required: true
-        type: string
       valuesName:
         required: true
         type: string
