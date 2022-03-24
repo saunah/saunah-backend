@@ -7,8 +7,6 @@ name: Build, Test & Deploy SauNah backend
 on:
   workflow_dispatch:
   push:
-  pull_request:
-    branches: [ main ]
 
 jobs:
   setup:
@@ -24,21 +22,17 @@ jobs:
     - name: Set Tag Ouput Variable
       id: setConfigs
       run: |
-        if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]
+        if [ ${{ github.ref_type }} == "tag" ]
         then
+          echo "::set-output name=containerTag::${{ github.ref_name }}"
+          echo "::set-output name=k8sNamespace::class-pm4-2022-7-prod"
+          echo "::set-output name=k8sContext::init-lab-prod"
+          echo "::set-output name=k8sBackendValues::values-prod.yaml"
+        else
           echo "::set-output name=containerTag::$(echo ${{ github.event.pull_request.head.sha }} | cut -c 1-7)"
           echo "::set-output name=k8sNamespace::class-pm4-2022-7-staging"
           echo "::set-output name=k8sContext::init-lab-staging"
           echo "::set-output name=k8sBackendValues::values-staging.yaml"
-        else
-          echo ::set-output name=containerTag::$(echo ${GITHUB_SHA} | cut -c 1-7)
-          echo "::set-output name=k8sNamespace::class-pm4-2022-7-prod"
-          echo "::set-output name=k8sContext::init-lab-prod"
-          echo "::set-output name=k8sBackendValues::values-prod.yaml"
-        fi
-        if [ ${{ github.ref_type }} ==  "tag" ]
-        then
-          echo "::set-output name=containerTag::${{ github.ref_name }}"
         fi
 
   build:
