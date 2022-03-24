@@ -36,4 +36,4 @@ jobs:
       context: ${{ needs.setup.outputs.k8sContext }}
       valuesName: ${{ needs.setup.outputs.k8sBackendValues }}
     secrets:
-      k8sConfig: ${{ K8S_CONFIG }}
+      k8sConfig: ${{ secrets.K8S_CONFIG }}
