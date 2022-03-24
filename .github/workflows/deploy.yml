@@ -38,7 +38,7 @@ jobs:
       - name: Helm Install
         run: |
           helm upgrade --install \
-          -f helm/saunah-backend/${{ valuesName }} \
+          -f helm/saunah-backend/${{ inputs.valuesName }} \
           --set image.tag=${{ inputs.containerTag }} \
           saunah-backend \
           helm/saunah-backend
