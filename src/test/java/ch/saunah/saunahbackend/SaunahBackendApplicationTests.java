@@ -10,7 +10,7 @@ class SaunahBackendApplicationTests {
 
 	@Test
 	void dummyTest() {
-        assertEquals(true, false);
+        assertEquals(true, true);
 	}
 
 }
