@@ -8,6 +8,8 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
+    tags:
+      - v**
   pull_request:
     branches: [ main ]
 
@@ -37,6 +39,9 @@ jobs:
           echo "::set-output name=k8sContext::init-lab-prod"
           echo "::set-output name=k8sBackendValues::values-prod.yaml"
         fi
+        if [ ${{ github.ref_type }} ==  "tag" ]
+        then
+          echo "::set-output name=containerTag::${{ github.ref_name }}"
 
   build:
     name: Build & Run Tests with Gradle
