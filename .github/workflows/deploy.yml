@@ -1,0 +1,55 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      containerTag:
+        required: true
+        type: string
+      namespace:
+        required: true
+        type: string
+      valuesName:
+        required: true
+        type: string
+      context:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Deploy Container to Kubernetes Cluster
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set k8s Context
+        uses: azure/k8s-set-context@v2
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.K8S_CONFIG }}
+          context: ${{ inputs.context }}
+
+      - name: Bake Backend Helm Config
+        uses: azure/k8s-bake@v1
+        with:
+          renderEngine: 'helm'
+          helmChart: './helm/saunah-backend'
+          overrideFiles: "./helm/saunah-backend/${{ input.valuesName }}"
+          overrides: |
+            image.tag:${{ inputs.containerTag }}
+          helm-version: 'latest'
+          releaseName: saunah-backend
+        id: bake
+
+      - name: Output Manifest
+        run: cat ${{ steps.bake.outputs.manifestsBundle }}
+
+      - name: Deploy to k8s Cluster
+        uses: Azure/k8s-deploy@v1.2
+        with:
+          action: deploy
+          namespace: ${{ inputs.namespace }}
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}

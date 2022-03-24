@@ -1,0 +1,35 @@
+name: Container
+
+on:
+  workflow_call:
+    inputs:
+      containerTag:
+        required: true
+        type: string
+
+jobs:
+  container:
+    name: Create and Publish Container
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Create Container
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: bootBuildImage --imageName ghcr.io/saunah/saunah-backend:${{ inputs.containerTag }}
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to Registry
+        run: docker push ghcr.io/saunah/saunah-backend:${{ inputs.containerTag }}
