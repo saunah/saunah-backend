@@ -15,6 +15,9 @@ on:
       context:
         required: true
         type: string
+    secrets:
+      k8sConfig:
+      required: true
 
 jobs:
   deploy:
@@ -29,7 +32,7 @@ jobs:
         uses: azure/k8s-set-context@v2
         with:
           method: kubeconfig
-          kubeconfig: ${{ secrets.K8S_CONFIG }}
+          kubeconfig: ${{ secrets.k8sConfig }}
           context: ${{ inputs.context }}
 
       - name: Bake Backend Helm Config
