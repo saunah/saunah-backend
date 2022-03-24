@@ -1,0 +1,44 @@
+# Default values for saunah-database.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+postgresql:
+  namespace: default
+  auth:
+    enablePostgresUser: false
+    username: saunah
+    existingSecret: saunah-secrets-database
+    database: saunah
+  architecture: replication
+  primary:
+    service:
+      type: LoadBalancer
+      ports:
+        postgresql: 5555
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 100m
+        memory: 256Mi
+  readReplicas:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 100m
+        memory: 256Mi
+  metrics:
+    enabled: false
+    resources:
+      limits:
+        cpu: 100m
+        memory: 256Mi
+  volumePersmissions:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 200Mi
+
