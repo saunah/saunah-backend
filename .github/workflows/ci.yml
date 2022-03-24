@@ -82,6 +82,8 @@ jobs:
           renderEngine: 'helm'
           helmChart: './helm/saunah-backend'
           overrideFiles: './helm/saunah-backend/values-staging.yaml'
+          overrides: |
+            image.tag:${{ env.GITHUB_SHA_SHORT }}
           helm-version: 'latest'
           namespace: class-pm4-2022-7-staging
           releaseName: saunah-backend
