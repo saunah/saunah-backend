@@ -9,7 +9,8 @@ on:
         value: ${{ jobs.setup.outputs.k8sNamespace }}
       k8sContext:
         value: ${{ jobs.setup.outputs.k8sContext }}
-      k8sBackendValues: ${{ jobs.setup.outputs.k8sBackendValues }}
+      k8sBackendValues:
+        value: ${{ jobs.setup.outputs.k8sBackendValues }}
 
 jobs:
   setup:
@@ -19,7 +20,7 @@ jobs:
       containerTag: ${{ steps.setConfigs.outputs.containerTag }}
       k8sNamespace: ${{ steps.setConfigs.outputs.k8sNamespace }}
       k8sContext: ${{ steps.setConfigs.outputs.k8sContext }}
-      k8sBackendValues: values-staging.yaml
+      k8sBackendValues: ${{ steps.setConfigs.outputs.k8sBackendValues }}
     steps:
     - uses: actions/checkout@v2
     - name: Set Tag Ouput Variable
