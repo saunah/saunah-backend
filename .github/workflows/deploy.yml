@@ -37,7 +37,7 @@ jobs:
         with:
           renderEngine: 'helm'
           helmChart: './helm/saunah-backend'
-          overrideFiles: "./helm/saunah-backend/${{ input.valuesName }}"
+          overrideFiles: "./helm/saunah-backend/${{ inputs.valuesName }}"
           overrides: |
             image.tag:${{ inputs.containerTag }}
           helm-version: 'latest'
