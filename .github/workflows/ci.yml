@@ -69,6 +69,13 @@ jobs:
       - name: Set short SHA
         run: echo "GITHUB_SHA_SHORT=$(echo ${{ github.event.pull_request.head.sha }} | cut -c 1-7)" >> $GITHUB_ENV
 
+      - name: Set k8s Context
+        uses: azure/k8s-set-context@v2
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.K8S_CONFIG }}
+          context: init-lab-staging
+
       - name: Bake Backend Helm Config
         uses: azure/k8s-bake@v1
         with:
