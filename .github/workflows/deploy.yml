@@ -35,7 +35,7 @@ jobs:
           kubeconfig: ${{ secrets.k8sConfig }}
           context: ${{ inputs.context }}
 
-      - uses: azure/setup-helm@v2
+      - uses: azure/setup-helm@v1
         with:
           version: 3.*
 
