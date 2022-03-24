@@ -1,0 +1,76 @@
+# Default values for saunah-backend.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: class-pm4-2022-7-prod
+
+replicaCount: 1
+
+env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: prod
+  - name: SAUNAH_DB_HOST
+    value: saunah-database-postgresql-primary.class-pm4-2022-7-prod.svc.cluster.local
+  - name: SAUNAH_DB_PORT
+    value: "5432"
+  - name: SAUNAH_DB_USER
+    value: saunah
+  - name: SAUNAH_DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-database
+        key: password
+        optional: false
+
+image:
+  repository: ghcr.io/saunah/saunah-backend
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: "saunah-backend"
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: saunah-backend-prod.k8s.init-lab.ch
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  limits:
+    cpu: 1500m
+    memory: 800Mi
+  requests:
+    cpu: 1500m
+    memory: 800Mi
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
