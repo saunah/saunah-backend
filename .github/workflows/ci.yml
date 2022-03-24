@@ -7,9 +7,6 @@ name: Build, Test & Deploy SauNah backend
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
-    tags:
-      - v**
   pull_request:
     branches: [ main ]
 
