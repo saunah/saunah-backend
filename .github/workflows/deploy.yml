@@ -37,7 +37,7 @@ jobs:
 
       - uses: azure/setup-helm@v1
         with:
-          version: 3.5.*
+          version: 3.*
 
       - name: Helm Install
         run: |
