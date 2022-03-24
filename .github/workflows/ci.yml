@@ -8,36 +8,30 @@ on:
   push:
 
 jobs:
-  ci:
-    name: Buil, Test, Deploy
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set Tag Ouput Variable
-      id: setConfigs
-      run: |
-        if [ ${{ github.ref_type }} == "tag" ]
-        then
-          echo "CONTAINER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
-          echo "K8S_NAMESPACE=class-pm4-2022-7-prod" >> $GITHUB_ENV
-          echo "K8S_CONTEXT=init-lab-prod" >> $GITHUB_ENV
-          echo "K8S_VALUES_FILE=values-prod.yaml" >> $GITHUB_ENV
-        else
-          echo "CONTAINER_TAG=$(echo ${{ github.sha }} | cut -c 1-7)" >> $GITHUB_ENV
-          echo "K8S_NAMESPACE=class-pm4-2022-7-staging" >> $GITHUB_ENV
-          echo "K8S_CONTEXT=init-lab-staging" >> $GITHUB_ENV
-          echo "K8S_VALUES_FILE=values-staging.yaml" >> $GITHUB_ENV
-        fi
+  setup:
+    name: Setup Configuration Values
+    uses: ./.github/workflows/setup.yml
 
-    - uses: ./.github/workflows/build.yml
-    - if: ${{ github.ref == 'refs/heads/main' }}
-      uses: ./.github/workflows/container.yml
-      with:
-        containerTag: ${{ env.CONTAINER_TAG }}
-    - if: ${{ github.ref == 'refs/heads/main' }}
-      uses: ./.github/workflows/deploy.yml
-      with:
-        containerTag: ${{ env.CONTAINER_TAG }}
-        namespace: ${{ env.K8S_NAMESPACE }}
-        valuesName: ${{ env.K8S_VALUES_FILE }}
-        context: ${{ env.K8S_CONTEXT }}
+  build:
+    name: Build & Run Tests with Gradle
+    needs: [setup]
+    uses: ./.github/workflows/build.yml
+
+  container:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    name: Create and Publish Container
+    needs: [setup, build]
+    uses: ./.github/workflows/container.yml
+    with:
+      containerTag: ${{ needs.setup.outputs.containerTag }}
+
+  deploy:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    name: Deploy Container to Kubernetes Cluster
+    needs: [setup, container]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      containerTag: ${{ needs.setup.outputs.containerTag }}
+      k8sNamespace: ${{ needs.setup.outputs.k8sNamespace }}
+      k8sContext: ${{ needs.setup.outputs.k8sContext }}
+      k8sBackendValues: ${{ needs.setup.outputs.k8sBackendValues }}
