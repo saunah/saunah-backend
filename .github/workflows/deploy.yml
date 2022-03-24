@@ -16,7 +16,7 @@ on:
         required: true
         type: string
     secrets:
-      k8sConfig:
+      K8S_CONFIG:
         required: true
 
 jobs:
