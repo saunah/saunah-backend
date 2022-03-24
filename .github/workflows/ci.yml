@@ -42,6 +42,7 @@ jobs:
         if [ ${{ github.ref_type }} ==  "tag" ]
         then
           echo "::set-output name=containerTag::${{ github.ref_name }}"
+        fi
 
   build:
     name: Build & Run Tests with Gradle
