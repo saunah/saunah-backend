@@ -18,9 +18,9 @@ jobs:
       run: >
         if [ ! -z ${{ github.event.pull_request.head.sha }} ]
         then
-          echo ::set-output name=containerTag::$(echo ${{ github.event.pull_request.head.sha }} | cut -c 1-7)
+          echo "::set-output name=containerTag::$(echo ${{ github.event.pull_request.head.sha }} | cut -c 1-7)"
         else
-          echo ::set-output name=containerTag::$(echo ${GITHUB_SHA} | cut -c 1-7)
+          echo "::set-output name=containerTag::$(echo ${GITHUB_SHA} | cut -c 1-7)"
         fi
 
 
