@@ -1,0 +1,14 @@
+# This workflow tests the SauNah backend application.
+
+name: Test SauNah backend
+
+on:
+  push:
+    branches-ignore:
+      - 'main'
+
+jobs:
+  build:
+    name: Build & Run Tests with Gradle
+    needs: [setup]
+    uses: ./.github/workflows/build.yml

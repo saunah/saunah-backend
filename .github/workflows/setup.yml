@@ -5,12 +5,6 @@ on:
     outputs:
       containerTag:
         value: ${{ jobs.setup.outputs.containerTag }}
-      k8sContext:
-        value: ${{ jobs.setup.outputs.k8sContext }}
-      k8sBackendValues:
-        value: ${{ jobs.setup.outputs.k8sBackendValues }}
-      deploymentEnv:
-        value: ${{ jobs.setup.outputs.deploymentEnv }}
 
 jobs:
   setup:
@@ -18,9 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       containerTag: ${{ steps.setConfigs.outputs.containerTag }}
-      k8sContext: ${{ steps.setConfigs.outputs.k8sContext }}
-      k8sBackendValues: ${{ steps.setConfigs.outputs.k8sBackendValues }}
-      deploymentEnv: ${{ steps.setConfigs.outputs.deploymentEnv }}
     steps:
     - uses: actions/checkout@v2
     - name: Set Tag Ouput Variable
@@ -28,21 +19,7 @@ jobs:
       run: |
         if [ "${{ github.ref_type }}" == "tag" ]
         then
-          echo "::set-output name=deploymentEnv::prod"
-        elif [ ${{ github.ref }} == "refs/heads/main" ]
-        then
-          echo "::set-output name=deploymentEnv::staging"
-        else
-          echo "::set-output name=deploymentEnv::"
-        fi
-
-        if [ "${{ github.ref_type }}" == "tag" ]
-        then
           echo "::set-output name=containerTag::${{ github.ref_name }}"
-          echo "::set-output name=k8sContext::init-lab-prod"
-          echo "::set-output name=k8sBackendValues::values-prod.yaml"
         else
           echo "::set-output name=containerTag::$(echo ${{ github.sha }} | cut -c 1-7)"
-          echo "::set-output name=k8sContext::init-lab-staging"
-          echo "::set-output name=k8sBackendValues::values-staging.yaml"
         fi
