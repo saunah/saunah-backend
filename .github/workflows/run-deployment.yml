@@ -1,42 +1,40 @@
 # This workflow tests the SauNah backend application, generates an image,
 # deploys it to ghcr.io and then deploys the application to a kubernetes
-# cluster to the staging environment.
+# cluster.
 
-name: Build, Test & Deploy to Staging
+name: Build, Test & Deploy
 
 on:
   push:
     branches:
       - 'feature/improve-actions'
-
-env:
-  K8S_CONTEXT: init-lab-staging
-  HELM_VALUES_NAME: values-staging.yaml
+    tags:
+      - v*
 
 jobs:
-  setup:
+  values:
     name: Setup Configuration Values
-    uses: ./.github/workflows/setup.yml
+    uses: ./.github/workflows/values.yml
 
   build:
     name: Build & Run Tests with Gradle
-    needs: [setup]
+    needs: [values]
     uses: ./.github/workflows/build.yml
 
   container:
     name: Create and Publish Container
-    needs: [setup, build]
+    needs: [values, build]
     uses: ./.github/workflows/container.yml
     with:
-      containerTag: ${{ needs.setup.outputs.containerTag }}
+      containerTag: ${{ needs.values.outputs.containerTag }}
 
   deploy:
     name: Deploy Container to Kubernetes Cluster
-    needs: [setup, container]
+    needs: [values, container]
     uses: ./.github/workflows/deploy.yml
     with:
-      containerTag: ${{ needs.setup.outputs.containerTag }}
-      context: ${{ env.K8S_CONTEXT }}
-      valuesName: ${{ env.HELM_VALUES_NAME }}
+      containerTag: ${{ needs.values.outputs.containerTag }}
+      context: ${{ needs.values.outputs.k8sContext }}
+      valuesName: ${{ needs.values.outputs.k8sBackendValues }}
     secrets:
       k8sConfig: ${{ secrets.K8S_CONFIG }}
