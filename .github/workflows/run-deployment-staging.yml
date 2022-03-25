@@ -7,7 +7,7 @@ name: Build, Test & Deploy to Staging
 on:
   push:
     branches:
-      - 'main'
+      - 'feature/imporove-actions'
 
 env:
   K8S_CONTEXT: init-lab-staging
