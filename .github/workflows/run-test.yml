@@ -10,5 +10,4 @@ on:
 jobs:
   build:
     name: Build & Run Tests with Gradle
-    needs: [setup]
     uses: ./.github/workflows/build.yml
