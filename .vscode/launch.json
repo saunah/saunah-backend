@@ -22,7 +22,8 @@
                 "SAUNAH_DB_USER": "saunah",
                 "SAUNAH_DB_PASSWORD": "7#J@9HGB!h7jo-hY",
                 "SAUNAH_DB_HOST": "127.0.0.1",
-                "SAUNAH_DB_PORT": "5555"
+                "SAUNAH_DB_PORT": "5555",
+                "SAUNAH_FRONTEND_BASE_URL": "localhost:3000"
             }
         }
     ]

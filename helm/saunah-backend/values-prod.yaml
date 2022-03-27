@@ -21,6 +21,8 @@ env:
         name: saunah-secrets-database
         key: password
         optional: false
+  - name: SAUNAH_FRONTEND_BASE_URL
+    value: "https://saunah.k8s.init-lab.ch"
 
 image:
   repository: ghcr.io/saunah/saunah-backend

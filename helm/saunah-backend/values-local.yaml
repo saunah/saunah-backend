@@ -21,6 +21,8 @@ env:
         name: saunah-secrets-database
         key: password
         optional: false
+  - name: SAUNAH_FRONTEND_BASE_URL
+    value: "http://localhost:8889"
 
 image:
   repository: ghcr.io/saunah/saunah-backend
