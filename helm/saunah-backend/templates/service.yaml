@@ -9,8 +9,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http8080
+      targetPort: sn-back-po
       protocol: TCP
-      name: http8080
+      name: sn-back-svc
   selector:
     {{- include "saunah-backend.selectorLabels" . | nindent 4 }}
