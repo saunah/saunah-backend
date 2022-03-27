@@ -35,6 +35,6 @@ jobs:
     with:
       containerTag: ${{ needs.values.outputs.containerTag }}
       context: ${{ needs.values.outputs.k8sContext }}
-      valuesName: ${{ needs.values.outputs.k8sBackendValues }}
+      valuesName: ${{ needs.values.outputs.k8sConfigValues }}
     secrets:
       k8sConfig: ${{ secrets.K8S_CONFIG }}

@@ -1,4 +1,4 @@
-name: Build, Test & Deploy SauNah backend
+name: Setup values
 
 on:
   workflow_call:
@@ -7,8 +7,8 @@ on:
         value: ${{ jobs.setup.outputs.containerTag }}
       k8sContext:
         value: ${{ jobs.setup.outputs.k8sContext }}
-      k8sBackendValues:
-        value: ${{ jobs.setup.outputs.k8sBackendValues }}
+      k8sConfigValues:
+        value: ${{ jobs.setup.outputs.k8sConfigValues }}
 
 jobs:
   setup:
@@ -17,7 +17,7 @@ jobs:
     outputs:
       containerTag: ${{ steps.setConfigs.outputs.containerTag }}
       k8sContext: ${{ steps.setConfigs.outputs.k8sContext }}
-      k8sBackendValues: ${{ steps.setConfigs.outputs.k8sBackendValues }}
+      k8sConfigValues: ${{ steps.setConfigs.outputs.k8sConfigValues }}
       deploymentEnv: ${{ steps.setConfigs.outputs.deploymentEnv }}
     steps:
     - uses: actions/checkout@v2
@@ -28,9 +28,9 @@ jobs:
         then
           echo "::set-output name=containerTag::${{ github.ref_name }}"
           echo "::set-output name=k8sContext::init-lab-prod"
-          echo "::set-output name=k8sBackendValues::values-prod.yaml"
+          echo "::set-output name=k8sConfigValues::values-prod.yaml"
         else
           echo "::set-output name=containerTag::$(echo ${{ github.sha }} | cut -c 1-7)"
           echo "::set-output name=k8sContext::init-lab-staging"
-          echo "::set-output name=k8sBackendValues::values-staging.yaml"
+          echo "::set-output name=k8sConfigValues::values-staging.yaml"
         fi
