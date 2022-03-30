@@ -21,6 +21,8 @@ env:
         name: saunah-secrets-database
         key: password
         optional: false
+  - name: SAUNAH_DB_NAME
+    value: saunah
   - name: SAUNAH_FRONTEND_BASE_URL
     value: "https://saunah-staging.k8s.init-lab.ch"
 
