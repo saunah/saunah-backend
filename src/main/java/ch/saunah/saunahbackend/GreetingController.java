@@ -17,7 +17,7 @@ import ch.saunah.saunahbackend.model.UserRepository;
 @RestController
 @Controller
 public class GreetingController {
-    private static final String template = "Goodbye, %s!";
+    private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
     @Autowired

@@ -2,17 +2,17 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-namespace: default
+namespace: class-pm4-2022-7-prod
 
 replicaCount: 1
 
 env:
   - name: SPRING_PROFILES_ACTIVE
-    value: local
+    value: prod
   - name: SAUNAH_DB_HOST
-    value: saunah-database-postgresql-primary.default.svc.cluster.local
+    value: saunah-database-postgresql-primary.class-pm4-2022-7-prod.svc.cluster.local
   - name: SAUNAH_DB_PORT
-    value: "5555"
+    value: "5432"
   - name: SAUNAH_DB_USER
     value: saunah
   - name: SAUNAH_DB_PASSWORD
@@ -24,7 +24,7 @@ env:
   - name: SAUNAH_DB_NAME
     value: saunah
   - name: SAUNAH_FRONTEND_BASE_URL
-    value: "http://localhost:8889"
+    value: "https://saunah.k8s.init-lab.ch"
 
 image:
   repository: ghcr.io/saunah/saunah-backend
@@ -37,16 +37,16 @@ nameOverride: ""
 fullnameOverride: "saunah-backend"
 
 service:
-  type: LoadBalancer
-  port: 8888
+  type: ClusterIP
+  port: 8080
 
 ingress:
-  enabled: false
-  annotations:
-    kubernetes.io/ingress.class: nginx
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: saunah-backend.test
+    - host: saunah-backend-prod.k8s.init-lab.ch
       paths: []
   tls: []
   #  - secretName: chart-example-tls

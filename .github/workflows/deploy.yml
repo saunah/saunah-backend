@@ -1,0 +1,45 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      containerTag:
+        required: true
+        type: string
+      valuesName:
+        required: true
+        type: string
+      context:
+        required: true
+        type: string
+    secrets:
+      k8sConfig:
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy Container to Kubernetes Cluster
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set k8s Context
+        uses: azure/k8s-set-context@v2
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.k8sConfig }}
+          context: ${{ inputs.context }}
+
+      - uses: azure/setup-helm@v1
+        with:
+          version: 3.*
+
+      - name: Helm Install
+        run: |
+          helm upgrade --install \
+          -f helm/saunah-backend/${{ inputs.valuesName }} \
+          --set image.tag=${{ inputs.containerTag }} \
+          saunah-backend \
+          helm/saunah-backend

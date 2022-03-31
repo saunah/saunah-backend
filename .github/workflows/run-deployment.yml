@@ -1,0 +1,40 @@
+# This workflow tests the SauNah backend application, generates an image,
+# deploys it to ghcr.io and then deploys the application to a kubernetes
+# cluster.
+
+name: Build, Test & Deploy
+
+on:
+  push:
+    branches:
+      - 'main'
+    tags:
+      - v*
+
+jobs:
+  values:
+    name: Setup Configuration Values
+    uses: ./.github/workflows/values.yml
+
+  build:
+    name: Build & Run Tests with Gradle
+    needs: [values]
+    uses: ./.github/workflows/build.yml
+
+  container:
+    name: Create and Publish Container
+    needs: [values, build]
+    uses: ./.github/workflows/container.yml
+    with:
+      containerTag: ${{ needs.values.outputs.containerTag }}
+
+  deploy:
+    name: Deploy Container to Kubernetes Cluster
+    needs: [values, container]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      containerTag: ${{ needs.values.outputs.containerTag }}
+      context: ${{ needs.values.outputs.k8sContext }}
+      valuesName: ${{ needs.values.outputs.k8sConfigValues }}
+    secrets:
+      k8sConfig: ${{ secrets.K8S_CONFIG }}
