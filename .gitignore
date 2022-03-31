@@ -41,4 +41,6 @@ out/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/extensions.json
+
+### Kubernetes
 helm/secrets.yaml
