@@ -1,5 +1,12 @@
-{"properties": [{
-  "name": "saunah.frontend.baseurl",
-  "type": "java.lang.String",
-  "description": "Base URL of the frontend. Used to correctly handle CORS."
-}]}
+{"properties": [
+  {
+    "name": "saunah.frontend.baseurl",
+    "type": "java.lang.String",
+    "description": "Base URL of the frontend. Used to correctly handle CORS."
+  },
+  {
+    "name": "saunah.version",
+    "type": "java.lang.String",
+    "description": "Version of the application."
+  }
+]}

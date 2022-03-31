@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Entity(name = "appuser")
 public class User {
     @Id
@@ -23,6 +25,7 @@ public class User {
     private String emailAddress;
 
     @Column(name = "password_hash", nullable = true)
+    @Schema(nullable = true)
     private String password_hash;
 
     public User(String name, String emailAddress){
