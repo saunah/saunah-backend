@@ -19,6 +19,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.h2database:h2:2.1.210'
 }
 
 tasks.named('test') {

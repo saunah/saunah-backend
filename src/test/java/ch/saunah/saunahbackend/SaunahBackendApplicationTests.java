@@ -3,9 +3,9 @@ package ch.saunah.saunahbackend;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
-// TODO: Resolve issues with database for tests to enable this again.
-// @SpringBootTest
+@SpringBootTest
 class SaunahBackendApplicationTests {
 
 	@Test
