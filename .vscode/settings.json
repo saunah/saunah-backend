@@ -1,4 +1,9 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive",
-    "java.saveActions.organizeImports": true
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.saveActions.organizeImports": true,
+    "java.test.config": {
+        "env": {
+            "spring.config.location": "${workspaceFolder}/src/test/resources/"
+        }
+    }
 }
