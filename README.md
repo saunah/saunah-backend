@@ -81,3 +81,12 @@ If a new Kubernetes environment needs to be set up, however, there are scripts i
 1. Deploy the secrets to the namespace. To do so, copy the file in `helm/secrets-template.yaml` to `helm/secrets.yaml` and add the corresponding secret values to the file. (`helm/secrets.yaml` or any other secrets must never be commited to git, for obvious reasons!)
 2. Deploy the secrets to the cluster using `kubectl apply -f helm/secrets.yaml`.
 3. Deploy the database to the cluster using `helm install -f helm/saunah-database/values-staging.yaml saunah-database helm/saunah-database`. (Or use a different vlaues file, depending on the target of your deployment.) Make sure that the database depends on the secrets set in step 1. and 2., thus is need to be executed after these steps.
+
+
+## 👌🏼 Definition of Done
+The Definition of Done is automatically applied as the pull-request template. It can be found in [docs/pull_request_template.md](./docs/pull_request_template.md).
+
+
+## 📚 Further Documentation
+
+Fother documentation can be found in [docs/README.md](./docs/README.md).
