@@ -59,6 +59,11 @@ Once you have installed Docker Desktop, you can execute the following comand to 
 This will make the database accessible on `localhost` (or `127.0.0.1`) on port `5556`. Username, passwort and database name are all set to `saunah`.
 
 
+## 🤝🏼 Contributing
+
+If you'd like to contribute take a look at our [Contribution Guidelines](docs/CONTRIBUTING.md)
+
+
 ## 🚀 Deployment of the Application
 
 Continuous Integration / Delivery of the application is done using Github Actions.
