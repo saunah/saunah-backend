@@ -22,7 +22,7 @@
   - [ ] No unavoidable code smells
 - Testing
   - [ ] All existing tests pass
-  - [ ] New unit tests created
+  - [ ] New unit tests created according to [CONTRIBUTING.md](./CONTRIBUTING.md#-testing-strategy)
   - [ ] New unit tests pass
 - SonarCloud
   - [ ] Quality gate passed
