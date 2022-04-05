@@ -1,4 +1,4 @@
-# 🛁🔥 Saunah Backend
+# 🛁🔥 SauNah Backend
 
 [![CI](https://github.com/saunah/saunah-backend/actions/workflows/run-deployment.yml/badge.svg?branch=main)](https://github.com/saunah/saunah-backend/actions/workflows/run-deployment.yml)
 
@@ -10,10 +10,10 @@ This application provides a REST-API for the Saunah management app.
 ## 🎛 Technology Stack
 The application is based on [Spring Boot](https://spring.io/projects/spring-boot).
 
-## 👨🏼‍💻 Running the application
+## 👨🏼‍💻 Running the Application
 The application can be started by running `./gradlew bootRun` inside the project directory from the command line, or by running `SaunahBackendApplication.java` from your IDE.
 
-It will then become available at [`localhost:8080`](http://localhost:8080)
+It will then become available at [`http://localhost:8080`](http://localhost:8080)
 
 ## 🛠 IDE Configuration
 
@@ -94,4 +94,4 @@ The Definition of Done is automatically applied as the pull-request template. It
 
 ## 📚 Further Documentation
 
-Fother documentation can be found in [docs/README.md](./docs/README.md).
+Further documentation can be found in [docs/README.md](./docs/README.md).

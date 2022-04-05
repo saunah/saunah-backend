@@ -87,16 +87,16 @@ kubectl get pv
 ```
 
 
-## Removing other resources
+## Removing Other Resources
 
 To remove other resources, run
 
 ```shell
 kubectl delete pod name
-kubectl delete pod name
-kubectl delete pod name
-kubectl delete pod name
-kubectl delete pod name
+kubectl delete deployment name
+kubectl delete secret name
+kubectl delete pvc name
+kubectl delete pv name
 ...
 ```
 

@@ -26,5 +26,5 @@
   - [ ] New unit tests pass
 - SonarCloud
   - [ ] Quality gate passed
-- Compatibility to frondend
+- Compatibility to frontend
   - [ ] Compatibility to staging-frontend verified (running frontend locally in Docker container with image matching the deployed image on staging)

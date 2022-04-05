@@ -1,4 +1,4 @@
-## 🌴 Branch names
+## 🌴 Branch Names
 
 The `main` branch of the repository is protected and code can only be added via pull-requests.
 Code should always be added on a feature branch according to the following guideline:
@@ -10,7 +10,7 @@ Code should always be added on a feature branch according to the following guide
 
 The `<branch-name>` has to be in kebab-case (lowercase and words seperated by dashes).
 
-## 📝 Testing strategy
+## 📝 Testing Strategy
 
 The app is tested with unit tests that should cover all logic within the application.
 

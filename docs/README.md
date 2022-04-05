@@ -15,6 +15,6 @@ The documentation of the version currently deployed to staging can be found on [
 Documentation on the production environment is currently not enabled.
 
 
-## Deployment reference
+## Deployment Reference
 
 Some notes for reference on commands needed to deploy the application to a kubernetes cluster can be found in [k8s-deployment-notes.md](./k8s-deployment-notes.md)
