@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.model.UserRepository;
+import ch.saunah.saunahbackend.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController

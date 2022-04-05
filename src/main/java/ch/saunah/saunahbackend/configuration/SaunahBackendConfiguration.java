@@ -22,8 +22,7 @@ public class SaunahBackendConfiguration {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                .allowedOrigins(frontendBaseUrl);
+                registry.addMapping("/**").allowedOrigins(frontendBaseUrl);
             }
         };
     }

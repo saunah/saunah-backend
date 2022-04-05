@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.model.UserRepository;
+import ch.saunah.saunahbackend.repository.UserRepository;
 
 @SpringBootTest
 class SaunahBackendApplicationTests {
