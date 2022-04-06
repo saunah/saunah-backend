@@ -40,8 +40,6 @@ In order to configure your IDE to run the application with environment variabele
 
 Please make sure there is no leading or trailing space in the string, as this might cause errors otherwiese.
 
-For VS Code, the corresponding configuration is already set in `.vscode/launch.json`.
-
 ## 💾 Setting up a Development Database
 
 ### 🐋 Installing Docker Desktop
