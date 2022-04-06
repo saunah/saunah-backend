@@ -1,30 +1,29 @@
 package ch.saunah.saunahbackend.service;
 
-import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.repository.UserRepository;
 import ch.saunah.saunahbackend.user.SignInBody;
 import ch.saunah.saunahbackend.user.SignInResponse;
 import ch.saunah.saunahbackend.user.UserReturnCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 @Service
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    AuthenticationManager authenticationManager;
 
     public SignInResponse signIn(SignInBody signInBody){
-        User user = userRepository.findByEmail(signInBody.getEmail());
-        if (user  == null){
-            throw new NotFoundException("user not found");
+        try {
+            Authentication authentication= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPasswordHash()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
-        if (!signInBody.getPasswordHash().equals(user.getPassword_hash())){
-            throw new NotFoundException("wrong password");
+        catch (Exception e){
+            return new SignInResponse(UserReturnCode.UnsuccessfullLogin, "");
         }
-
-        return new SignInResponse(UserReturnCode.SuccessfulLogin, "132412341234");
+        return new SignInResponse(UserReturnCode.SuccessfulLogin, "");
     }
 }
