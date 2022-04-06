@@ -31,17 +31,18 @@ public class GreetingController {
         return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 
-    @Operation(description = "Returns the user with the ID specified.")
-    @GetMapping(path="user/{id}")
-    public @ResponseBody User getUser(@PathVariable(value = "id", required = true) Integer id) {
-        // This returns a JSON or XML with the users
-        return userRepository.findById(id).get();
-    }
 
     @Operation(description = "Returns a list of all users.")
     @GetMapping(path="users")
     public @ResponseBody Iterable<User> getUsers() {
         return userRepository.findAll();
+    }
+
+    @Operation(description = "Returns the user with the ID specified.")
+    @GetMapping(path="user/{id}")
+    public @ResponseBody User getUser(@PathVariable(value = "id", required = true) Integer id) {
+        // This returns a JSON or XML with the users
+        return userRepository.findById(id).get();
     }
 
     @Operation(description = "Allows adding a new user.")

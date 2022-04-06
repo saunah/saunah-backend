@@ -1,13 +1,8 @@
 package ch.saunah.saunahbackend.user;
 
 public class SignInBody {
-    private final String email;
-    private final String passwordHash;
-
-    public SignInBody(String email, String passwordHash) {
-        this.email = email;
-        this.passwordHash = passwordHash;
-    }
+    private String email;
+    private String passwordHash;
 
     public String getEmail() {
         return email;
@@ -15,5 +10,13 @@ public class SignInBody {
 
     public String getPasswordHash() {
         return passwordHash;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 }

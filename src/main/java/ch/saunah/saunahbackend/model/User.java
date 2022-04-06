@@ -22,7 +22,7 @@ public class User {
     private String name;
 
     @Column(name = "email_address", nullable = false)
-    private String emailAddress;
+    private String email;
 
     @Column(name = "password_hash", nullable = true)
     @Schema(nullable = true)
@@ -32,7 +32,8 @@ public class User {
         Objects.requireNonNull(name, "Name must not be null!");
         Objects.requireNonNull(emailAddress, "E-Mail Address must not be null!");
         this.name = name;
-        this.emailAddress = emailAddress;
+        this.email = emailAddress;
+        this.password_hash = "root";
     }
 
     public User(){
@@ -47,7 +48,11 @@ public class User {
         return name;
     }
 
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword_hash() {
+        return password_hash;
     }
 }
