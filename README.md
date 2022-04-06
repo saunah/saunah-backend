@@ -10,6 +10,15 @@ This application provides a REST-API for the Saunah management app.
 ## 🎛 Technology Stack
 The application is based on [Spring Boot](https://spring.io/projects/spring-boot).
 
+## 🧐 API Documentation
+The documentation of the API is automatically generated from spring routes, using [springdoc.org](https://springdoc.org/). Please use the corresponding annotations to add descriptions on routes and parameters, such that they will be visible in the documentation.
+
+When running the application, the documentation can be viewed and tested with Swagger UI at [http://localhost:8080/api-docs/swagger](http://localhost:8080/api-docs/swagger).
+
+Alternatively, the current documentation of the application deployed to the staging environment is available at [https://saunah-backend-staging.k8s.init-lab.ch/api-docs/swagger](https://saunah-backend-staging.k8s.init-lab.ch/api-docs/swagger).
+
+Please note that documentation is currently disabled on the production environment, thus it's not available there.
+
 ## 👨🏼‍💻 Running the Application
 The application can be started by running `./gradlew bootRun` inside the project directory from the command line, or by running `SaunahBackendApplication.java` from your IDE.
 
