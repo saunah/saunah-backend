@@ -18,6 +18,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public SignUpResponse login(@RequestBody SignUpBody signUpBody) throws Exception {
+        return userService.signUp(signUpBody);
+    }
+
     @PostMapping(value="/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public SignInResponse login(@RequestBody SignInBody signInBody) {

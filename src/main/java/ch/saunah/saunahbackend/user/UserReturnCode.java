@@ -1,6 +1,6 @@
 package ch.saunah.saunahbackend.user;
 
 public enum UserReturnCode {
-    SuccessfulLogin,
-    UnsuccessfullLogin
+    Successful,
+    Unsuccessful
 }

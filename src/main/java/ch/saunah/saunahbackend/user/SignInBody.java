@@ -2,21 +2,21 @@ package ch.saunah.saunahbackend.user;
 
 public class SignInBody {
     private String email;
-    private String passwordHash;
+    private String password;
 
     public String getEmail() {
         return email;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

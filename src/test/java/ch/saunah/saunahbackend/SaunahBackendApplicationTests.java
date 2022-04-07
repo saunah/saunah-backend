@@ -35,7 +35,7 @@ class SaunahBackendApplicationTests {
         Iterable<User> users = userRepository.findAll();
         assertFalse(users.iterator().hasNext());
 
-        User newUser = new User("John", "john@example.com");
+        User newUser = new User();
         userRepository.save(newUser);
 
         users = userRepository.findAll();

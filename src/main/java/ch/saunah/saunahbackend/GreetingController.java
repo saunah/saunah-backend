@@ -44,15 +44,4 @@ public class GreetingController {
         // This returns a JSON or XML with the users
         return userRepository.findById(id).get();
     }
-
-    @Operation(description = "Allows adding a new user.")
-    @PostMapping(path="user/add") // Map ONLY POST Requests
-    public @ResponseBody String addNewUser (@RequestParam("name") String name, @RequestParam("emailAddress") String emailAddress) {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-
-        User user = new User(name, emailAddress);
-        userRepository.save(user);
-        return String.format("User saved with id %s",  user.getId());
-    }
 }
