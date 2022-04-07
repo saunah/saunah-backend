@@ -36,6 +36,15 @@ class SaunahBackendApplicationTests {
         assertFalse(users.iterator().hasNext());
 
         User newUser = new User();
+
+        newUser.setEmail("test@mail.com");
+        newUser.setPasswordHash("root");
+        newUser.setFirstName("Max");
+        newUser.setLastName("Müller");
+        newUser.setPhoneNumber("079 123 45 67");
+        newUser.setPlz("8500");
+        newUser.setPlace("Winterthur");
+        newUser.setStreet("Müllerstrasse 20");
         userRepository.save(newUser);
 
         users = userRepository.findAll();
