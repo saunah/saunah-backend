@@ -22,7 +22,7 @@ public class SaunahBackendConfiguration {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins(frontendBaseUrl);
+                registry.addMapping("/**").allowedOrigins(frontendBaseUrl); //wieso localhost:3000? zum testen musste ich es auf localhost:8080 setzen.
             }
         };
     }
@@ -30,11 +30,11 @@ public class SaunahBackendConfiguration {
     @Bean
     public OpenAPI springOpenAPI() {
         return new OpenAPI()
-                .info(
-                    new Info()
+            .info(
+                new Info()
                     .title("SauNah API Docs")
                     .description("Documentation of API Routes for the SauNah backend.")
                     .version(version)
-                );
+            );
     }
 }

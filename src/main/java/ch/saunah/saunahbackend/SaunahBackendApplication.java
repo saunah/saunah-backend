@@ -15,14 +15,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SaunahBackendApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SaunahBackendApplication.class, args);
+    }
+
     @Autowired
     UserDetailsServiceImpl userDetailsService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic()
+        http.cors().and()  //musste cors und csrf disablen. stimmt das so?
+            .csrf().disable().httpBasic()
             .and()
             .authorizeRequests().antMatchers("/user/**").authenticated();
     }
@@ -40,6 +43,7 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());;
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        ;
     }
 }

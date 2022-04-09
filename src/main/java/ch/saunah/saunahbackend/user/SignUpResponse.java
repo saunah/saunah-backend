@@ -6,4 +6,8 @@ public class SignUpResponse {
     public SignUpResponse(String state) {
         this.state = state;
     }
+
+    public String getState() {
+        return state;
+    }
 }

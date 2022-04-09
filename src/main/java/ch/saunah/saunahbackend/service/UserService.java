@@ -5,7 +5,6 @@ import ch.saunah.saunahbackend.repository.UserRepository;
 import ch.saunah.saunahbackend.user.SignInBody;
 import ch.saunah.saunahbackend.user.SignInResponse;
 import ch.saunah.saunahbackend.user.SignUpBody;
-import ch.saunah.saunahbackend.user.SignUpResponse;
 import ch.saunah.saunahbackend.user.UserReturnCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,18 +25,17 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public SignUpResponse signUp(SignUpBody signUpBody) throws Exception {
+    public User signUp(SignUpBody signUpBody) throws Exception {
         User user = userRepository.findByEmail(signUpBody.getEmail());
-        if (user != null)
-        {
+        if (user != null) {
             throw new Exception("Email already taken");
         }
 
-        if (signUpBody.getPassword().length() < 8){
+        if (signUpBody.getPassword().length() < 8) {
             throw new Exception("Password length must be atleast ");
         }
 
-        if (!Pattern.matches(PASSWORD_PATTERN, signUpBody.getPassword())){
+        if (!Pattern.matches(PASSWORD_PATTERN, signUpBody.getPassword())) {
             throw new Exception("Password does not require the conditions");
         }
 
@@ -50,19 +48,31 @@ public class UserService {
         user.setPlz(signUpBody.getPlz());
         user.setPlace(signUpBody.getPlace());
         user.setStreet(signUpBody.getStreet());
-        userRepository.save(user);
+        User createdUser = userRepository.save(user);
 
-        return new SignUpResponse("success");
+
+        return createdUser;
+    }
+
+    public boolean verifyUser(Integer id) {
+
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            user.setActivated(true);
+            userRepository.save(user);
+            return true;
+        }
+
+        return false;
     }
 
 
     //ToDo: Token creation
-    public SignInResponse signIn(SignInBody signInBody){
+    public SignInResponse signIn(SignInBody signInBody) {
         try {
-            Authentication authentication= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword()));
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return new SignInResponse(UserReturnCode.Unsuccessful, "");
         }
         return new SignInResponse(UserReturnCode.Successful, "");
