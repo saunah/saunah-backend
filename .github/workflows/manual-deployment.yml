@@ -1,0 +1,38 @@
+# This workflow manually deploys SauNah backend from the tag given
+# to either staging or production
+
+name: Build, Test & Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      containerTag:
+        type: string
+        description: Container Tag
+        required: true
+      deploymentEnv:
+        type: choice
+        description: Deployment Environment
+        required: true
+        options:
+          - staging
+          - prod
+        default: staging
+
+jobs:
+  values:
+    name: Setup Configuration Values
+    uses: ./.github/workflows/values.yml
+    with:
+      deploymentEnv: ${{ inputs.deploymentEnv }}
+
+  deploy:
+    name: Deploy Container to Kubernetes Cluster
+    needs: [values]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      containerTag: ${{ github.event.inputs.containerTag }}
+      context: ${{ needs.values.outputs.k8sContext }}
+      valuesName: ${{ needs.values.outputs.k8sConfigValues }}
+    secrets:
+      k8sConfig: ${{ secrets.K8S_CONFIG }}
