@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.stream.StreamSupport;
 
+import ch.saunah.saunahbackend.model.UserRole;
+import org.h2.engine.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,6 +47,7 @@ class SaunahBackendApplicationTests {
         newUser.setPlz("8500");
         newUser.setPlace("Winterthur");
         newUser.setStreet("Müllerstrasse 20");
+        newUser.setRole(UserRole.USER);
         userRepository.save(newUser);
 
         users = userRepository.findAll();
