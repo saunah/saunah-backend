@@ -1,0 +1,18 @@
+# This workflow manually deploys SauNah backend from the tag given
+# to either staging or production
+# This implementation is a placeholder on the main branch
+# to allow developing and testing on another branch.
+
+name: Manual Deployment (placeholder)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  placeholder:
+    name: Placeholder Job
+    runs-on: ubuntu-latest
+    steps:
+    - name: Placeholder
+      run: |
+        echo "Placeholder"
