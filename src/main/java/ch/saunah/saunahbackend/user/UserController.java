@@ -33,12 +33,6 @@ public class UserController {
         return userService.signIn(signInBody);
     }
 
-    @GetMapping(value = "/logout")
-    @ResponseBody
-    public SignInResponse logout() {
-        return userService.signOut();
-    }
-
     @GetMapping(value = "/signup/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public SignUpResponse verify(@PathVariable Integer id) throws Exception {

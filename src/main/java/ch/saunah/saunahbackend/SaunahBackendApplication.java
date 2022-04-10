@@ -41,7 +41,11 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()  //musste cors und csrf disablen. stimmt das so?
-            .csrf().disable().authorizeRequests().antMatchers("/login").permitAll().anyRequest().authenticated()
+            .csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/api-docs**", "/login", "/users").permitAll()
+            .antMatchers("/user/**").hasAuthority("ROLE_USER")
+                .anyRequest().authenticated()
             .and()
             .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
