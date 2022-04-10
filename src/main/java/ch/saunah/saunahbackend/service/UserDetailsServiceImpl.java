@@ -1,20 +1,17 @@
 package ch.saunah.saunahbackend.service;
 
-import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collection;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -23,8 +20,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
-        List<GrantedAuthority> authorities =Arrays.asList(UserRole.USER).stream().map(role -> new SimpleGrantedAuthority(role.toString())).collect(Collectors.toList());
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswordHash(), authorities);
+        ch.saunah.saunahbackend.model.User user = userRepository.findByEmail(email);
+        Collection<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(user.getRole().toString()));
+        return new User(user.getEmail(), user.getPasswordHash(), authorities);
     }
 }

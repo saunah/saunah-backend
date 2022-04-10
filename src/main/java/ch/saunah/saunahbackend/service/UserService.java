@@ -1,14 +1,12 @@
 package ch.saunah.saunahbackend.service;
 
 import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
 import ch.saunah.saunahbackend.security.JwtResponse;
 import ch.saunah.saunahbackend.security.JwtTokenUtil;
-import ch.saunah.saunahbackend.user.SignInBody;
-import ch.saunah.saunahbackend.user.SignInResponse;
-import ch.saunah.saunahbackend.user.SignUpBody;
-import ch.saunah.saunahbackend.user.UserReturnCode;
-import org.apache.coyote.Response;
+import ch.saunah.saunahbackend.dto.SignInBody;
+import ch.saunah.saunahbackend.dto.SignUpBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +25,7 @@ import java.util.regex.Pattern;
 public class UserService {
 
     private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
+    private static final String EMAIL_PATTERN = "^(.+)@(\\S+) $";
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -43,8 +42,8 @@ public class UserService {
             throw new Exception("Email already taken");
         }
 
-        if (signUpBody.getPassword().length() < 8) {
-            throw new Exception("Password length must be atleast ");
+        if (!Pattern.matches(EMAIL_PATTERN, signUpBody.getEmail())) {
+            throw new Exception("The email is not valid");
         }
 
         if (!Pattern.matches(PASSWORD_PATTERN, signUpBody.getPassword())) {
@@ -61,6 +60,7 @@ public class UserService {
         user.setPlz(signUpBody.getPlz());
         user.setPlace(signUpBody.getPlace());
         user.setStreet(signUpBody.getStreet());
+        user.setRole(UserRole.USER);
         User createdUser = userRepository.save(user);
         return createdUser;
     }
@@ -72,12 +72,10 @@ public class UserService {
             userRepository.save(user);
             return true;
         }
-
         return false;
     }
 
 
-    //ToDo: Token creation
     public ResponseEntity<?> signIn(SignInBody signInBody) throws Exception {
         UsernamePasswordAuthenticationToken token;
         try {
@@ -93,10 +91,5 @@ public class UserService {
         String jwtToken = jwtTokenUtil.generateToken(userDetailsService.loadUserByUsername(signInBody.getEmail()));
 
         return ResponseEntity.ok(new JwtResponse(jwtToken));
-    }
-
-    public SignInResponse signOut() {
-        SecurityContextHolder.getContext().setAuthentication(null);
-        return new SignInResponse(UserReturnCode.Successful, "");
     }
 }

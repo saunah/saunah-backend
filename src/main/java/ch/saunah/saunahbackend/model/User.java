@@ -40,6 +40,9 @@ public class User {
     @Column(name = "activated", nullable = false)
     private boolean activated;
 
+    @Column(name = "role", nullable = false)
+    private UserRole role;
+
     public User(){
 
     }
@@ -119,5 +122,13 @@ public class User {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }

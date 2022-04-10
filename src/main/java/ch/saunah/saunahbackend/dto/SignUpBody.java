@@ -1,4 +1,4 @@
-package ch.saunah.saunahbackend.user;
+package ch.saunah.saunahbackend.dto;
 
 public class SignUpBody {
     private String firstName;
