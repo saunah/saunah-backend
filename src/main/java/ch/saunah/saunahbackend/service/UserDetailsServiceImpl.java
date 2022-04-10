@@ -13,11 +13,21 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * This class contains user login data
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
+    /**
+     * This method returns the user by username from the database.
+     *
+     * @param email the email of the user
+     * @return the user with his email password and his authorizations
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         ch.saunah.saunahbackend.model.User user = userRepository.findByEmail(email);
