@@ -2,15 +2,23 @@ package ch.saunah.saunahbackend.service;
 
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.repository.UserRepository;
+import ch.saunah.saunahbackend.security.JwtResponse;
+import ch.saunah.saunahbackend.security.JwtTokenUtil;
 import ch.saunah.saunahbackend.user.SignInBody;
 import ch.saunah.saunahbackend.user.SignInResponse;
 import ch.saunah.saunahbackend.user.SignUpBody;
 import ch.saunah.saunahbackend.user.UserReturnCode;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Pattern;
@@ -23,7 +31,11 @@ public class UserService {
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+    @Autowired
     UserRepository userRepository;
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     public User signUp(SignUpBody signUpBody) throws Exception {
         User user = userRepository.findByEmail(signUpBody.getEmail());
@@ -39,9 +51,10 @@ public class UserService {
             throw new Exception("Password does not require the conditions");
         }
 
+        String hashedPassword = new BCryptPasswordEncoder().encode(signUpBody.getPassword());
         user = new User();
         user.setEmail(signUpBody.getEmail());
-        user.setPasswordHash(signUpBody.getPassword());
+        user.setPasswordHash(hashedPassword);
         user.setFirstName(signUpBody.getFirstName());
         user.setLastName(signUpBody.getLastName());
         user.setPhoneNumber(signUpBody.getPhoneNumber());
@@ -65,14 +78,21 @@ public class UserService {
 
 
     //ToDo: Token creation
-    public SignInResponse signIn(SignInBody signInBody) {
+    public ResponseEntity<?> signIn(SignInBody signInBody) throws Exception {
+        UsernamePasswordAuthenticationToken token;
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (Exception e) {
-            return new SignInResponse(UserReturnCode.Unsuccessful, "");
+            token = new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword());
+            Authentication authentication = authenticationManager.authenticate(token);
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
         }
-        return new SignInResponse(UserReturnCode.Successful, "");
+        String jwtToken = jwtTokenUtil.generateToken(userDetailsService.loadUserByUsername(signInBody.getEmail()));
+
+        return ResponseEntity.ok(new JwtResponse(jwtToken));
     }
 
     public SignInResponse signOut() {
