@@ -38,7 +38,6 @@ class SaunahBackendApplicationTests {
         assertFalse(users.iterator().hasNext());
 
         User newUser = new User();
-
         newUser.setEmail("test@mail.com");
         newUser.setPasswordHash("root");
         newUser.setFirstName("Max");
