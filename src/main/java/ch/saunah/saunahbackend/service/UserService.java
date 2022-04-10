@@ -49,13 +49,10 @@ public class UserService {
         user.setPlace(signUpBody.getPlace());
         user.setStreet(signUpBody.getStreet());
         User createdUser = userRepository.save(user);
-
-
         return createdUser;
     }
 
     public boolean verifyUser(Integer id) {
-
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
             user.setActivated(true);
@@ -75,6 +72,11 @@ public class UserService {
         } catch (Exception e) {
             return new SignInResponse(UserReturnCode.Unsuccessful, "");
         }
+        return new SignInResponse(UserReturnCode.Successful, "");
+    }
+
+    public SignInResponse signOut() {
+        SecurityContextHolder.getContext().setAuthentication(null);
         return new SignInResponse(UserReturnCode.Successful, "");
     }
 }

@@ -23,7 +23,6 @@ public class UserController {
     public SignUpResponse signUp(@RequestBody SignUpBody signUpBody) throws Exception {
         User createdUser = userService.signUp(signUpBody);
         mailService.sendMail(createdUser);
-
         return new SignUpResponse("success");
     }
 
@@ -31,6 +30,12 @@ public class UserController {
     @ResponseBody
     public SignInResponse login(@RequestBody SignInBody signInBody) {
         return userService.signIn(signInBody);
+    }
+
+    @PostMapping(value = "/logout", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public SignInResponse logout() {
+        return userService.signOut();
     }
 
     @GetMapping(value = "/signup/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
