@@ -16,6 +16,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/**
+ * This class is used to filter each request to check if the user is authenticated.
+ */
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
