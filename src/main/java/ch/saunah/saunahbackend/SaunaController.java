@@ -41,9 +41,16 @@ public class SaunaController {
     }
 
     @Operation(description = "Returns a list of saunas.")
-    @GetMapping(path="users")
+    @GetMapping(path="saunas")
     public @ResponseBody Iterable<Sauna> getAllSauna() {
         return saunaRepository.findAll();
+    }
+
+    @Operation(description = "Returns the sauna with the ID specified.")
+    @GetMapping(path="sauna/{id}")
+    public @ResponseBody Sauna getSauna(@PathVariable(value = "id", required = true) Integer id) {
+        // This returns a JSON or XML with the users
+        return saunaRepository.findById(id).get();
     }
 
     @Operation(description = "Allows removing a existing Sauna type.")
