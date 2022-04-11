@@ -11,7 +11,7 @@ public class Sauna {
     @Id
     @Column(name="id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private long id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -44,8 +44,9 @@ public class Sauna {
     @Column(name = "plz", nullable = false)
     private int plz;
 
-    public Sauna(String name, String description, boolean picture, boolean isMobile,
+    public Sauna(long id, String name, String description, boolean picture, boolean isMobile,
                 int preis, int maxTemp, int numberOfPeople, String location, String street, int plz){
+        this.id = id;
         this.name = name;
         this.description = description;
         this.picture = picture;
@@ -58,7 +59,7 @@ public class Sauna {
         this.plz = plz;
     }
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
