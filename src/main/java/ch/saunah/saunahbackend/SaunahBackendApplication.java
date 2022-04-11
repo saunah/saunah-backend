@@ -43,7 +43,7 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
         http.cors().and()  //musste cors und csrf disablen. stimmt das so?
             .csrf().disable()
             .authorizeRequests()
-            .antMatchers("/api-docs**", "/login", "/users").permitAll()
+            .antMatchers("/api-docs/**", "/login", "/users").permitAll()
             .antMatchers("/user/**").hasAuthority("ROLE_USER")
                 .anyRequest().authenticated()
             .and()
