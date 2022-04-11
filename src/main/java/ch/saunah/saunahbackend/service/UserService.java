@@ -21,6 +21,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.regex.Pattern;
 
+/**
+ * This class contains registration, verification and login methods.
+ */
 @Service
 public class UserService {
 
@@ -36,6 +39,13 @@ public class UserService {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    /**
+     * This method registers a new user to the database.
+     *
+     * @param signUpBody contains all user credentials
+     * @return createdUser
+     * @throws Exception
+     */
     public User signUp(SignUpBody signUpBody) throws Exception {
         User user = userRepository.findByEmail(signUpBody.getEmail());
         if (user != null) {
@@ -65,6 +75,12 @@ public class UserService {
         return createdUser;
     }
 
+    /**
+     * This method checks if the user's provided id matches the existing one in the database.
+     *
+     * @param id userid
+     * @return true if he provided id matches, false if it does not
+     */
     public boolean verifyUser(Integer id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
@@ -75,7 +91,13 @@ public class UserService {
         return false;
     }
 
-
+    /**
+     * This method logs in a registered user.
+     *
+     * @param signInBody contains login relevant user credentials
+     * @return if the login was successful
+     * @throws Exception
+     */
     public ResponseEntity<?> signIn(SignInBody signInBody) throws Exception {
         UsernamePasswordAuthenticationToken token;
         try {
