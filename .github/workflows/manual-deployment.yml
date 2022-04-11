@@ -24,7 +24,7 @@ jobs:
     name: Setup Configuration Values
     uses: ./.github/workflows/values.yml
     with:
-      deploymentEnv: ${{ inputs.deploymentEnv }}
+      deploymentEnv: ${{ github.event.inputs.deploymentEnv }}
 
   deploy:
     name: Deploy Container to Kubernetes Cluster
