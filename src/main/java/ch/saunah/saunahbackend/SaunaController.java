@@ -53,18 +53,18 @@ public class SaunaController {
         return saunaRepository.findById(id).get();
     }
 
-    @Operation(description = "Allows removing a existing Sauna type.")
-    @PostMapping(path = "user/add") // Map ONLY POST Requests
+    @Operation(description = "Allows removing a existing Sauna with the ID specified.")
+    @PostMapping(path = "sauna/remove") // Map ONLY POST Requests
     public @ResponseBody
-    String removeSaunaType(@RequestParam("Id") int id) {
+    String removeSauna(@RequestParam("Id") int id) {
+        saunaRepository.delete(getSauna(id));
         return String.format("The sauna was with id %s has been removed", 1);
     }
 
-    // TODO Implement??
     @Operation(description = "Allows adding a new Sauna type.")
     @PostMapping(path = "user/add") // Map ONLY POST Requests
     public @ResponseBody
-    String updateSaunaType(@RequestParam("Id") int id) {
+    String editSauna(@RequestParam("Id") int id) {
         return String.format("The sauna was with id %s has been removed", 1);
     }
 
