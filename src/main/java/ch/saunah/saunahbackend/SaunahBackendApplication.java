@@ -2,7 +2,6 @@ package ch.saunah.saunahbackend;
 
 import ch.saunah.saunahbackend.security.JwtAuthenticationEntryPoint;
 import ch.saunah.saunahbackend.security.JwtRequestFilter;
-import ch.saunah.saunahbackend.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,6 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * This class starts the application
+ */
 @SpringBootApplication
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -33,6 +35,11 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
+    /**
+     * The main method.
+     *
+     * @param args client main argument
+     */
     public static void main(String[] args) {
         SpringApplication.run(SaunahBackendApplication.class, args);
     }
@@ -40,7 +47,7 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and()  //musste cors und csrf disablen. stimmt das so?
+        http.cors().and()
             .csrf().disable()
             .authorizeRequests()
             .antMatchers("/api-docs/**", "/login", "/users").permitAll()
@@ -53,17 +60,35 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
+    /**
+     * This method returns the authenticationManagerBean.
+     *
+     * @return authenticationManagerBean
+     * @throws Exception
+     */
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
+    /**
+     * This method returns the BCryptPasswordEncoder.
+     *
+     * @return BCryptPasswordEncoder
+     * @throws Exception
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * This method configures authenticationManagerBuilder.
+     *
+     * @param authenticationManagerBuilder used to create an {@link AuthenticationManager}
+     * @throws Exception
+     */
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
