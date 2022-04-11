@@ -1,5 +1,8 @@
 package ch.saunah.saunahbackend.dto;
 
+/**
+ * This class is used as the DTO object when logging in.
+ */
 public class SignInBody {
     private String email;
     private String password;

@@ -6,6 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * This class is used to define the table of the database of the user entity.
+ */
 @Entity(name = "appuser")
 public class User {
     @Id
@@ -43,6 +46,9 @@ public class User {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
+    /**
+     * The default constructor for the user.
+     */
     public User(){
 
     }

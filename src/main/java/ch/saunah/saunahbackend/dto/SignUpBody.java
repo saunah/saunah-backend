@@ -1,5 +1,8 @@
 package ch.saunah.saunahbackend.dto;
 
+/**
+ * This class is used as the DTO object when registering an account.
+ */
 public class SignUpBody {
     private String firstName;
     private String lastName;
