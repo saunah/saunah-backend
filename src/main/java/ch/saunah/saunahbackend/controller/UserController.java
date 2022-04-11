@@ -5,6 +5,7 @@ import ch.saunah.saunahbackend.dto.SignUpBody;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.service.MailService;
 import ch.saunah.saunahbackend.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class UserController {
     @Autowired
     private MailService mailService;
 
+    @Operation(description = "Registers an account and sends a verification mail to the specified mail.")
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<?> signUp(@RequestBody SignUpBody signUpBody) throws Exception {
@@ -35,12 +37,14 @@ public class UserController {
         return ResponseEntity.ok("success");
     }
 
+    @Operation(description = "Logs the user in and returns the JWT token of the user.")
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<?> login(@RequestBody SignInBody signInBody) throws Exception {
         return userService.signIn(signInBody);
     }
 
+    @Operation(description = "Activates the account for the user with the specified verificationId.")
     @GetMapping(value = "/verify/{verificationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<?> verify(@PathVariable int verificationId) throws Exception {
