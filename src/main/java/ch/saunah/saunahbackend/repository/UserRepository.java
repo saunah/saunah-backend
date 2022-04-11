@@ -7,5 +7,10 @@ import org.springframework.data.repository.CrudRepository;
  * This Interface accesses the CrudRepository.
  */
 public interface UserRepository extends CrudRepository<User, Integer> {
+    /**
+     * This method searches the database for the requested email.
+     * @param email the requested email
+     * @return email
+     */
     User findByEmail(String email);
 }
