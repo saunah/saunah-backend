@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build & Run Tests with Gradle
+    name: Build, Run Tests & Analyse with Gradle
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
