@@ -2,6 +2,7 @@ package ch.saunah.saunahbackend.service;
 
 
 import ch.saunah.saunahbackend.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,29 +17,31 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class MailService {
 
-    JavaMailSender javaMailSender;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     @Value("${saunah.frontend.baseurl}")
     private String frontendBaseUrl;
+    @Value("${spring.mail.username}")
+    private String senderMail;
 
-    public MailService(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
-    }
+
 
     /**
      * This method sends a message authentication link to the email of the user.
      *
-     * @param user The user to which the message will be sent to
+     * @param email The email of the user
+     * @param verificationId The verification id of the user
      * @throws MessagingException if the message does not reach the target email
      */
-    public void sendMail(User user) throws MessagingException {
+    public void sendUserActivationMail(String email, int verificationId) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-        helper.setFrom("example@example.com"); //TODO: anpassen auf richtige Email
-        helper.setTo(user.getEmail());
+        helper.setFrom(senderMail);
+        helper.setTo(email);
         helper.setSubject("Singeup authentication");
         helper.setText("<p>Bitte klicken sie auf den Link, um ihren Account zu aktivieren: " +
-            "<br><a href=\"" + frontendBaseUrl + "/signup/" + user.getId() + "\">Hier drücken</a></p>", true);
+            "<br><a href=\"" + frontendBaseUrl + "/signup/" + verificationId + "\">Hier drücken</a></p>", true);
         javaMailSender.send(mimeMessage);
 
     }

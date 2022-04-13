@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping
 public class UserController {
@@ -33,7 +32,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<?> signUp(@RequestBody SignUpBody signUpBody) throws Exception {
         User createdUser = userService.signUp(signUpBody);
-        mailService.sendMail(createdUser);
+        mailService.sendUserActivationMail(createdUser.getEmail(), createdUser.getId());
         return ResponseEntity.ok("success");
     }
 

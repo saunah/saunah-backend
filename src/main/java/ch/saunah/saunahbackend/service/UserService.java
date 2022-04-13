@@ -7,6 +7,7 @@ import ch.saunah.saunahbackend.security.JwtResponse;
 import ch.saunah.saunahbackend.security.JwtTokenUtil;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.SignUpBody;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,22 +30,17 @@ public class UserService {
     private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
     private static final String EMAIL_PATTERN = "^(.+)@(\\S+)$";
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    AuthenticationManager authenticationManager;
-
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
+    @Autowired
     private UserDetailsServiceImpl userDetailsService;
-
-    public UserService(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, UserRepository userRepository,
-                       UserDetailsServiceImpl userDetailsService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.userRepository = userRepository;
-        this.userDetailsService = userDetailsService;
-    }
 
     /**
      * This method registers a new user to the database.
@@ -106,12 +102,15 @@ public class UserService {
      * @throws Exception
      */
     public ResponseEntity<?> signIn(SignInBody signInBody) throws Exception {
-        UsernamePasswordAuthenticationToken token;
         try {
-            token = new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword());
-            Authentication authentication = authenticationManager.authenticate(token);
-            SecurityContext context = SecurityContextHolder.createEmptyContext();
-            context.setAuthentication(authentication);
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword()));
+            if (authentication == null){
+                throw new Exception("Authentication was not successful");
+            }
+            else{
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
+                context.setAuthentication(authentication);
+            }
         } catch (DisabledException e) {
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {

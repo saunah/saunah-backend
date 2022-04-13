@@ -1,47 +1,35 @@
 package ch.saunah.saunahbackend.service;
 
+import ch.saunah.saunahbackend.SaunahBackendApplication;
+import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.SignUpBody;
 import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
-import ch.saunah.saunahbackend.security.JwtTokenUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 /**
  * This class tests all user service methods.
  */
-@SpringBootTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = SaunahBackendApplication.class)
 class UserServiceTest {
 
-    @Mock
-    UserRepository userRepository;
-
-    @Mock
-    AuthenticationManager authenticationManager;
-
-    @Mock
-    private JwtTokenUtil jwtTokenUtil;
-
-    @Mock
-    private UserDetailsServiceImpl userDetailsService;
-
-    UserService userService;
-
-    SignUpBody signUpBody = null;
-
-    User user = null;
-
-
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+    private SignUpBody signUpBody = null;
 
     @BeforeEach
     void setUp() {
@@ -53,18 +41,7 @@ class UserServiceTest {
         signUpBody.setPhoneNumber("0123");
         signUpBody.setStreet("Teststrasse 123");
         signUpBody.setPassword("ZH_a?!WD32");
-
-        user = new User();
-        user.setActivated(false);
-        user.setEmail("hans.muster@mustermail.ch");
-        user.setFirstName("Hans");
-        user.setLastName("Muster");
-        user.setPlace("Winterthur");
-        user.setPhoneNumber("0123");
-        user.setStreet("Teststrasse 123");
-        user.setPasswordHash("testhash");
-        user.setRole(UserRole.USER);
-        userService = new UserService(authenticationManager,jwtTokenUtil,userRepository,userDetailsService);
+        signUpBody.setPlz("1324");
     }
 
     @AfterEach
@@ -72,11 +49,12 @@ class UserServiceTest {
     }
 
     /**
-     * This test checks if the user won't be able to signeup when an email is already in use.
+     * This test checks if the user won't be able to signup when an email is already in use.
      */
     @Test
-    void signUpThrowCheck(){
-        when(userRepository.findByEmail("hans.muster@mustermail.ch")).thenReturn(user);
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void signUpThrowCheck() throws Exception {
+        userService.signUp(signUpBody); //create first one
         Exception exception = assertThrows(Exception.class, () -> {
             userService.signUp(signUpBody);
         });
@@ -86,18 +64,15 @@ class UserServiceTest {
     }
 
     /**
-     * This test checks if the user won't be able to signeup with an invalid email.
+     * This test checks if the user won't be able to signup with an invalid email.
      */
     @Test
-    void signUpThrowCheckEmail(){
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void signUpEmailCheck() throws Exception {
         signUpBody.setEmail("bademail");
-        when(userRepository.findByEmail("bademail")).thenReturn(null);
-        Exception exception = assertThrows(Exception.class, () -> {
-            userService.signUp(signUpBody);
-        });
-        String expectedMessage = "The email is not valid";
-        String actualMessage = exception.getMessage();
-        assertTrue(actualMessage.contains(expectedMessage));
+        assertThrows(Exception.class, () -> userService.signUp(signUpBody));
+        signUpBody.setEmail("goodemail@hotmail.com");
+        assertDoesNotThrow(() -> userService.signUp(signUpBody));
     }
 
     /**
@@ -106,32 +81,46 @@ class UserServiceTest {
      * @throws Exception
      */
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void signUp() throws Exception {
-        when(userRepository.findByEmail("hans.muster@mustermail.ch")).thenReturn(null);
-        when(userRepository.save(user)).thenReturn(user);
-        user.setPasswordHash("$2a$10$eV0ERtS4/4kLNKV.16TvSuCxe7eWg49JLvuKAmzfqsCAUWRIW/NYe");
+        assertNull(userRepository.findByEmail(signUpBody.getEmail()));
         userService.signUp(signUpBody);
-        verify(userRepository, times(1)).save(any());
-
+        User user = userRepository.findByEmail(signUpBody.getEmail());
+        assertNotNull(user);
+        assertEquals(signUpBody.getEmail(), user.getEmail());
     }
 
     /**
      * This test checks if the user can be verified with the assigned id.
      */
     @Test
-    void verifyUser() {
-        when(userRepository.findById(123)).thenReturn(Optional.of(user));
-        when(userRepository.findById(1234)).thenReturn(Optional.empty());
-        boolean returnValueFound = userService.verifyUser(123);
-        boolean returnValueNull = userService.verifyUser(1234);
-
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void verifyUser() throws Exception {
+        int wrongId = 100;
+        userService.signUp(signUpBody);
+        int userId = userRepository.findByEmail(signUpBody.getEmail()).getId();
+        boolean returnValueFound = userService.verifyUser(userId);
+        boolean returnValueNull = userService.verifyUser(wrongId);
         assertTrue(returnValueFound);
         assertFalse(returnValueNull);
-
-
     }
 
     @Test
-    void signIn() {
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void signIn() throws Exception {
+        userService.signUp(signUpBody);
+        SignInBody signInBody = new SignInBody();
+        signInBody.setEmail("hans.muster@mustermail.ch");
+        signInBody.setPassword("ZH_a?!WD32");
+        var response = userService.signIn(signInBody);
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+
+        signInBody.setEmail("notexisting mail");
+        assertThrows(Exception.class, () -> userService.signIn(signInBody));
+        signInBody.setEmail("hans.muster@mustermail.ch");
+        signInBody.setPassword("wrong password");
+        assertThrows(Exception.class, () -> userService.signIn(signInBody));
+        signInBody.setEmail("both wrong");
+        assertThrows(Exception.class, () -> userService.signIn(signInBody));
     }
 }
