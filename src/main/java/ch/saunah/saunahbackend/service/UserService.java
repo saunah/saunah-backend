@@ -7,7 +7,6 @@ import ch.saunah.saunahbackend.security.JwtResponse;
 import ch.saunah.saunahbackend.security.JwtTokenUtil;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.SignUpBody;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,16 +27,24 @@ import java.util.regex.Pattern;
 public class UserService {
 
     private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
-    private static final String EMAIL_PATTERN = "^(.+)@(\\S+) $";
+    private static final String EMAIL_PATTERN = "^(.+)@(\\S+)$";
 
-    @Autowired
+
     AuthenticationManager authenticationManager;
-    @Autowired
+
     private JwtTokenUtil jwtTokenUtil;
-    @Autowired
+
     UserRepository userRepository;
-    @Autowired
+
     private UserDetailsServiceImpl userDetailsService;
+
+    public UserService(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, UserRepository userRepository,
+                       UserDetailsServiceImpl userDetailsService) {
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.userRepository = userRepository;
+        this.userDetailsService = userDetailsService;
+    }
 
     /**
      * This method registers a new user to the database.

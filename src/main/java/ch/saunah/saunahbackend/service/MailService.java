@@ -2,7 +2,6 @@ package ch.saunah.saunahbackend.service;
 
 
 import ch.saunah.saunahbackend.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -17,11 +16,14 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class MailService {
 
-    @Autowired
     JavaMailSender javaMailSender;
 
     @Value("${saunah.frontend.baseurl}")
     private String frontendBaseUrl;
+
+    public MailService(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
 
     /**
      * This method sends a message authentication link to the email of the user.
