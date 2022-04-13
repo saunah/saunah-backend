@@ -17,6 +17,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * This class tests all user service methods.
+ */
 @SpringBootTest
 class UserServiceTest {
 
@@ -68,8 +71,11 @@ class UserServiceTest {
     void tearDown() {
     }
 
+    /**
+     * This test checks if the user won't be able to signeup when an email is already in use.
+     */
     @Test
-    void signUpThorwCheck(){
+    void signUpThrowCheck(){
         when(userRepository.findByEmail("hans.muster@mustermail.ch")).thenReturn(user);
         Exception exception = assertThrows(Exception.class, () -> {
             userService.signUp(signUpBody);
@@ -79,8 +85,11 @@ class UserServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
+    /**
+     * This test checks if the user won't be able to signeup with an invalid email.
+     */
     @Test
-    void signUpThorwCheckEmail(){
+    void signUpThrowCheckEmail(){
         signUpBody.setEmail("bademail");
         when(userRepository.findByEmail("bademail")).thenReturn(null);
         Exception exception = assertThrows(Exception.class, () -> {
@@ -91,6 +100,11 @@ class UserServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
+    /**
+     * This test checks if the user successfully registered an account.
+     *
+     * @throws Exception
+     */
     @Test
     void signUp() throws Exception {
         when(userRepository.findByEmail("hans.muster@mustermail.ch")).thenReturn(null);
@@ -101,6 +115,9 @@ class UserServiceTest {
 
     }
 
+    /**
+     * This test checks if the user can be verified with the assigned id.
+     */
     @Test
     void verifyUser() {
         when(userRepository.findById(123)).thenReturn(Optional.of(user));

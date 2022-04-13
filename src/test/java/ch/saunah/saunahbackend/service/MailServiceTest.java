@@ -14,6 +14,9 @@ import javax.mail.internet.MimeMessage;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * This class tests the email method.
+ */
 @SpringBootTest
 class MailServiceTest {
 
@@ -40,6 +43,11 @@ class MailServiceTest {
         user.setRole(UserRole.USER);
     }
 
+    /**
+     * This method tests if the email is sent once to the correct user.
+     *
+     * @throws MessagingException
+     */
     @Test
     void sendMail() throws MessagingException {
         when(javaMailSender.createMimeMessage()).thenReturn(new MimeMessage((Session) null));
