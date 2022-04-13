@@ -1,4 +1,4 @@
-name: Build, Test & Analyze
+name: Build, Test & Analyse
 
 on:
   workflow_call:
