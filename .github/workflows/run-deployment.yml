@@ -20,6 +20,8 @@ jobs:
     name: Build & Run Tests with Gradle
     needs: [values]
     uses: ./.github/workflows/build.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   container:
     name: Create and Publish Container
