@@ -17,7 +17,7 @@ jobs:
     uses: ./.github/workflows/values.yml
 
   build:
-    name: Build & Run Tests with Gradle
+    name: Build, Run Tests & Analyse with Gradle
     needs: [values]
     uses: ./.github/workflows/build.yml
     secrets:
