@@ -105,6 +105,11 @@ class UserServiceTest {
         assertFalse(returnValueNull);
     }
 
+    /**
+     * Test if a user can sign in with the right and with the wrong credentials
+     *
+     * @throws Exception throws an exception when the login does not work with the right credentials
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void signIn() throws Exception {
