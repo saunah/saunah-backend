@@ -15,6 +15,8 @@ jobs:
   values:
     name: Setup Configuration Values
     uses: ./.github/workflows/values.yml
+    with:
+      deploymentEnv: auto
 
   build:
     name: Build, Run Tests & Analyse with Gradle
