@@ -1,8 +1,8 @@
 # This workflow tests the SauNah backend application, generates an image,
-# deploys it to ghcr.io and then deploys the application to a kubernetes
-# cluster.
+# runs Sonar Cloud analyses on it, publishes it as a container to ghcr.io
+# and then deploys the application to a kubernetes cluster.
 
-name: Build, Test & Deploy
+name: Build, Test, Analyse & Deploy
 
 on:
   push:
@@ -17,9 +17,11 @@ jobs:
     uses: ./.github/workflows/values.yml
 
   build:
-    name: Build & Run Tests with Gradle
+    name: Build, Run Tests & Analyse with Gradle
     needs: [values]
     uses: ./.github/workflows/build.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   container:
     name: Create and Publish Container

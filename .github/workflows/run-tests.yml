@@ -1,6 +1,7 @@
-# This workflow tests the SauNah backend application.
+# This workflow tests the SauNah backend application and
+# analyses it with Sonar Cloud.
 
-name: Test SauNah backend
+name: Test & Analyse
 
 on:
   push:
@@ -9,5 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build & Run Tests with Gradle
+    name: Build, Run Tests & Analyse with Gradle
     uses: ./.github/workflows/build.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
