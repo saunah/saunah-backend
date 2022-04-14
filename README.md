@@ -1,7 +1,5 @@
 # 🛁🔥 SauNah Backend
 
-test
-
 [![CI](https://github.com/saunah/saunah-backend/actions/workflows/run-deployment.yml/badge.svg?branch=main)](https://github.com/saunah/saunah-backend/actions/workflows/run-deployment.yml)
 
 
