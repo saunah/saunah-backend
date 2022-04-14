@@ -14,5 +14,6 @@ public class CheckCoverageTest {
 	void dummyTest() {
         CodeCoverageCheck check = new CodeCoverageCheck();
         assertEquals(1, check.checkCoverageOne() );
+        assertEquals(3, check.checkCoverageTwo(3));
 	}
 }
