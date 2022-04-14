@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build & Run Tests with Gradle
+    name: Build, Run Tests & Analyse with Gradle
     uses: ./.github/workflows/build.yml
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
