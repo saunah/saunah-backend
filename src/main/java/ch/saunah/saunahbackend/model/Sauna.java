@@ -1,10 +1,10 @@
 package ch.saunah.saunahbackend.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import javax.persistence.*;
-import java.util.Objects;
 
+/**
+ * Model of a sauna type
+ */
 @Entity(name = "sauna")
 public class Sauna {
 
@@ -26,8 +26,8 @@ public class Sauna {
     @Column(name = "type", nullable = false)
     private boolean isMobile;
 
-    @Column(name = "preis", nullable = false)
-    private int preis;
+    @Column(name = "prize", nullable = false)
+    private int prize;
 
     @Column(name = "max_temp", nullable = false)
     private int maxTemp;
@@ -45,13 +45,13 @@ public class Sauna {
     private int plz;
 
     public Sauna(long id, String name, String description, boolean picture, boolean isMobile,
-                int preis, int maxTemp, int numberOfPeople, String location, String street, int plz){
+                int prize, int maxTemp, int numberOfPeople, String location, String street, int plz){
         this.id = id;
         this.name = name;
         this.description = description;
         this.picture = picture;
         this.isMobile = isMobile;
-        this.preis = preis;
+        this.prize = prize;
         this.maxTemp = maxTemp;
         this.numberOfPeople = numberOfPeople;
         this.location = location;
@@ -71,12 +71,16 @@ public class Sauna {
         return description;
     }
 
+    public boolean getPicture() {
+        return picture;
+    }
+
     public boolean getType() {
         return isMobile;
     }
 
-    public int getPreis() {
-        return preis;
+    public int getPrize() {
+        return prize;
     }
 
     public int getMaxTemp() { return maxTemp; }
@@ -96,6 +100,44 @@ public class Sauna {
     public int getPlz() {
         return plz;
     }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPicture(boolean picture) {
+        this.picture = picture;
+    }
+
+    public void setType(boolean isMobile) {
+        this.isMobile = isMobile;
+    }
+
+    public void setPrize(int prize) {
+        this.prize = prize;
+    }
+
+    public void setMaxTemp(int maxTemp) {
+        this.maxTemp = maxTemp;
+    }
+
+    public void setNumberOfPeople(int numberOfPeople) {
+        this.numberOfPeople = numberOfPeople;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public void setPlz(int plz) {
+        this.plz = plz;
+    }
+
+
 }
 
 
