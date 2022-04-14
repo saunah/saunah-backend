@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 @Service
 public class UserService {
 
-    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
+    private static final String PWD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
     private static final String EMAIL_PATTERN = "^(.+)@(\\S+)$";
 
     @Autowired
@@ -59,7 +59,7 @@ public class UserService {
             throw new Exception("The email is not valid");
         }
 
-        if (!Pattern.matches(PASSWORD_PATTERN, signUpBody.getPassword())) {
+        if (!Pattern.matches(PWD_PATTERN, signUpBody.getPassword())) {
             throw new Exception("Password does not require the conditions");
         }
 
@@ -101,7 +101,7 @@ public class UserService {
      * @return if the login was successful
      * @throws Exception
      */
-    public ResponseEntity<?> signIn(SignInBody signInBody) throws Exception {
+    public ResponseEntity<JwtResponse> signIn(SignInBody signInBody) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword()));
             if (authentication == null){

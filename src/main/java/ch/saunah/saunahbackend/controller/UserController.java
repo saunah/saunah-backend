@@ -3,6 +3,7 @@ package ch.saunah.saunahbackend.controller;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.SignUpBody;
 import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.security.JwtResponse;
 import ch.saunah.saunahbackend.service.MailService;
 import ch.saunah.saunahbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +31,7 @@ public class UserController {
     @Operation(description = "Registers an account and sends a verification mail to the specified mail.")
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<?> signUp(@RequestBody SignUpBody signUpBody) throws Exception {
+    public ResponseEntity<String> signUp(@RequestBody SignUpBody signUpBody) throws Exception {
         User createdUser = userService.signUp(signUpBody);
         mailService.sendUserActivationMail(createdUser.getEmail(), createdUser.getId());
         return ResponseEntity.ok("success");
@@ -39,14 +40,14 @@ public class UserController {
     @Operation(description = "Logs the user in and returns the JWT token of the user.")
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<?> login(@RequestBody SignInBody signInBody) throws Exception {
+    public ResponseEntity<JwtResponse> login(@RequestBody SignInBody signInBody) throws Exception {
         return userService.signIn(signInBody);
     }
 
     @Operation(description = "Activates the account for the user with the specified verificationId.")
     @GetMapping(value = "/verify/{verificationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<?> verify(@PathVariable int verificationId) throws Exception {
+    public ResponseEntity<String> verify(@PathVariable int verificationId) throws Exception {
         boolean status = userService.verifyUser(verificationId);
         if (status) {
             return ResponseEntity.ok("Verification not successful");
