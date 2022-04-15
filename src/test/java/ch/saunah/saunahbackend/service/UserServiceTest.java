@@ -76,6 +76,24 @@ class UserServiceTest {
     }
 
     /**
+     * This test checks if the user won't be able to signup with an invalid password.
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void signUpPasswordCheck() throws Exception {
+        signUpBody.setPassword("badpassword");
+        assertThrows(Exception.class, () -> userService.signUp(signUpBody));
+        signUpBody.setPassword("Badpassword");
+        assertThrows(Exception.class, () -> userService.signUp(signUpBody));
+        signUpBody.setPassword("BadPassword1");
+        assertThrows(Exception.class, () -> userService.signUp(signUpBody));
+        signUpBody.setPassword("Bpw1#");
+        assertThrows(Exception.class, () -> userService.signUp(signUpBody));
+        signUpBody.setPassword("GoodPassword#1");
+        assertDoesNotThrow(() -> userService.signUp(signUpBody));
+    }
+
+    /**
      * This test checks if the user successfully registered an account.
      *
      * @throws Exception

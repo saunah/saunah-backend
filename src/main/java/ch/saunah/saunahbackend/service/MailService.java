@@ -1,9 +1,9 @@
 package ch.saunah.saunahbackend.service;
 
 
-import ch.saunah.saunahbackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -32,17 +32,23 @@ public class MailService {
      *
      * @param email The email of the user
      * @param verificationId The verification id of the user
-     * @throws MessagingException if the message does not reach the target email
      */
-    public void sendUserActivationMail(String email, int verificationId) throws MessagingException {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-        helper.setFrom(senderMail);
-        helper.setTo(email);
-        helper.setSubject("Singeup authentication");
-        helper.setText("<p>Bitte klicken sie auf den Link, um ihren Account zu aktivieren: " +
-            "<br><a href=\"" + frontendBaseUrl + "/signup/" + verificationId + "\">Hier drücken</a></p>", true);
-        javaMailSender.send(mimeMessage);
-
+    public void sendUserActivationMail(String email, int verificationId) {
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setFrom(senderMail);
+            helper.setTo(email);
+            helper.setSubject("Singeup authentication");
+            helper.setText("<p>Bitte klicken sie auf den Link, um ihren Account zu aktivieren: " +
+                "<br><a href=\"" + frontendBaseUrl + "/signup/" + verificationId + "\">Hier drücken</a></p>", true);
+            javaMailSender.send(mimeMessage);
+        }
+        catch (MessagingException exception){
+            System.err.printf("Error while sending the activation mail: %s\n", exception.getMessage());
+        }
+        catch (MailException exception){
+            System.err.printf("Error while sending the activation mail: %s\n", exception.getMessage());
+        }
     }
 }

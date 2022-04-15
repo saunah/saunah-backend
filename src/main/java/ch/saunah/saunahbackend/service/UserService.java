@@ -74,8 +74,7 @@ public class UserService {
         user.setPlace(signUpBody.getPlace());
         user.setStreet(signUpBody.getStreet());
         user.setRole(UserRole.USER);
-        User createdUser = userRepository.save(user);
-        return createdUser;
+        return userRepository.save(user);
     }
 
     /**
