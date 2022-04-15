@@ -1,16 +1,14 @@
 package ch.saunah.saunahbackend.model;
 
-
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
+/**
+ * This class is used to define the table of the database of the user entity.
+ */
 @Entity(name = "appuser")
 public class User {
     @Id
@@ -18,23 +16,39 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name="firstName", nullable = false)
+    private String firstName;
 
-    @Column(name = "email_address", nullable = false)
-    private String emailAddress;
+    @Column(name="lastName", nullable = false)
+    private String lastName;
 
-    @Column(name = "password_hash", nullable = true)
-    @Schema(nullable = true)
-    private String password_hash;
+    @Column(name = "email", nullable = false)
+    private String email;
 
-    public User(String name, String emailAddress){
-        Objects.requireNonNull(name, "Name must not be null!");
-        Objects.requireNonNull(emailAddress, "E-Mail Address must not be null!");
-        this.name = name;
-        this.emailAddress = emailAddress;
-    }
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
 
+    @Column(name = "phoneNumber", nullable = false)
+    private String phoneNumber;
+
+    @Column(name = "street", nullable = false)
+    private String street;
+
+    @Column(name = "place", nullable = false)
+    private String place;
+
+    @Column(name = "plz", nullable = false)
+    private String plz;
+
+    @Column(name = "activated", nullable = false)
+    private boolean activated;
+
+    @Column(name = "role", nullable = false)
+    private UserRole role;
+
+    /**
+     * The default constructor for the user.
+     */
     public User(){
 
     }
@@ -43,11 +57,84 @@ public class User {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public String getPlz() {
+        return plz;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public void setPlz(String plz) {
+        this.plz = plz;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }

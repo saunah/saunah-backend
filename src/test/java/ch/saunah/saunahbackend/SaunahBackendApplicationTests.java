@@ -5,12 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.stream.StreamSupport;
 
+import ch.saunah.saunahbackend.model.UserRole;
+import org.h2.engine.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.model.UserRepository;
+import ch.saunah.saunahbackend.repository.UserRepository;
 
 @SpringBootTest
 class SaunahBackendApplicationTests {
@@ -35,7 +37,16 @@ class SaunahBackendApplicationTests {
         Iterable<User> users = userRepository.findAll();
         assertFalse(users.iterator().hasNext());
 
-        User newUser = new User("John", "john@example.com");
+        User newUser = new User();
+        newUser.setEmail("test@mail.com");
+        newUser.setPasswordHash("root");
+        newUser.setFirstName("Max");
+        newUser.setLastName("Müller");
+        newUser.setPhoneNumber("079 123 45 67");
+        newUser.setPlz("8500");
+        newUser.setPlace("Winterthur");
+        newUser.setStreet("Müllerstrasse 20");
+        newUser.setRole(UserRole.USER);
         userRepository.save(newUser);
 
         users = userRepository.findAll();
