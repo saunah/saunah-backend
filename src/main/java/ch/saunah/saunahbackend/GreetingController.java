@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,9 +34,10 @@ public class GreetingController {
 
     @Operation(description = "Returns the user with the ID specified.")
     @GetMapping(path="user/{id}")
+    @Nullable
     public @ResponseBody User getUser(@PathVariable(value = "id", required = true) Integer id) {
         // This returns a JSON or XML with the users
-        return userRepository.findById(id).get();
+        return userRepository.findById(id).orElse(null);
     }
 
     @Operation(description = "Returns a list of all users.")
