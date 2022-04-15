@@ -2,6 +2,10 @@ name: Setup values
 
 on:
   workflow_call:
+    inputs:
+      deploymentEnv:
+        required: true
+        type: string
     outputs:
       containerTag:
         value: ${{ jobs.setup.outputs.containerTag }}
@@ -18,19 +22,31 @@ jobs:
       containerTag: ${{ steps.setConfigs.outputs.containerTag }}
       k8sContext: ${{ steps.setConfigs.outputs.k8sContext }}
       k8sConfigValues: ${{ steps.setConfigs.outputs.k8sConfigValues }}
-      deploymentEnv: ${{ steps.setConfigs.outputs.deploymentEnv }}
     steps:
     - uses: actions/checkout@v2
     - name: Set Tag Ouput Variable
       id: setConfigs
       run: |
-        if [ "${{ github.ref_type }}" == "tag" ]
+        DEPLOYMENT_ENV="${{ inputs.deploymentEnv }}"
+
+        if [ "$DEPLOYMENT_ENV" == "auto" ]
         then
-          echo "::set-output name=containerTag::${{ github.ref_name }}"
+          if [ "${{ github.ref_type }}" == "tag" ]
+          then
+            DEPLOYMENT_ENV="prod"
+            echo "::set-output name=containerTag::${{ github.ref_name }}"
+          else
+            DEPLOYMENT_ENV="staging"
+            echo "::set-output name=containerTag::$(echo ${{ github.sha }} | cut -c 1-7)"
+          fi
+        fi
+
+        if [ "$DEPLOYMENT_ENV" == "prod" ]
+        then
           echo "::set-output name=k8sContext::init-lab-prod"
           echo "::set-output name=k8sConfigValues::values-prod.yaml"
-        else
-          echo "::set-output name=containerTag::$(echo ${{ github.sha }} | cut -c 1-7)"
+        elif [ "$DEPLOYMENT_ENV" == "staging" ]
+        then
           echo "::set-output name=k8sContext::init-lab-staging"
           echo "::set-output name=k8sConfigValues::values-staging.yaml"
         fi
