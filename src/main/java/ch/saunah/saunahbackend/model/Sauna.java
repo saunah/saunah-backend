@@ -44,6 +44,10 @@ public class Sauna {
     @Column(name = "plz", nullable = false)
     private int plz;
 
+    public  Sauna(){
+
+    }
+
     public Sauna(long id, String name, String description, boolean picture, boolean isMobile,
                 int prize, int maxTemp, int numberOfPeople, String location, String street, int plz){
         this.id = id;

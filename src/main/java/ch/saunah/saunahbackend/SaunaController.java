@@ -36,7 +36,7 @@ public class SaunaController {
     @Operation(description = "Allows adding a new Sauna type.")
     @PostMapping(path = "sauna/add") // Map ONLY POST Requests
     public @ResponseBody
-    String createSauna(@RequestParam("name") String name,
+    boolean createSauna(@RequestParam("name") String name,
                        @RequestParam("description") String description,
                        @RequestParam("picture") boolean picture,
                        @RequestParam("type") boolean isMobile,
@@ -51,8 +51,10 @@ public class SaunaController {
         long id = counter.incrementAndGet();
         Sauna sauna = new Sauna(id, name, description, picture, isMobile, prize, maxTemp, numberOfPeople,
             location, street, plz);
+
         saunaRepository.save(sauna);
-        return String.format("The sauna was saved with id %s",sauna.getId());
+
+        return true;
     }
 
     /**
