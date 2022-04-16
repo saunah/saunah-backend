@@ -132,6 +132,9 @@ class UserServiceTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void signIn() throws Exception {
         userService.signUp(signUpBody);
+        User user = userRepository.findByEmail("hans.muster@mustermail.ch");
+        user.setActivated(true);
+        userRepository.save(user);
         SignInBody signInBody = new SignInBody();
         signInBody.setEmail("hans.muster@mustermail.ch");
         signInBody.setPassword("ZH_a?!WD32");
