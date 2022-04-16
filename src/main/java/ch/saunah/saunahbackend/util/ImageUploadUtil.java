@@ -1,6 +1,5 @@
 package ch.saunah.saunahbackend.util;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -28,8 +27,9 @@ public class ImageUploadUtil {
         }
     }
 
-    public byte[] getFile(String fileName) throws IOException {
-        Path filePath = Paths.get(fileName);
+    public byte[] getFile(String directory, String fileName) throws IOException {
+        Path uploadPath = Paths.get(directory);
+        Path filePath = uploadPath.resolve(fileName);
         File file = filePath.toFile();
         FileInputStream fl = new FileInputStream(file);
         byte[] arr = new byte[(int)file.length()];

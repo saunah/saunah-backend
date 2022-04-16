@@ -53,12 +53,12 @@ public class ImageController {
 
     @RequestMapping(value = "/sauna/images/{fileName}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> getImage(@PathVariable("fileName") String fileName) throws IOException {
-        byte[] image = imageUploadUtil.getFile(Paths.get(SAUNA_IMAGES_DIR, fileName).toString());
+        byte[] image = imageUploadUtil.getFile(SAUNA_IMAGES_DIR, fileName);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
     }
 
     @RequestMapping(value = "/sauna/{saunaId}/images", method = RequestMethod.GET)
-    public ResponseEntity<List<String>> getImage(@PathVariable("saunaId") int saunaId) throws IOException {
+    public ResponseEntity<List<String>> getSaunaImages(@PathVariable("saunaId") int saunaId) throws IOException {
         var images =  saunaImageRepository.findBySaunaId(saunaId);
         List<String> imageFiles = images.stream().map(x -> x.getFilePath()).collect(Collectors.toList());
         return ResponseEntity.ok().body(imageFiles);
