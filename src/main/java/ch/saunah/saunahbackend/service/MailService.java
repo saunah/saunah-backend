@@ -26,7 +26,6 @@ public class MailService {
     private String senderMail;
 
 
-
     /**
      * This method sends a message authentication link to the email of the user.
      *
@@ -39,7 +38,7 @@ public class MailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setFrom(senderMail);
             helper.setTo(email);
-            helper.setSubject("Singeup authentication");
+            helper.setSubject("Signup authentication");
             helper.setText("<p>Bitte klicken sie auf den Link, um ihren Account zu aktivieren: " +
                 "<br><a href=\"" + frontendBaseUrl + "/signup/" + verificationId + "\">Hier drücken</a></p>", true);
             javaMailSender.send(mimeMessage);

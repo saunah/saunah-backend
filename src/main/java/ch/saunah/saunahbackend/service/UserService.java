@@ -102,6 +102,13 @@ public class UserService {
      */
     public ResponseEntity<JwtResponse> signIn(SignInBody signInBody) throws Exception {
         try {
+            User foundUser = userRepository.findByEmail(signInBody.getEmail());
+            if(foundUser == null){
+                throw new Exception("No user found with this Email!");
+            }
+            if(!foundUser.isActivated()){
+                throw new Exception("User has not been activated");
+            }
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword()));
             if (authentication == null){
                 throw new Exception("Authentication was not successful");
