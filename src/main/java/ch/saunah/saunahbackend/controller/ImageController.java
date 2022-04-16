@@ -35,10 +35,12 @@ public class ImageController {
     @Operation(description = "Registers an account and sends a verification mail to the specified mail.")
     @PostMapping(value = "/sauna/{saunaId}/saveImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> saveImages(@PathVariable("saunaId") int saunaId, @RequestBody MultipartFile image) throws IOException {
-        String filename = String.format("image_file_%d_%s.png", saunaId, UUID.randomUUID());
-        imageUploadUtil.saveFile(SAUNA_IMAGES_DIR, filename, image);
-        createSaunaImage(saunaId, filename);
+    public ResponseEntity<String> saveImages(@PathVariable("saunaId") int saunaId, @RequestBody List<MultipartFile> images) throws IOException {
+        for (MultipartFile image : images) {
+            String filename = String.format("image_file_%d_%s.png", saunaId, UUID.randomUUID());
+            imageUploadUtil.saveFile(SAUNA_IMAGES_DIR, filename, image);
+            createSaunaImage(saunaId, filename);
+        }
         return ResponseEntity.ok("success");
     }
 
