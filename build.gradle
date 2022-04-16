@@ -2,6 +2,8 @@ plugins {
 	id 'org.springframework.boot' version '2.6.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+    id 'org.sonarqube' version '3.3'
+    id 'jacoco'
 }
 
 group = 'ch.saunah'
@@ -13,10 +15,13 @@ repositories {
 }
 
 dependencies {
-
     implementation 'org.springframework.boot:spring-boot-starter-web:2.6.5'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.5'
+    implementation 'org.springframework.boot:spring-boot-starter-mail:2.6.5'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+    implementation('io.jsonwebtoken:jjwt:0.2')
+    implementation 'junit:junit:4.13.1'
     runtimeOnly 'org.postgresql:postgresql:42.3.3'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.5'
     testImplementation 'com.h2database:h2:2.1.210'
@@ -24,4 +29,26 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = false
+    }
+}
+
+sonarqube {
+  properties {
+    property 'sonar.projectKey', 'saunah_saunah-backend'
+    property 'sonar.organization', 'saunah'
+    property 'sonar.host.url', 'https://sonarcloud.io'
+    property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/jacoco/test/jacocoTestReport.xml'
+    property 'sonar.coverage.exclusions', 'src/main/java/ch/saunah/saunahbackend/security/JwtRequestFilter.java'
+  }
 }
