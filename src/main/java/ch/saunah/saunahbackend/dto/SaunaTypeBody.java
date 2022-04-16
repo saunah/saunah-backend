@@ -1,71 +1,22 @@
-package ch.saunah.saunahbackend.model;
+package ch.saunah.saunahbackend.dto;
 
-import javax.persistence.*;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Model of a sauna type
+ * This class is used as the DTO object when creating a Sauna.
  */
-@Entity(name = "sauna")
-public class Sauna {
-
-    @Id
-    @Column(name="id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class SaunaTypeBody {
     private long id;
-
-    @Column(name = "name", nullable = false)
     private String name;
-
-    @Column(name = "description", nullable = false)
     private String description;
-
-    // TODO How to save pictures in DB?
-    @Column(name = "picture", nullable = false)
     private boolean picture;
-
-    @Column(name = "type", nullable = false)
     private boolean isMobile;
-
-    @Column(name = "prize", nullable = false)
     private int prize;
-
-    @Column(name = "max_temp", nullable = false)
     private int maxTemp;
-
-    @Column(name = "numberOfPeople", nullable = false)
     private int numberOfPeople;
-
-    @Column(name = "location", nullable = false)
     private String location;
-
-    @Column(name = "street", nullable = false)
     private String street;
-
-    @Column(name = "plz", nullable = false)
     private int plz;
-
-    public  Sauna(){
-
-    }
-
-    public Sauna(long id, String name, String description, boolean picture, boolean isMobile,
-                int prize, int maxTemp, int numberOfPeople, String location, String street, int plz){
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.picture = picture;
-        this.isMobile = isMobile;
-        this.prize = prize;
-        this.maxTemp = maxTemp;
-        this.numberOfPeople = numberOfPeople;
-        this.location = location;
-        this.street = street;
-        this.plz = plz;
-    }
-
-    public long getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
@@ -105,12 +56,9 @@ public class Sauna {
         return plz;
     }
 
+    public void setId(long id) { this.id = id;}
 
-    public void setId(long id) {this.id = id; }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name;}
 
     public void setDescription(String description) {
         this.description = description;
@@ -150,6 +98,3 @@ public class Sauna {
 
 
 }
-
-
-

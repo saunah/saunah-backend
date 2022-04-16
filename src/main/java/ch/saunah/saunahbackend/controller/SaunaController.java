@@ -1,10 +1,15 @@
-package ch.saunah.saunahbackend;
+package ch.saunah.saunahbackend.controller;
 
+import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.SaunaRepository;
+import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.service.SaunaService;
+import ch.saunah.saunahbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -19,42 +24,24 @@ public class SaunaController {
     @Autowired
     private SaunaRepository saunaRepository;
 
+    @Autowired
+    private SaunaService saunaService;
+
     /**
-     * Create a new sauna
-     * @param name The name of the sauna
-     * @param description A short description of the sauna
-     * @param picture A set of picture of the sauna
-     * @param isMobile If the sauna is mobile
-     * @param prize The cost of said sauna
-     * @param maxTemp The maximal temperature of the sauna
-     * @param numberOfPeople The number of people who have space in the sauna
-     * @param location Where the sauna is located (city)
-     * @param street The street where the sauna is stationed
-     * @param plz The PLZ number of the place where the sauna is stationed
-     * @return Message when the sauna has been successfully added
+     * create a new Sauna
+     * @param saunaTypeBody Contains the required parameters
+     * @return ResponseEntity after success
+     * @throws Exception Throws an Exception
      */
     @Operation(description = "Allows adding a new Sauna type.")
     @PostMapping(path = "sauna/add") // Map ONLY POST Requests
     public @ResponseBody
-    boolean createSauna(@RequestParam("name") String name,
-                       @RequestParam("description") String description,
-                       @RequestParam("picture") boolean picture,
-                       @RequestParam("type") boolean isMobile,
-                       @RequestParam("prize") int prize,
-                       @RequestParam("maxTemp") int maxTemp,
-                       @RequestParam("numberOfPeople") int numberOfPeople,
-                       @RequestParam("location") String location,
-                       @RequestParam("street") String street,
-                       @RequestParam("plz") int plz) {
+    ResponseEntity<String> createSauna(@RequestBody SaunaTypeBody saunaTypeBody) throws Exception {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
         long id = counter.incrementAndGet();
-        Sauna sauna = new Sauna(id, name, description, picture, isMobile, prize, maxTemp, numberOfPeople,
-            location, street, plz);
-
-        saunaRepository.save(sauna);
-
-        return true;
+        Sauna createdSauna = saunaService.addSauna(id, saunaTypeBody);
+        return ResponseEntity.ok("success");
     }
 
     /**
