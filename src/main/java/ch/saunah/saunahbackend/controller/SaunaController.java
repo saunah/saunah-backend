@@ -81,29 +81,9 @@ public class SaunaController {
     @Operation(description = "Allows adding a new Sauna type.")
     @PostMapping(path = "sauna/edit") // Map ONLY POST Requests
     public @ResponseBody
-    String editSauna(@RequestParam("Id") int id,
-                     @RequestParam("description") String description,
-                     @RequestParam("picture") boolean picture,
-                     @RequestParam("type") boolean isMobile,
-                     @RequestParam("prize") int prize,
-                     @RequestParam("maxTemp") int maxTemp,
-                     @RequestParam("numberOfPeople") int numberOfPeople,
-                     @RequestParam("location") String location,
-                     @RequestParam("street") String street,
-                     @RequestParam("plz") int plz
-    ) {
-        Sauna editSauna = saunaService.getSauna(id);
-        editSauna.setDescription(description);
-        editSauna.setPicture(picture);
-        editSauna.setType(isMobile);
-        editSauna.setPrize(prize);
-        editSauna.setMaxTemp(maxTemp);
-        editSauna.setNumberOfPeople(numberOfPeople);
-        editSauna.setLocation(location);
-        editSauna.setStreet(street);
-        editSauna.setPlz(plz);
-        saunaRepository.save(editSauna);
-        return String.format("The sauna was with id %s has been edited", 1);
+    ResponseEntity<String> editSauna(@RequestParam("Id") int id, @RequestBody SaunaTypeBody saunaTypeBody) {
+        saunaService.editSauna(id, saunaTypeBody);
+        return ResponseEntity.ok("success");
     }
 }
 

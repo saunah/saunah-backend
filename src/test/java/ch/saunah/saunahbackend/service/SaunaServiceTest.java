@@ -33,7 +33,6 @@ public class SaunaServiceTest {
     @BeforeEach
     void setUp() {
         saunaTypeBody = new SaunaTypeBody();
-        //saunaTypeBody.setId(1);
         saunaTypeBody.setName("Mobile Sauna 1");
         saunaTypeBody.setDescription("Eine Mobile Sauna");
         saunaTypeBody.setPicture(true);
@@ -87,9 +86,20 @@ public class SaunaServiceTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void editSauna() {
         //eddit non existing
-        //edit existing
-        //check if all values are equal
-        //check null pointer exceptions
+        Sauna sauna = saunaService.addSauna(saunaTypeBody);
+        SaunaTypeBody saunaTypeBodyChanged = new SaunaTypeBody();
+        saunaTypeBodyChanged.setName("Sauna 3");
+        saunaTypeBodyChanged.setDescription("Eine nicht Mobile Sauna");
+        saunaTypeBodyChanged.setPicture(false);
+        saunaTypeBodyChanged.setType(false);
+        saunaTypeBodyChanged.setPrize(1000);
+        saunaTypeBodyChanged.setMaxTemp(48);
+        saunaTypeBodyChanged.setNumberOfPeople(15);
+        saunaTypeBodyChanged.setLocation("Winterthur");
+        saunaTypeBodyChanged.setStreet("Bahnhofstrasse 6");
+        saunaTypeBodyChanged.setPlz(10000);
+        sauna = saunaService.editSauna(sauna.getId(), saunaTypeBodyChanged);
+        checkSaunaFields(saunaTypeBodyChanged, sauna);
     }
 
     @Test
@@ -114,7 +124,17 @@ public class SaunaServiceTest {
         assertEquals(2,saunaRepository.count());
     }
 
-
+    private void checkSaunaFields(SaunaTypeBody saunaTypeBody, Sauna sauna) {
+        assertEquals(saunaTypeBody.getName(), sauna.getName());
+        assertEquals(saunaTypeBody.getDescription(), sauna.getDescription());
+        assertEquals(saunaTypeBody.getMaxTemp(), sauna.getMaxTemp());
+        assertEquals(saunaTypeBody.getNumberOfPeople(), sauna.getNumberOfPeople());
+        assertEquals(saunaTypeBody.getPrize(), sauna.getPrize());
+        assertEquals(saunaTypeBody.getLocation(), sauna.getLocation());
+        assertEquals(saunaTypeBody.getStreet(), sauna.getStreet());
+        assertEquals(saunaTypeBody.getType(), sauna.getType());
+        assertEquals(saunaTypeBody.getPlz(), sauna.getPlz());
+    }
     // -- Helper methods
 
 }

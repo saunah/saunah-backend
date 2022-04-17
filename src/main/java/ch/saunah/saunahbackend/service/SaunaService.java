@@ -32,16 +32,8 @@ public class SaunaService {
         Objects.requireNonNull(saunaTypeBody.getLocation(), "Location must not be null!");
         Objects.requireNonNull(saunaTypeBody.getStreet(), "Street must not be null!");
         Sauna sauna = new Sauna();
-        sauna.setName(saunaTypeBody.getName());
-        sauna.setDescription(saunaTypeBody.getDescription());
-        sauna.setPicture(saunaTypeBody.getPicture());
-        sauna.setType(saunaTypeBody.getType());
-        sauna.setMaxTemp(saunaTypeBody.getMaxTemp());
-        sauna.setPrize(saunaTypeBody.getPrize());
-        sauna.setNumberOfPeople(saunaTypeBody.getNumberOfPeople());
-        sauna.setStreet(saunaTypeBody.getStreet());
-        sauna.setLocation(saunaTypeBody.getLocation());
-        sauna.setPlz(saunaTypeBody.getPlz());
+        sauna = setSaunaFields(sauna,saunaTypeBody);
+
 
         return saunaRepository.save(sauna);
     }
@@ -59,8 +51,26 @@ public class SaunaService {
         return String.format("The sauna was with id %s has been removed", id);
     }
 
+    public Sauna editSauna(@RequestParam("Id") int id,SaunaTypeBody saunaTypeBody) {
+        Sauna editSauna = getSauna(id);
+        editSauna = setSaunaFields(editSauna, saunaTypeBody);
+        return saunaRepository.save(editSauna);
 
+    }
 
+    private Sauna setSaunaFields(Sauna sauna, SaunaTypeBody saunaTypeBody) {
+        sauna.setName(saunaTypeBody.getName());
+        sauna.setDescription(saunaTypeBody.getDescription());
+        sauna.setPicture(saunaTypeBody.getPicture());
+        sauna.setType(saunaTypeBody.getType());
+        sauna.setMaxTemp(saunaTypeBody.getMaxTemp());
+        sauna.setPrize(saunaTypeBody.getPrize());
+        sauna.setNumberOfPeople(saunaTypeBody.getNumberOfPeople());
+        sauna.setStreet(saunaTypeBody.getStreet());
+        sauna.setLocation(saunaTypeBody.getLocation());
+        sauna.setPlz(saunaTypeBody.getPlz());
+        return sauna;
+    }
 
 
 }
