@@ -91,5 +91,4 @@ public class SaunaTypeBody {
         this.plz = plz;
     }
 
-
 }
