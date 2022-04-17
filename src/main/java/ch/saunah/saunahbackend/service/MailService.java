@@ -32,7 +32,7 @@ public class MailService {
      * @param email The email of the user
      * @param verificationId The verification id of the user
      */
-    public void sendUserActivationMail(String email, int verificationId) {
+    public void sendUserActivationMail(String email, String verificationId) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");

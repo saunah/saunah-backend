@@ -13,4 +13,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
      * @return email
      */
     User findByEmail(String email);
+
+    User findByActivationId(String activationId);
 }

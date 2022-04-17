@@ -114,9 +114,9 @@ class UserServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void verifyUser() throws Exception {
-        int wrongId = 100;
+        String wrongId = "100";
         userService.signUp(signUpBody);
-        int userId = userRepository.findByEmail(signUpBody.getEmail()).getId();
+        String userId = userRepository.findByEmail(signUpBody.getEmail()).getActivationId();
         boolean returnValueFound = userService.verifyUser(userId);
         boolean returnValueNull = userService.verifyUser(wrongId);
         assertTrue(returnValueFound);

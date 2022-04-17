@@ -16,6 +16,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "activationId", nullable = false, unique = true)
+    private String activationId;
+
     @Column(name="firstName", nullable = false)
     private String firstName;
 
@@ -57,6 +60,10 @@ public class User {
         return id;
     }
 
+    public String getActivationId() {
+        return activationId;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -73,7 +80,6 @@ public class User {
         return passwordHash;
     }
 
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -88,6 +94,10 @@ public class User {
 
     public String getPlz() {
         return plz;
+    }
+
+    public void setActivationId(String activationId) {
+        this.activationId = activationId;
     }
 
     public void setFirstName(String firstName) {

@@ -33,7 +33,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> signUp(@RequestBody SignUpBody signUpBody) throws Exception {
         User createdUser = userService.signUp(signUpBody);
-        mailService.sendUserActivationMail(createdUser.getEmail(), createdUser.getId());
+        mailService.sendUserActivationMail(createdUser.getEmail(), createdUser.getActivationId());
         return ResponseEntity.ok("success");
     }
 
@@ -47,7 +47,7 @@ public class UserController {
     @Operation(description = "Activates the account for the user with the specified verificationId.")
     @GetMapping(value = "/verify/{verificationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> verify(@PathVariable int verificationId) throws Exception {
+    public ResponseEntity<String> verify(@PathVariable String verificationId) throws Exception {
         boolean status = userService.verifyUser(verificationId);
         if (status) {
             return ResponseEntity.ok("Verification not successful");
