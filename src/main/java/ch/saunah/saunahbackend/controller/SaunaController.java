@@ -49,8 +49,9 @@ public class SaunaController {
      */
     @Operation(description = "Returns a list of saunas.")
     @GetMapping(path="saunas")
-    public @ResponseBody Iterable<Sauna> getAllSauna() {
-        return saunaRepository.findAll();
+    public @ResponseBody ResponseEntity<String> getAllSauna() {
+        saunaService.getAllSauna();
+        return ResponseEntity.ok("success");
     }
 
     /**
@@ -60,9 +61,9 @@ public class SaunaController {
      */
     @Operation(description = "Returns the sauna with the ID specified.")
     @GetMapping(path="sauna/{id}")
-    public @ResponseBody Sauna getSauna(@PathVariable(value = "id", required = true) Integer id) {
-        // This returns a JSON or XML with the users
-        return saunaRepository.findById(id).get();
+    public @ResponseBody ResponseEntity<String> getSauna(@PathVariable(value = "id", required = true) Integer id) {
+        saunaService.getSauna(id);
+        return ResponseEntity.ok("success");
     }
 
     /**
@@ -72,10 +73,9 @@ public class SaunaController {
      */
     @Operation(description = "Allows removing a existing Sauna with the ID specified.")
     @PostMapping(path = "sauna/remove") // Map ONLY POST Requests
-    public @ResponseBody
-    String removeSauna(@RequestParam("Id") int id) {
-        saunaRepository.deleteById(id);
-        return String.format("The sauna was with id %s has been removed", id);
+    public @ResponseBody ResponseEntity<String> removeSauna(@RequestParam("Id") int id) {
+        saunaService.removeSauna(id);
+        return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Allows adding a new Sauna type.")
@@ -92,7 +92,7 @@ public class SaunaController {
                      @RequestParam("street") String street,
                      @RequestParam("plz") int plz
     ) {
-        Sauna editSauna = getSauna(id);
+        Sauna editSauna = saunaService.getSauna(id);
         editSauna.setDescription(description);
         editSauna.setPicture(picture);
         editSauna.setType(isMobile);
