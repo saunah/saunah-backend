@@ -1,59 +1,63 @@
 package ch.saunah.saunahbackend.service;
 
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
-import ch.saunah.saunahbackend.dto.SignUpBody;
 import ch.saunah.saunahbackend.model.Sauna;
-import ch.saunah.saunahbackend.model.SaunaRepository;
-import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.model.UserRole;
-import ch.saunah.saunahbackend.repository.UserRepository;
-import com.fasterxml.jackson.databind.ser.std.ObjectArraySerializer;
+import ch.saunah.saunahbackend.repository.SaunaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
+/**
+ * This class contains creating, removing, editing and get methods for saunas
+ */
 @Service
 public class SaunaService {
 
     @Autowired
     private SaunaRepository saunaRepository;
 
+    /**
+     * Add a new Sauna to the database
+     * @param saunaTypeBody the required parameters for creating a sauna
+     * @return the newly created sauna object
+     * @throws NullPointerException
+     */
     public Sauna addSauna(SaunaTypeBody saunaTypeBody) throws NullPointerException {
         Objects.requireNonNull(saunaTypeBody, "SaunaTypeBody must not be null!");
         Objects.requireNonNull(saunaTypeBody.getName(), "Name must not be null!");
         Objects.requireNonNull(saunaTypeBody.getDescription(), "Description must not be null!");
         Objects.requireNonNull(saunaTypeBody.getLocation(), "Location must not be null!");
         Objects.requireNonNull(saunaTypeBody.getStreet(), "Street must not be null!");
-        Sauna sauna = new Sauna();
-        sauna = setSaunaFields(sauna,saunaTypeBody);
 
+        Sauna sauna = new Sauna();
+        setSaunaFields(sauna, saunaTypeBody);
 
         return saunaRepository.save(sauna);
     }
 
-    public Sauna getSauna(int id) throws NoSuchElementException {
-        return saunaRepository.findById(id).get();
-    }
-
-    public Iterable<Sauna> getAllSauna() {
-        return saunaRepository.findAll();
-    }
-
-    public String removeSauna(int id) throws Exception{
+    /**
+     * Delete an existing sauna from the database
+     * @param id The id of the sauna that will be deleted
+     * @return if the sauna has been successfully been deleted
+     * @throws Exception
+     */
+    public String removeSauna(int id) {
         saunaRepository.deleteById(id);
         return String.format("The sauna was with id %s has been removed", id);
     }
 
+    /**
+     * Edit an already existing sauna
+     * @param id the id of the sauna to be edited
+     * @param saunaTypeBody the parameter that shall be changed
+     * @return the sauna that has been edited
+     */
     public Sauna editSauna(@RequestParam("Id") int id,SaunaTypeBody saunaTypeBody) {
         Sauna editSauna = getSauna(id);
-        editSauna = setSaunaFields(editSauna, saunaTypeBody);
+        setSaunaFields(editSauna, saunaTypeBody);
         return saunaRepository.save(editSauna);
 
     }
@@ -72,5 +76,12 @@ public class SaunaService {
         return sauna;
     }
 
+    public Sauna getSauna(int id) throws NoSuchElementException {
+        return saunaRepository.findById(id).get();
+    }
+
+    public Iterable<Sauna> getAllSauna() {
+        return saunaRepository.findAll();
+    }
 
 }

@@ -4,7 +4,7 @@ import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.controller.SaunaController;
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Sauna;
-import ch.saunah.saunahbackend.model.SaunaRepository;
+import ch.saunah.saunahbackend.repository.SaunaRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,9 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This class tests all sauna service methods
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SaunahBackendApplication.class)
 public class SaunaServiceTest {
@@ -50,9 +53,12 @@ public class SaunaServiceTest {
 
     }
 
+    /**
+     * This test checks if the user can create a new sauna with the correct value for the fields
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void addNewSauna() throws Exception {
+    void addNewSauna() {
         Sauna sauna = saunaService.addSauna(saunaTypeBody);
         Iterable<Sauna> saunas = saunaRepository.findAll();
         assertTrue(saunas.iterator().hasNext());
@@ -72,16 +78,20 @@ public class SaunaServiceTest {
         assertEquals(saunaTypeBody.getPlz(), sauna.getPlz());
     }
 
+    /**
+     * This test, checks if a sauna can be found via it's id
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getSauna() throws Exception{
-        assertThrows(NoSuchElementException.class, () -> {
-            saunaService.getSauna(10);
-        });
-        Sauna sauna = saunaService.addSauna(saunaTypeBody);
-        assertNotNull( saunaService.getSauna(1));
+    void getSauna() {
+        assertThrows(NoSuchElementException.class, () -> saunaService.getSauna(10));
+        saunaService.addSauna(saunaTypeBody);
+        assertNotNull(saunaService.getSauna(1));
     }
 
+    /**
+     * This test checks if the fields values of an existing sauna can be edited
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void editSauna() {
@@ -102,10 +112,13 @@ public class SaunaServiceTest {
         checkSaunaFields(saunaTypeBodyChanged, sauna);
     }
 
+    /**
+     * This test check if an existing sauna can be deleted from the database
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void removeSaunas() throws  Exception {
-        Sauna sauna = saunaService.addSauna(saunaTypeBody);
+    void removeSaunas() {
+        saunaService.addSauna(saunaTypeBody);
         Iterable<Sauna> saunas = saunaRepository.findAll();
         assertTrue(saunas.iterator().hasNext());
         saunaService.removeSauna(1);
@@ -113,17 +126,25 @@ public class SaunaServiceTest {
         assertFalse(saunas.iterator().hasNext());
     }
 
+    /**
+     * This test checks if all saunas can be found that exist in the database
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getAllSaunas() throws Exception {
-        Sauna sauna = saunaService.addSauna(saunaTypeBody);
-        Sauna sauna2 = saunaService.addSauna(saunaTypeBody);
-        Sauna sauna3 = saunaService.addSauna(saunaTypeBody);
+    void getAllSaunas() {
+        saunaService.addSauna(saunaTypeBody);
+        saunaService.addSauna(saunaTypeBody);
+        saunaService.addSauna(saunaTypeBody);
         assertEquals(3,saunaRepository.count());
         saunaService.removeSauna(1);
         assertEquals(2,saunaRepository.count());
     }
 
+    /**
+     * This method helps checking if the values are correct
+     * @param saunaTypeBody The sauna parameters
+     * @param sauna the instance of a sauna
+     */
     private void checkSaunaFields(SaunaTypeBody saunaTypeBody, Sauna sauna) {
         assertEquals(saunaTypeBody.getName(), sauna.getName());
         assertEquals(saunaTypeBody.getDescription(), sauna.getDescription());
@@ -135,6 +156,4 @@ public class SaunaServiceTest {
         assertEquals(saunaTypeBody.getType(), sauna.getType());
         assertEquals(saunaTypeBody.getPlz(), sauna.getPlz());
     }
-    // -- Helper methods
-
 }

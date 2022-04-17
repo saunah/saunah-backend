@@ -7,7 +7,6 @@ import javax.persistence.*;
  */
 @Entity(name = "sauna")
 public class Sauna {
-
     @Id
     @Column(name="id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +15,7 @@ public class Sauna {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = true)
+    @Column(name = "description")
     private String description;
 
     // TODO How to save pictures in DB?
@@ -48,20 +47,6 @@ public class Sauna {
 
     }
 
-    public Sauna(String name, String description, boolean picture, boolean isMobile,
-                int prize, int maxTemp, int numberOfPeople, String location, String street, int plz){
-        this.name = name;
-        this.description = description;
-        this.picture = picture;
-        this.isMobile = isMobile;
-        this.prize = prize;
-        this.maxTemp = maxTemp;
-        this.numberOfPeople = numberOfPeople;
-        this.location = location;
-        this.street = street;
-        this.plz = plz;
-    }
-
     public int getId() {
         return id;
     }
@@ -74,9 +59,7 @@ public class Sauna {
         return description;
     }
 
-    public boolean getPicture() {
-        return picture;
-    }
+    public boolean getPicture() { return picture; }
 
     public boolean getType() {
         return isMobile;
@@ -104,9 +87,9 @@ public class Sauna {
         return plz;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+
+
+    public void setName(String name) { this.name = name; }
 
     public void setDescription(String description) {
         this.description = description;
