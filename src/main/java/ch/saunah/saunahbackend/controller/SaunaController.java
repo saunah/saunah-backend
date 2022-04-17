@@ -36,11 +36,10 @@ public class SaunaController {
     @Operation(description = "Allows adding a new Sauna type.")
     @PostMapping(path = "sauna/add") // Map ONLY POST Requests
     public @ResponseBody
-    ResponseEntity<String> createSauna(@RequestBody SaunaTypeBody saunaTypeBody) throws Exception {
+    ResponseEntity<String> createSauna(@RequestBody SaunaTypeBody saunaTypeBody) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-        long id = counter.incrementAndGet();
-        Sauna createdSauna = saunaService.addSauna(id, saunaTypeBody);
+        Sauna createdSauna = saunaService.addSauna(saunaTypeBody);
         return ResponseEntity.ok("success");
     }
 
@@ -75,8 +74,8 @@ public class SaunaController {
     @PostMapping(path = "sauna/remove") // Map ONLY POST Requests
     public @ResponseBody
     String removeSauna(@RequestParam("Id") int id) {
-        saunaRepository.delete(getSauna(id));
-        return String.format("The sauna was with id %s has been removed", 1);
+        saunaRepository.deleteById(id);
+        return String.format("The sauna was with id %s has been removed", id);
     }
 
     @Operation(description = "Allows adding a new Sauna type.")

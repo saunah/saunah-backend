@@ -55,47 +55,65 @@ public class SaunaServiceTest {
 
     }
 
-
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void addNewSauna() throws Exception {
-        saunaService.addSauna(1, saunaTypeBody);
+        Sauna sauna = saunaService.addSauna(saunaTypeBody);
         Iterable<Sauna> saunas = saunaRepository.findAll();
         assertTrue(saunas.iterator().hasNext());
+        assertThrows(NullPointerException.class, () -> saunaService.addSauna(null));
+        assertThrows(NullPointerException.class, () -> saunaService.addSauna(new SaunaTypeBody()));
+        Sauna sauna2 = saunaService.addSauna(saunaTypeBody);
+        assertNotEquals(sauna.getId(), sauna2.getId());
+
+        assertEquals(saunaTypeBody.getName(), sauna.getName());
+        assertEquals(saunaTypeBody.getDescription(), sauna.getDescription());
+        assertEquals(saunaTypeBody.getMaxTemp(), sauna.getMaxTemp());
+        assertEquals(saunaTypeBody.getNumberOfPeople(), sauna.getNumberOfPeople());
+        assertEquals(saunaTypeBody.getPrize(), sauna.getPrize());
+        assertEquals(saunaTypeBody.getLocation(), sauna.getLocation());
+        assertEquals(saunaTypeBody.getStreet(), sauna.getStreet());
+        assertEquals(saunaTypeBody.getType(), sauna.getType());
+        assertEquals(saunaTypeBody.getPlz(), sauna.getPlz());
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getSauna() {
-
+        //assertNull( saunaService.getSauna(notExistingId));
+        //todo add sauna
+        //assertNotNull( saunaService.getSauna(existing));
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void editSauna() {
+        //eddit non existing
+        //edit existing
+        //check if all values are equal
+        //check null pointer exceptions
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void removeSaunas() {
+        //try remove non exsting sauna
+        //todo add sauna
+        //try remove existing sauna
+        //Todo; check if sauna does not exist
 
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getAllSaunas() {
-
+        //add random number of saunas
+        //check if database has amount of saunas
+        //ermove 1
+        //-> check if database has 1 less sauna than before
     }
 
 
     // -- Helper methods
 
-    /**
-     * Create a new Sauna Type
-     */
-    private boolean createNewSauna(int id) {
-        Sauna newSauna = new Sauna(id, "MobileSauna", "a New type of Sauna for relaxing", true,
-            true, 150, 51, 4,"Zürich", "Bahnhofstrasse 4", 9000);
-        saunaRepository.save(newSauna);
-        return true;
-    }
-
-    /**
-     * Example helper method to get size of an iterable.
-     */
-    private <T> long getIterableSize(Iterable<T> iterable) {
-        return StreamSupport.stream(iterable.spliterator(), false).count();
-    }
 }

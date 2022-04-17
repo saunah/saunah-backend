@@ -11,12 +11,12 @@ public class Sauna {
     @Id
     @Column(name="id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = true)
     private String description;
 
     // TODO How to save pictures in DB?
@@ -48,9 +48,8 @@ public class Sauna {
 
     }
 
-    public Sauna(long id, String name, String description, boolean picture, boolean isMobile,
+    public Sauna(String name, String description, boolean picture, boolean isMobile,
                 int prize, int maxTemp, int numberOfPeople, String location, String street, int plz){
-        this.id = id;
         this.name = name;
         this.description = description;
         this.picture = picture;
@@ -104,9 +103,6 @@ public class Sauna {
     public int getPlz() {
         return plz;
     }
-
-
-    public void setId(long id) {this.id = id; }
 
     public void setName(String name) {
         this.name = name;
