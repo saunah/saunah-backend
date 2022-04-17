@@ -3,11 +3,8 @@ package ch.saunah.saunahbackend.service;
 import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.controller.SaunaController;
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
-import ch.saunah.saunahbackend.dto.SignUpBody;
 import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.SaunaRepository;
-import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.stream.StreamSupport;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,7 +33,7 @@ public class SaunaServiceTest {
     @BeforeEach
     void setUp() {
         saunaTypeBody = new SaunaTypeBody();
-        saunaTypeBody.setId(1);
+        //saunaTypeBody.setId(1);
         saunaTypeBody.setName("Mobile Sauna 1");
         saunaTypeBody.setDescription("Eine Mobile Sauna");
         saunaTypeBody.setPicture(true);
@@ -79,10 +75,12 @@ public class SaunaServiceTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getSauna() {
-        //assertNull( saunaService.getSauna(notExistingId));
-        //todo add sauna
-        //assertNotNull( saunaService.getSauna(existing));
+    void getSauna() throws Exception{
+        assertThrows(NoSuchElementException.class, () -> {
+            saunaService.getSauna(10);
+        });
+        Sauna sauna = saunaService.addSauna(saunaTypeBody);
+        assertNotNull( saunaService.getSauna(1));
     }
 
     @Test
@@ -96,21 +94,24 @@ public class SaunaServiceTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void removeSaunas() {
-        //try remove non exsting sauna
-        //todo add sauna
-        //try remove existing sauna
-        //Todo; check if sauna does not exist
-
+    void removeSaunas() throws  Exception {
+        Sauna sauna = saunaService.addSauna(saunaTypeBody);
+        Iterable<Sauna> saunas = saunaRepository.findAll();
+        assertTrue(saunas.iterator().hasNext());
+        saunaService.removeSauna(1);
+        saunas = saunaRepository.findAll();
+        assertFalse(saunas.iterator().hasNext());
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getAllSaunas() {
-        //add random number of saunas
-        //check if database has amount of saunas
-        //ermove 1
-        //-> check if database has 1 less sauna than before
+    void getAllSaunas() throws Exception {
+        Sauna sauna = saunaService.addSauna(saunaTypeBody);
+        Sauna sauna2 = saunaService.addSauna(saunaTypeBody);
+        Sauna sauna3 = saunaService.addSauna(saunaTypeBody);
+        assertEquals(3,saunaRepository.count());
+        saunaService.removeSauna(1);
+        assertEquals(2,saunaRepository.count());
     }
 
 

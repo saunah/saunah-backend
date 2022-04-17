@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -45,7 +46,7 @@ public class SaunaService {
         return saunaRepository.save(sauna);
     }
 
-    public Sauna getSauna(int id) {
+    public Sauna getSauna(int id) throws NoSuchElementException {
         return saunaRepository.findById(id).get();
     }
 
@@ -53,7 +54,7 @@ public class SaunaService {
         return saunaRepository.findAll();
     }
 
-    public String removeSauna( int id) {
+    public String removeSauna(int id) throws Exception{
         saunaRepository.deleteById(id);
         return String.format("The sauna was with id %s has been removed", id);
     }

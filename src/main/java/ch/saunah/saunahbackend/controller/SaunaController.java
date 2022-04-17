@@ -73,7 +73,7 @@ public class SaunaController {
      */
     @Operation(description = "Allows removing a existing Sauna with the ID specified.")
     @PostMapping(path = "sauna/remove") // Map ONLY POST Requests
-    public @ResponseBody ResponseEntity<String> removeSauna(@RequestParam("Id") int id) {
+    public @ResponseBody ResponseEntity<String> removeSauna(@RequestParam("Id") int id) throws Exception {
         saunaService.removeSauna(id);
         return ResponseEntity.ok("success");
     }

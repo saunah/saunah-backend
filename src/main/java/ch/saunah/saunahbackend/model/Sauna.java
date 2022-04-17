@@ -62,7 +62,7 @@ public class Sauna {
         this.plz = plz;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
