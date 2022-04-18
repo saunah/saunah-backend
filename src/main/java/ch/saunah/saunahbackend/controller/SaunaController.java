@@ -69,7 +69,7 @@ public class SaunaController {
     @Operation(description = "Adds new images to the corresponding sauna.")
     @PostMapping(value = "/sauna/{saunaId}/addImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> saveImages(@PathVariable("saunaId") int saunaId, @RequestBody List<MultipartFile> images) throws IOException {
+    public ResponseEntity<String> saveImages(@PathVariable("saunaId") int saunaId, @RequestBody List<MultipartFile> images)  {
         saunaService.addSaunaImages(saunaId, images);
         return ResponseEntity.ok("success");
     }
@@ -84,14 +84,14 @@ public class SaunaController {
     }
 
     @Operation(description = "Returns the image file of the corresponding file name.")
-    @RequestMapping(value = "/sauna/images/{fileName}", method = RequestMethod.GET)
+    @GetMapping(value = "/sauna/images/{fileName}")
     @ResponseBody
     public ResponseEntity<byte[]> getImage(@PathVariable("fileName") String fileName) throws IOException {
         return saunaService.getImage(fileName);
     }
 
     @Operation(description = "Returns the image file of the corresponding file name.")
-    @RequestMapping(value = "/sauna/{saunaId}/images", method = RequestMethod.GET)
+    @GetMapping(value = "/sauna/{saunaId}/images")
     @ResponseBody
     public ResponseEntity<List<SaunaImageResponse>> getSaunaImages(@PathVariable("saunaId") int saunaId) {
         List<SaunaImageResponse> saunaImages = saunaService.getSaunaImages(saunaId)
