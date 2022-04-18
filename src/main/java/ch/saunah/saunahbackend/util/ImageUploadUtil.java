@@ -63,4 +63,22 @@ public class ImageUploadUtil {
         }
         return arr;
     }
+
+    /**
+     * Deletes the image file on the specified directory.
+     *
+     * @param directory the directory where the file is stored
+     * @param fileName the filename of the image
+     */
+    public static void removeImage(String directory, String fileName){
+        try {
+            Path uploadPath = Paths.get(directory);
+            Path filePath = uploadPath.resolve(fileName);
+            File file = filePath.toFile();
+            file.delete();
+        }
+        catch (Exception e){
+            System.err.printf("Error while removing image: %s", e.getMessage());
+        }
+    }
 }

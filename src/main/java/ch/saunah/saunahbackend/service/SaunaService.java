@@ -144,6 +144,7 @@ public class SaunaService {
         if (image == null){
             throw new NotFoundException(String.format("Image with id %d not found!", id));
         }
+        ImageUploadUtil.removeImage(SAUNA_IMAGES_DIR, image.getFileName());
         saunaImageRepository.deleteById(id);
     }
 
