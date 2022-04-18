@@ -48,10 +48,7 @@ public class UserController {
     @GetMapping(value = "/verify/{verificationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<String> verify(@PathVariable String verificationId) throws Exception {
-        boolean status = userService.verifyUser(verificationId);
-        if (status) {
-            return ResponseEntity.ok("Verification successful");
-        }
+        userService.verifyUser(verificationId);
         return ResponseEntity.ok("Account activated");
     }
 
