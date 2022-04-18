@@ -1,6 +1,10 @@
 package ch.saunah.saunahbackend.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Model of a sauna type
@@ -38,6 +42,9 @@ public class Sauna {
 
     @Column(name = "plz", nullable = false)
     private int plz;
+
+    @OneToMany(mappedBy="sauna", cascade = CascadeType.ALL)
+    private Set<SaunaImage> saunaImages = new HashSet();
 
     public  Sauna(){
 
@@ -81,7 +88,9 @@ public class Sauna {
         return plz;
     }
 
-
+    public List<SaunaImage> getSaunaImages(){
+        return (List<SaunaImage>) saunaImages.stream().collect(Collectors.toList());
+    }
 
     public void setName(String name) { this.name = name; }
 
@@ -117,7 +126,9 @@ public class Sauna {
         this.plz = plz;
     }
 
-
+    public void addSaunaImage(SaunaImage saunaImage){
+        this.saunaImages.add(saunaImage);
+    }
 }
 
 

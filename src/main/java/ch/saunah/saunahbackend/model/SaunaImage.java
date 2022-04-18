@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  * This class is used to define the table of the database of the SaunaImage entity.
@@ -16,11 +18,12 @@ public class SaunaImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "sauna_id", nullable = false)
-    private Integer saunaId;
+    @ManyToOne
+    @JoinColumn(name ="sauna_id", nullable = false)
+    private Sauna sauna;
 
-    @Column(name = "file_path", nullable = false, unique = true)
-    private String filePath;
+    @Column(name = "file_name", nullable = false, unique = true)
+    private String fileName;
 
     /**
      * The default constructor for the SaunaImage.
@@ -33,19 +36,19 @@ public class SaunaImage {
         return id;
     }
 
-    public Integer getSaunaId() {
-        return saunaId;
+    public Sauna getSauna() {
+        return sauna;
     }
 
-    public void setSaunaId(Integer saunaId) {
-        this.saunaId = saunaId;
+    public void setSauna(Sauna sauna) {
+        this.sauna = sauna;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

@@ -1,7 +1,10 @@
 package ch.saunah.saunahbackend.controller;
 
+import ch.saunah.saunahbackend.dto.SaunaImageResponse;
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Sauna;
+import ch.saunah.saunahbackend.model.SaunaImage;
+import ch.saunah.saunahbackend.repository.SaunaImageRepository;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
 import ch.saunah.saunahbackend.service.SaunaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,8 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
  * Controls the different operation that can be done with sauna types
@@ -20,7 +24,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class SaunaController {
-    private final AtomicLong counter = new AtomicLong();
 
     @Autowired
     private SaunaRepository saunaRepository;
@@ -31,7 +34,7 @@ public class SaunaController {
     @Operation(description = "Allows adding a new Sauna type.")
     @PostMapping(path = "sauna/add")
     public @ResponseBody
-    ResponseEntity<String> createSauna(@RequestBody SaunaTypeBody saunaTypeBody, @RequestParam("images") List<MultipartFile> images) {
+    ResponseEntity<String> createSauna(@RequestBody SaunaTypeBody saunaTypeBody) {
         Sauna createdSauna = saunaService.addSauna(saunaTypeBody);
         return ResponseEntity.ok("success");
     }
@@ -62,6 +65,41 @@ public class SaunaController {
         saunaService.editSauna(id, saunaTypeBody);
         return ResponseEntity.ok("success");
     }
+
+
+    @Operation(description = "Adds new images to the corresponding sauna.")
+    @PostMapping(value = "/sauna/{saunaId}/addImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> saveImages(@PathVariable("saunaId") int saunaId, @RequestBody List<MultipartFile> images) throws IOException {
+        saunaService.addSaunaImages(saunaId, images);
+        return ResponseEntity.ok("success");
+    }
+
+
+    @Operation(description = "Allows removing a existing Sauna with the ID specified.")
+    @PostMapping(path = "sauna/images/remove/{imageId}")
+    @ResponseBody
+    public ResponseEntity<String> removeImage(@RequestParam("imageId") int imageId) {
+        saunaService.removeSaunaImage(imageId);
+        return ResponseEntity.ok("success");
+    }
+
+    @Operation(description = "Returns the image file of the corresponding file name.")
+    @RequestMapping(value = "/sauna/images/{fileName}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> getImage(@PathVariable("fileName") String fileName) throws IOException {
+        return saunaService.getImage(fileName);
+    }
+
+    @Operation(description = "Returns the image file of the corresponding file name.")
+    @RequestMapping(value = "/sauna/{saunaId}/images", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<List<SaunaImageResponse>> getSaunaImages(@PathVariable("saunaId") int saunaId) {
+        List<SaunaImageResponse> saunaImages = saunaService.getSaunaImages(saunaId)
+            .stream().map(x -> new SaunaImageResponse(x.getId(), saunaId, x.getFileName())).collect(Collectors.toList());
+        return ResponseEntity.ok().body(saunaImages);
+    }
+
 }
 
 
