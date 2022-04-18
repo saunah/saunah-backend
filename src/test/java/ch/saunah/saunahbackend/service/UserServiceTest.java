@@ -144,12 +144,14 @@ class UserServiceTest {
         signInBody.setEmail("notexisting mail");
         assertThrows(Exception.class, () -> userService.signIn(signInBody));
         signInBody.setEmail("hans.muster@mustermail.ch");
+        user.setActivated(false);
+        userRepository.save(user);
+        assertThrows(Exception.class, () -> userService.signIn(signInBody));
+        user.setActivated(true);
+        userRepository.save(user);
         signInBody.setPassword("wrong password");
         assertThrows(Exception.class, () -> userService.signIn(signInBody));
         signInBody.setEmail("both wrong");
-        assertThrows(Exception.class, () -> userService.signIn(signInBody));
-        user.setActivated(false);
-        userRepository.save(user);
         assertThrows(Exception.class, () -> userService.signIn(signInBody));
     }
 }
