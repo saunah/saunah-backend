@@ -11,9 +11,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * This class is used as a helper class to save and read images from a directory.
+ */
 public class ImageUploadUtil {
 
-
+    /**
+     * Saves the image to the specified directory.
+     *
+     * @param uploadDir directory where image will be safed
+     * @param fileName the fileName of the image
+     * @param multipartFile the image object
+     * @throws IOException throws when Path is not valid
+     */
     public static void saveImage(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
         Path uploadPath = Paths.get(uploadDir);
         if (!Files.exists(uploadPath)) {
@@ -27,12 +37,20 @@ public class ImageUploadUtil {
         }
     }
 
+    /**
+     * Reads the file and returns the image as byte array.
+     *
+     * @param directory the directory where the file is stored
+     * @param fileName the filename of the image
+     * @return image byte array
+     * @throws IOException throws when the path is not valid
+     */
     public static byte[] getImage(String directory, String fileName) throws IOException {
         Path uploadPath = Paths.get(directory);
         Path filePath = uploadPath.resolve(fileName);
         File file = filePath.toFile();
         FileInputStream fl = new FileInputStream(file);
-        byte[] arr = new byte[(int)file.length()];
+        byte[] arr = new byte[(int) file.length()];
         fl.read(arr);
         fl.close();
         return arr;

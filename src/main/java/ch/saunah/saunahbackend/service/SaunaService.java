@@ -86,6 +86,13 @@ public class SaunaService {
         return sauna;
     }
 
+    /**
+     * Returns the sauna from the database from the specified id.
+     *
+     * @param id the sauna id
+     * @return the found sauna from the database
+     * @throws NotFoundException throws when no sauna was found with the specified id.
+     */
     public Sauna getSauna(int id) throws NotFoundException {
         Sauna sauna = saunaRepository.findById(id).orElse(null);
         if (sauna == null){
@@ -94,20 +101,45 @@ public class SaunaService {
         return sauna;
     }
 
+    /**
+     * Returns all saunas from the database.
+     *
+     * @return all saunas from the database
+     */
     public Iterable<Sauna> getAllSauna() {
         return saunaRepository.findAll();
     }
 
+    /**
+     * Returns the image of the specified fileName.
+     *
+     * @param fileName the fileName of the image
+     * @return byte array of the image
+     * @throws IOException throws when the image cant be converted to a byte array.
+     */
     public ResponseEntity<byte[]> getImage(String fileName) throws IOException {
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(ImageUploadUtil.getImage(SAUNA_IMAGES_DIR, fileName));
     }
 
-    public List<SaunaImage> getSaunaImages(int saunaId) {
+    /**
+     * Returns all the images which belong to the sauna with the specified id.
+     *
+     * @param saunaId the sauna id
+     * @return all images from the sauna
+     * @throws NotFoundException throws when no sauna was found with the specified id.
+     */
+    public List<SaunaImage> getSaunaImages(int saunaId) throws NotFoundException {
         Sauna sauna = getSauna(saunaId);
         return saunaImageRepository.findBySaunaId(sauna.getId());
     }
 
-    public void removeSaunaImage(int id) {
+    /**
+     * Removes the image with the specified id.
+     *
+     * @param id the id of the saunaImage
+     * @throws NotFoundException throws when no sauna was found with the specified id.
+     */
+    public void removeSaunaImage(int id) throws NotFoundException {
         SaunaImage image = saunaImageRepository.findById(id).orElse(null);
         if (image == null){
             throw new NotFoundException(String.format("Image with id %d not found!", id));
@@ -115,6 +147,14 @@ public class SaunaService {
         saunaImageRepository.deleteById(id);
     }
 
+    /**
+     * Adds the images to the specified sauna.
+     *
+     * @param saunaId the sauna id
+     * @param images the images
+     * @throws NotFoundException throws when no sauna was found with the specified id.
+     * @throws NullPointerException throw when the images object is null.
+     */
     public void addSaunaImages(int saunaId, List<MultipartFile> images) throws NotFoundException, NullPointerException {
         Sauna sauna = getSauna(saunaId);
         if (images == null){

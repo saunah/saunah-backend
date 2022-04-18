@@ -2,6 +2,9 @@ package ch.saunah.saunahbackend.dto;
 
 import ch.saunah.saunahbackend.model.Sauna;
 
+/**
+ * This class is used as the response DTO object, when sauna data was retrieved.
+ */
 public class SaunaResponse {
     private int id;
     private String name;
@@ -14,6 +17,9 @@ public class SaunaResponse {
     private String street;
     private int plz;
 
+    /**
+     * This constructor sets all the fields of this object.
+     */
     public SaunaResponse(Sauna sauna) {
         this.id = sauna.getId();
         this.name = sauna.getName();
