@@ -4,6 +4,7 @@ import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.controller.SaunaController;
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Sauna;
+import ch.saunah.saunahbackend.model.SaunaImage;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,9 +12,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.util.NoSuchElementException;
+import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
+
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,7 +92,7 @@ public class SaunaServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getSauna() {
-        assertNull(saunaService.getSauna(1));
+        assertThrows(NotFoundException.class, () -> saunaService.getSauna(1));
         saunaService.addSauna(saunaTypeBody);
         assertNotNull(saunaService.getSauna(1));
     }
@@ -153,4 +162,75 @@ public class SaunaServiceTest {
         assertEquals(saunaTypeBody.getType(), sauna.getType());
         assertEquals(saunaTypeBody.getPlz(), sauna.getPlz());
     }
+
+
+    /**
+     * This test checks if images can be added to a sauna successfully.
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void addSaunaImage() {
+        assertThrows(NotFoundException.class, ()-> saunaService.addSaunaImages(0, null));
+        saunaService.addSauna(saunaTypeBody);
+        Sauna sauna = saunaService.getAllSauna().get(0);
+        assertThrows(NullPointerException.class, ()-> saunaService.addSaunaImages(sauna.getId(), null));
+        List<SaunaImage> images = saunaService.getSaunaImages(sauna.getId());
+        assertTrue(images.isEmpty());
+        saunaService.addSaunaImages(sauna.getId(), new ArrayList<>());
+        images = saunaService.getSaunaImages(sauna.getId());
+        assertTrue(images.isEmpty());
+        List<MultipartFile> testfiles = new ArrayList<>();
+        testfiles.add(new MockMultipartFile("test", new byte[0]));
+        saunaService.addSaunaImages(sauna.getId(), testfiles);
+        assertEquals(testfiles.size(), saunaService.getSaunaImages(sauna.getId()).size());
+        testfiles.clear();
+        testfiles.add(new MockMultipartFile("test", new byte[0]));
+        testfiles.add(new MockMultipartFile("test", new byte[0]));
+        saunaService.addSaunaImages(sauna.getId(), testfiles);
+        int savedImagesCount = saunaService.getSaunaImages(sauna.getId()).size();
+        assertEquals(3, savedImagesCount);
+    }
+
+    /**
+     * This test checks if an added image can be removed from the database.
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void removeSaunaImage() {
+        assertThrows(NotFoundException.class, () -> saunaService.removeSaunaImage(1));
+        saunaService.addSauna(saunaTypeBody);
+        Sauna sauna = saunaService.getAllSauna().get(0);
+        List<MultipartFile> testfiles = new ArrayList<>();
+        testfiles.add(new MockMultipartFile("test", new byte[0]));
+        testfiles.add(new MockMultipartFile("test", new byte[0]));
+        saunaService.addSaunaImages(sauna.getId(), testfiles);
+        assertEquals(testfiles.size(), saunaService.getSaunaImages(sauna.getId()).size());
+        List<SaunaImage> images = saunaService.getSaunaImages(sauna.getId());
+        SaunaImage saunaImage = images.get(0);
+        saunaService.removeSaunaImage(saunaImage.getId());
+        assertEquals(1, saunaService.getSaunaImages(sauna.getId()).size());
+    }
+
+    /**
+     * This test checks if the images can be found in the database.
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void getSaunaImage() {
+        assertThrows(IOException.class, () -> saunaService.getImage("not existing file"));
+        assertThrows(NotFoundException.class, () -> saunaService.getSaunaImages(1));
+        saunaService.addSauna(saunaTypeBody);
+        Sauna sauna = saunaService.getAllSauna().get(0);
+        assertTrue(saunaService.getSaunaImages(sauna.getId()).isEmpty());
+        List<MultipartFile> testfiles = new ArrayList<>();
+        testfiles.add(new MockMultipartFile("test1.txt", new byte[0]));
+        testfiles.add(new MockMultipartFile("test2.txt", new byte[0]));
+        saunaService.addSaunaImages(sauna.getId(), testfiles);
+        List<SaunaImage> images = saunaService.getSaunaImages(sauna.getId());
+        for (SaunaImage image : images) {
+            assertDoesNotThrow(() -> saunaService.getImage(image.getFileName()));
+        }
+    }
+
+
 }
