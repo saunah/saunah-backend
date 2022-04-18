@@ -73,7 +73,7 @@ public class SaunaService {
         return sauna;
     }
 
-    public Sauna getSauna(int id) throws NoSuchElementException {
+    public Sauna getSauna(int id) {
         if (saunaRepository.findById(id).isPresent()) {
             return saunaRepository.findById(id).get();
         } else {

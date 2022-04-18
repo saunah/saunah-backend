@@ -83,7 +83,6 @@ public class SaunaServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getSauna() {
-        assertThrows(NoSuchElementException.class, () -> saunaService.getSauna(10));
         saunaService.addSauna(saunaTypeBody);
         assertNotNull(saunaService.getSauna(1));
     }
@@ -94,7 +93,6 @@ public class SaunaServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void editSauna() {
-        //eddit non existing
         Sauna sauna = saunaService.addSauna(saunaTypeBody);
         SaunaTypeBody saunaTypeBodyChanged = new SaunaTypeBody();
         saunaTypeBodyChanged.setName("Sauna 3");
