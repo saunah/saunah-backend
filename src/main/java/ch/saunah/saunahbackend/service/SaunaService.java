@@ -5,7 +5,6 @@ import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -42,7 +41,6 @@ public class SaunaService {
      * Delete an existing sauna from the database
      * @param id The id of the sauna that will be deleted
      * @return if the sauna has been successfully been deleted
-     * @throws Exception
      */
     public String removeSauna(int id) {
         saunaRepository.deleteById(id);
@@ -76,10 +74,10 @@ public class SaunaService {
     }
 
     public Sauna getSauna(int id) throws NoSuchElementException {
-        if (Objects.isNull(saunaRepository.findById(id).get()) == true) {
-            return null;
-        } else {
+        if (saunaRepository.findById(id).isPresent()) {
             return saunaRepository.findById(id).get();
+        } else {
+            return null;
         }
     }
 
