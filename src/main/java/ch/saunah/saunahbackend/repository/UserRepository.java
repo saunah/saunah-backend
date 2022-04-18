@@ -14,5 +14,10 @@ public interface UserRepository extends CrudRepository<User, Integer> {
      */
     User findByEmail(String email);
 
+    /**
+     * This method searches the database for the requested activated ID.
+     * @param activationId The requested activated ID.
+     * @return activationId
+     */
     User findByActivationId(String activationId);
 }

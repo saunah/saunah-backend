@@ -40,7 +40,7 @@ public class MailService {
             helper.setTo(email);
             helper.setSubject("Signup authentication");
             helper.setText("<p>Bitte klicken sie auf den Link, um ihren Account zu aktivieren: " +
-                "<br><a href=\"" + frontendBaseUrl + "/signup/" + verificationId + "\">Hier drücken</a></p>", true);
+                "<br><a href=\"" + frontendBaseUrl + "/verify/" + verificationId + "\">Hier drücken</a></p>", true);
             javaMailSender.send(mimeMessage);
         }
         catch (MessagingException exception){

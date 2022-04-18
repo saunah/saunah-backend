@@ -50,7 +50,7 @@ public class UserController {
     public ResponseEntity<String> verify(@PathVariable String verificationId) throws Exception {
         boolean status = userService.verifyUser(verificationId);
         if (status) {
-            return ResponseEntity.ok("Verification not successful");
+            return ResponseEntity.ok("Verification successful");
         }
         return ResponseEntity.ok("Account activated");
     }
