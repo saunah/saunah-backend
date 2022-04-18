@@ -29,7 +29,7 @@ public class SaunaController {
     private SaunaService saunaService;
 
     @Operation(description = "Allows adding a new Sauna type.")
-    @PostMapping(path = "sauna/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // Map ONLY POST Requests
+    @PostMapping(path = "sauna/add")
     public @ResponseBody
     ResponseEntity<String> createSauna(@RequestBody SaunaTypeBody saunaTypeBody, @RequestParam("images") List<MultipartFile> images) {
         Sauna createdSauna = saunaService.addSauna(saunaTypeBody);
@@ -38,16 +38,14 @@ public class SaunaController {
 
     @Operation(description = "Returns a list of saunas.")
     @GetMapping(path="saunas")
-    public @ResponseBody ResponseEntity<String> getAllSauna() {
-        saunaService.getAllSauna();
-        return ResponseEntity.ok("success");
+    public @ResponseBody Iterable<Sauna> getAllSauna() {
+        return saunaService.getAllSauna();
     }
 
     @Operation(description = "Returns the sauna with the ID specified.")
     @GetMapping(path="sauna/{id}")
-    public @ResponseBody ResponseEntity<String> getSauna(@PathVariable(value = "id", required = true) Integer id) {
-        saunaService.getSauna(id);
-        return ResponseEntity.ok("success");
+    public @ResponseBody Sauna getSauna(@PathVariable(value = "id", required = true) Integer id) {
+        return saunaService.getSauna(id);
     }
 
     @Operation(description = "Allows removing a existing Sauna with the ID specified.")
@@ -57,7 +55,7 @@ public class SaunaController {
         return ResponseEntity.ok("success");
     }
 
-    @Operation(description = "Allows adding a new Sauna type.")
+    @Operation(description = "Allows editing an existing Sauna type.")
     @PostMapping(path = "sauna/edit")
     public @ResponseBody
     ResponseEntity<String> editSauna(@RequestParam("Id") int id, @RequestBody SaunaTypeBody saunaTypeBody) {

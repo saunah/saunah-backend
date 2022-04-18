@@ -18,10 +18,6 @@ public class Sauna {
     @Column(name = "description")
     private String description;
 
-    // TODO How to save pictures in DB?
-    @Column(name = "picture", nullable = false)
-    private boolean picture;
-
     @Column(name = "type", nullable = false)
     private boolean isMobile;
 
@@ -59,8 +55,6 @@ public class Sauna {
         return description;
     }
 
-    public boolean getPicture() { return picture; }
-
     public boolean getType() {
         return isMobile;
     }
@@ -93,10 +87,6 @@ public class Sauna {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setPicture(boolean picture) {
-        this.picture = picture;
     }
 
     public void setType(boolean isMobile) {

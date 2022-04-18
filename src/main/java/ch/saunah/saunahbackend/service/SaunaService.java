@@ -5,7 +5,6 @@ import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -42,7 +41,6 @@ public class SaunaService {
      * Delete an existing sauna from the database
      * @param id The id of the sauna that will be deleted
      * @return if the sauna has been successfully been deleted
-     * @throws Exception
      */
     public String removeSauna(int id) {
         saunaRepository.deleteById(id);
@@ -55,7 +53,7 @@ public class SaunaService {
      * @param saunaTypeBody the parameter that shall be changed
      * @return the sauna that has been edited
      */
-    public Sauna editSauna(@RequestParam("Id") int id,SaunaTypeBody saunaTypeBody) {
+    public Sauna editSauna(int id,SaunaTypeBody saunaTypeBody) {
         Sauna editSauna = getSauna(id);
         setSaunaFields(editSauna, saunaTypeBody);
         return saunaRepository.save(editSauna);
@@ -65,7 +63,6 @@ public class SaunaService {
     private Sauna setSaunaFields(Sauna sauna, SaunaTypeBody saunaTypeBody) {
         sauna.setName(saunaTypeBody.getName());
         sauna.setDescription(saunaTypeBody.getDescription());
-        sauna.setPicture(saunaTypeBody.getPicture());
         sauna.setType(saunaTypeBody.getType());
         sauna.setMaxTemp(saunaTypeBody.getMaxTemp());
         sauna.setPrize(saunaTypeBody.getPrize());
@@ -76,8 +73,8 @@ public class SaunaService {
         return sauna;
     }
 
-    public Sauna getSauna(int id) throws NoSuchElementException {
-        return saunaRepository.findById(id).get();
+    public Sauna getSauna(int id) {
+        return saunaRepository.findById(id).orElse(null);
     }
 
     public Iterable<Sauna> getAllSauna() {

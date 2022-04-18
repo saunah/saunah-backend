@@ -30,7 +30,7 @@ class MailServiceTest {
     void sendMail() {
         User user = new User();
         user.setEmail("test@mail.ch");
-        int verificationId = 1;
+        String verificationId = "1";
         assertDoesNotThrow(() -> mailService.sendUserActivationMail(user.getEmail(), verificationId));
         user.setEmail("bad email");
         assertDoesNotThrow(() -> mailService.sendUserActivationMail(user.getEmail(), verificationId));
