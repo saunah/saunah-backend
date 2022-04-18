@@ -1,10 +1,9 @@
 package ch.saunah.saunahbackend.controller;
 
 import ch.saunah.saunahbackend.dto.SaunaImageResponse;
+import ch.saunah.saunahbackend.dto.SaunaResponse;
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Sauna;
-import ch.saunah.saunahbackend.model.SaunaImage;
-import ch.saunah.saunahbackend.repository.SaunaImageRepository;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
 import ch.saunah.saunahbackend.service.SaunaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +34,7 @@ public class SaunaController {
     @PostMapping(path = "sauna/add")
     public @ResponseBody
     ResponseEntity<String> createSauna(@RequestBody SaunaTypeBody saunaTypeBody) {
-        Sauna createdSauna = saunaService.addSauna(saunaTypeBody);
+        saunaService.addSauna(saunaTypeBody);
         return ResponseEntity.ok("success");
     }
 
@@ -47,8 +46,8 @@ public class SaunaController {
 
     @Operation(description = "Returns the sauna with the ID specified.")
     @GetMapping(path="sauna/{id}")
-    public @ResponseBody Sauna getSauna(@PathVariable(value = "id", required = true) Integer id) {
-        return saunaService.getSauna(id);
+    public @ResponseBody ResponseEntity<SaunaResponse> getSauna(@PathVariable(value = "id", required = true) Integer id) {
+        return ResponseEntity.ok(new SaunaResponse(saunaService.getSauna(id)));
     }
 
     @Operation(description = "Allows removing a existing Sauna with the ID specified.")

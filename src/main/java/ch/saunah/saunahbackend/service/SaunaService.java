@@ -87,7 +87,11 @@ public class SaunaService {
     }
 
     public Sauna getSauna(int id) {
-        return saunaRepository.findById(id).orElse(null);
+        Sauna sauna = saunaRepository.findById(id).orElse(null);
+        if (sauna == null){
+            throw new NotFoundException(String.format("Sauna with id %d not found!", id));
+        }
+        return sauna;
     }
 
     public Iterable<Sauna> getAllSauna() {
@@ -99,11 +103,8 @@ public class SaunaService {
     }
 
     public List<SaunaImage> getSaunaImages(int saunaId) {
-        Sauna sauna = saunaRepository.findById(saunaId).orElse(null);
-        if (sauna == null){
-            throw new NotFoundException(String.format("Sauna with id %d not found!", saunaId));
-        }
-        return saunaImageRepository.findBySaunaId(saunaId);
+        Sauna sauna = getSauna(saunaId);
+        return saunaImageRepository.findBySaunaId(sauna.getId());
     }
 
     public void removeSaunaImage(int id) {
@@ -115,10 +116,7 @@ public class SaunaService {
     }
 
     public void addSaunaImages(int saunaId, List<MultipartFile> images) throws NotFoundException, NullPointerException {
-        Sauna sauna = saunaRepository.findById(saunaId).orElse(null);
-        if (sauna == null){
-            throw new NotFoundException(String.format("Sauna with id %d not found!", saunaId));
-        }
+        Sauna sauna = getSauna(saunaId);
         if (images == null){
             throw new NullPointerException("No images were sent to add!");
         }

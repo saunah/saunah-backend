@@ -53,7 +53,7 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/api-docs/**", "/login", "/signup", "/users", "/saunas", "/verify/**").permitAll()
             .antMatchers("/user/**").hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
-            .antMatchers("/sauna/add", "/sauna/edit", "/sauna/remove").hasAuthority(UserRole.ADMIN.toString())
+            .antMatchers("/sauna/add", "/sauna/edit", "/sauna/remove", "/sauna/**/addImage", "/sauna/images/remove/**").hasAuthority(UserRole.ADMIN.toString())
             .antMatchers("/sauna/**").permitAll()
                 .anyRequest().authenticated()
             .and()
