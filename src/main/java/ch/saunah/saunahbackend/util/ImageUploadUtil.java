@@ -49,10 +49,18 @@ public class ImageUploadUtil {
         Path uploadPath = Paths.get(directory);
         Path filePath = uploadPath.resolve(fileName);
         File file = filePath.toFile();
-        FileInputStream fl = new FileInputStream(file);
         byte[] arr = new byte[(int) file.length()];
-        fl.read(arr);
-        fl.close();
+        FileInputStream fl = new FileInputStream(file);
+        try {
+            int bytesRead = fl.read(arr);
+            if (bytesRead != file.length()){
+                throw new IOException("Error while reading file! The bytes read are not equal to the file size!");
+            }
+            fl.close();
+        }
+        catch (Exception e){
+            fl.close();
+        }
         return arr;
     }
 }

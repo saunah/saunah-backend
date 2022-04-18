@@ -40,8 +40,8 @@ public class SaunaController {
 
     @Operation(description = "Returns a list of saunas.")
     @GetMapping(path="saunas")
-    public @ResponseBody Iterable<Sauna> getAllSauna() {
-        return saunaService.getAllSauna();
+    public @ResponseBody List<SaunaResponse> getAllSauna() {
+        return saunaService.getAllSauna().stream().map(x -> new SaunaResponse(x)).collect(Collectors.toList());
     }
 
     @Operation(description = "Returns the sauna with the ID specified.")

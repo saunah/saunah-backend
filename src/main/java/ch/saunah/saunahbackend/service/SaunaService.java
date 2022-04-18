@@ -106,8 +106,8 @@ public class SaunaService {
      *
      * @return all saunas from the database
      */
-    public Iterable<Sauna> getAllSauna() {
-        return saunaRepository.findAll();
+    public List<Sauna> getAllSauna() {
+        return (List<Sauna>) saunaRepository.findAll();
     }
 
     /**
