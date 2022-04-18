@@ -75,7 +75,7 @@ public class SaunaController {
     }
 
 
-    @Operation(description = "Allows removing a existing Sauna with the ID specified.")
+    @Operation(description = "Removes the image of the specified Id.")
     @PostMapping(path = "sauna/images/remove/{imageId}")
     @ResponseBody
     public ResponseEntity<String> removeImage(@RequestParam("imageId") int imageId) {
@@ -90,7 +90,7 @@ public class SaunaController {
         return saunaService.getImage(fileName);
     }
 
-    @Operation(description = "Returns the image file of the corresponding file name.")
+    @Operation(description = "Returns a list of all the images of a sauna with all their data.")
     @GetMapping(value = "/sauna/{saunaId}/images")
     @ResponseBody
     public ResponseEntity<List<SaunaImageResponse>> getSaunaImages(@PathVariable("saunaId") int saunaId) {

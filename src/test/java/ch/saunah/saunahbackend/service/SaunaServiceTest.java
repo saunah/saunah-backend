@@ -212,11 +212,11 @@ public class SaunaServiceTest {
     }
 
     /**
-     * This test checks if all saunas can be found that exist in the database
+     * This test checks if the images can be found in the database.
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getSaunaImage() throws IOException {
+    void getSaunaImage() {
         assertThrows(IOException.class, () -> saunaService.getImage("not existing file"));
         assertThrows(NotFoundException.class, () -> saunaService.getSaunaImages(1));
         saunaService.addSauna(saunaTypeBody);
