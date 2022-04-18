@@ -1,5 +1,6 @@
 package ch.saunah.saunahbackend;
 
+import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.security.JwtAuthenticationEntryPoint;
 import ch.saunah.saunahbackend.security.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +51,9 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
         http.cors().and()
             .csrf().disable()
             .authorizeRequests()
-            .antMatchers("/api-docs/**", "/login", "/signup", "/users", "/saunas", "/sauna/**").permitAll()
-            .antMatchers("/user/**").hasAuthority("ROLE_USER")
+            .antMatchers("/api-docs/**", "/login", "/signup", "/users", "/saunas").permitAll()
+            .antMatchers("/user/**").hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
+            .antMatchers("/sauna/add", "sauna/edit", "sauna/remove").hasAuthority(UserRole.ADMIN.toString())
                 .anyRequest().authenticated()
             .and()
             .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()

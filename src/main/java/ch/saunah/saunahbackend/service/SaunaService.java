@@ -74,11 +74,7 @@ public class SaunaService {
     }
 
     public Sauna getSauna(int id) {
-        if (saunaRepository.findById(id).isPresent()) {
-            return saunaRepository.findById(id).get();
-        } else {
-            return null;
-        }
+        return saunaRepository.findById(id).orElse(null);
     }
 
     public Iterable<Sauna> getAllSauna() {

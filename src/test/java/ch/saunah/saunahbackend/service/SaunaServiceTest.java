@@ -83,6 +83,7 @@ public class SaunaServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getSauna() {
+        assertNull(saunaService.getSauna(1));
         saunaService.addSauna(saunaTypeBody);
         assertNotNull(saunaService.getSauna(1));
     }
