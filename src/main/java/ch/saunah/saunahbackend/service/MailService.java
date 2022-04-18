@@ -26,22 +26,21 @@ public class MailService {
     private String senderMail;
 
 
-
     /**
      * This method sends a message authentication link to the email of the user.
      *
      * @param email The email of the user
      * @param verificationId The verification id of the user
      */
-    public void sendUserActivationMail(String email, int verificationId) {
+    public void sendUserActivationMail(String email, String verificationId) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setFrom(senderMail);
             helper.setTo(email);
-            helper.setSubject("Singeup authentication");
+            helper.setSubject("Signup authentication");
             helper.setText("<p>Bitte klicken sie auf den Link, um ihren Account zu aktivieren: " +
-                "<br><a href=\"" + frontendBaseUrl + "/signup/" + verificationId + "\">Hier drücken</a></p>", true);
+                "<br><a href=\"" + frontendBaseUrl + "/verify/" + verificationId + "\">Hier drücken</a></p>", true);
             javaMailSender.send(mimeMessage);
         }
         catch (MessagingException exception){

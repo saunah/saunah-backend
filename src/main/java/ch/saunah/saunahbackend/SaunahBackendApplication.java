@@ -51,7 +51,7 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
         http.cors().and()
             .csrf().disable()
             .authorizeRequests()
-            .antMatchers("/api-docs/**", "/login", "/signup", "/users", "/saunas").permitAll()
+            .antMatchers("/api-docs/**", "/login", "/signup", "/users", "/saunas", "/verify/**").permitAll()
             .antMatchers("/user/**").hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
             .antMatchers("/sauna/add", "/sauna/edit", "/sauna/remove").hasAuthority(UserRole.ADMIN.toString())
             .antMatchers("/sauna/**").permitAll()

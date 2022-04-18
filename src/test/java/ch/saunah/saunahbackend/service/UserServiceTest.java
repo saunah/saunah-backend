@@ -114,9 +114,9 @@ class UserServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void verifyUser() throws Exception {
-        int wrongId = 100;
+        String wrongId = "100";
         userService.signUp(signUpBody);
-        int userId = userRepository.findByEmail(signUpBody.getEmail()).getId();
+        String userId = userRepository.findByEmail(signUpBody.getEmail()).getActivationId();
         boolean returnValueFound = userService.verifyUser(userId);
         boolean returnValueNull = userService.verifyUser(wrongId);
         assertTrue(returnValueFound);
@@ -132,6 +132,9 @@ class UserServiceTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void signIn() throws Exception {
         userService.signUp(signUpBody);
+        User user = userRepository.findByEmail("hans.muster@mustermail.ch");
+        user.setActivated(true);
+        userRepository.save(user);
         SignInBody signInBody = new SignInBody();
         signInBody.setEmail("hans.muster@mustermail.ch");
         signInBody.setPassword("ZH_a?!WD32");
@@ -141,6 +144,11 @@ class UserServiceTest {
         signInBody.setEmail("notexisting mail");
         assertThrows(Exception.class, () -> userService.signIn(signInBody));
         signInBody.setEmail("hans.muster@mustermail.ch");
+        user.setActivated(false);
+        userRepository.save(user);
+        assertThrows(Exception.class, () -> userService.signIn(signInBody));
+        user.setActivated(true);
+        userRepository.save(user);
         signInBody.setPassword("wrong password");
         assertThrows(Exception.class, () -> userService.signIn(signInBody));
         signInBody.setEmail("both wrong");
