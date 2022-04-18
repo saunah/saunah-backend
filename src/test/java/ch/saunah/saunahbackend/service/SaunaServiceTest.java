@@ -38,7 +38,6 @@ public class SaunaServiceTest {
         saunaTypeBody = new SaunaTypeBody();
         saunaTypeBody.setName("Mobile Sauna 1");
         saunaTypeBody.setDescription("Eine Mobile Sauna");
-        saunaTypeBody.setPicture(true);
         saunaTypeBody.setType(true);
         saunaTypeBody.setPrize(500);
         saunaTypeBody.setMaxTemp(51);
@@ -100,7 +99,6 @@ public class SaunaServiceTest {
         SaunaTypeBody saunaTypeBodyChanged = new SaunaTypeBody();
         saunaTypeBodyChanged.setName("Sauna 3");
         saunaTypeBodyChanged.setDescription("Eine nicht Mobile Sauna");
-        saunaTypeBodyChanged.setPicture(false);
         saunaTypeBodyChanged.setType(false);
         saunaTypeBodyChanged.setPrize(1000);
         saunaTypeBodyChanged.setMaxTemp(48);

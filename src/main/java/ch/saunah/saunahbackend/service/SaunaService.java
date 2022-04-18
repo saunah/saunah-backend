@@ -55,7 +55,7 @@ public class SaunaService {
      * @param saunaTypeBody the parameter that shall be changed
      * @return the sauna that has been edited
      */
-    public Sauna editSauna(@RequestParam("Id") int id,SaunaTypeBody saunaTypeBody) {
+    public Sauna editSauna(int id,SaunaTypeBody saunaTypeBody) {
         Sauna editSauna = getSauna(id);
         setSaunaFields(editSauna, saunaTypeBody);
         return saunaRepository.save(editSauna);
@@ -65,7 +65,6 @@ public class SaunaService {
     private Sauna setSaunaFields(Sauna sauna, SaunaTypeBody saunaTypeBody) {
         sauna.setName(saunaTypeBody.getName());
         sauna.setDescription(saunaTypeBody.getDescription());
-        sauna.setPicture(saunaTypeBody.getPicture());
         sauna.setType(saunaTypeBody.getType());
         sauna.setMaxTemp(saunaTypeBody.getMaxTemp());
         sauna.setPrize(saunaTypeBody.getPrize());
@@ -77,7 +76,11 @@ public class SaunaService {
     }
 
     public Sauna getSauna(int id) throws NoSuchElementException {
-        return saunaRepository.findById(id).get();
+        if (Objects.isNull(saunaRepository.findById(id).get()) == true) {
+            return null;
+        } else {
+            return saunaRepository.findById(id).get();
+        }
     }
 
     public Iterable<Sauna> getAllSauna() {

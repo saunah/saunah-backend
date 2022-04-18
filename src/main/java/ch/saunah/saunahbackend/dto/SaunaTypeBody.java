@@ -6,7 +6,6 @@ package ch.saunah.saunahbackend.dto;
 public class SaunaTypeBody {
     private String name;
     private String description;
-    private boolean picture;
     private boolean isMobile;
     private int prize;
     private int maxTemp;
@@ -21,10 +20,6 @@ public class SaunaTypeBody {
 
     public String getDescription() {
         return description;
-    }
-
-    public boolean getPicture() {
-        return picture;
     }
 
     public boolean getType() {
@@ -57,10 +52,6 @@ public class SaunaTypeBody {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setPicture(boolean picture) {
-        this.picture = picture;
     }
 
     public void setType(boolean isMobile) {
