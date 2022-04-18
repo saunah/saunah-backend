@@ -148,5 +148,8 @@ class UserServiceTest {
         assertThrows(Exception.class, () -> userService.signIn(signInBody));
         signInBody.setEmail("both wrong");
         assertThrows(Exception.class, () -> userService.signIn(signInBody));
+        user.setActivated(false);
+        userRepository.save(user);
+        assertThrows(Exception.class, () -> userService.signIn(signInBody));
     }
 }
