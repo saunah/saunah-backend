@@ -32,8 +32,8 @@ public class ImageUploadUtil {
         try (InputStream inputStream = multipartFile.getInputStream()) {
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException ioe) {
-            throw new IOException("Could not save image file: " + fileName, ioe);
+        } catch (IOException e) {
+            throw new IOException("Could not save image file: " + fileName, e);
         }
     }
 
@@ -75,7 +75,12 @@ public class ImageUploadUtil {
             Path uploadPath = Paths.get(directory);
             Path filePath = uploadPath.resolve(fileName);
             File file = filePath.toFile();
-            file.delete();
+            if (file.delete()){
+                System.err.printf("File %s successfully deleted.", fileName);
+            }
+            else{
+                System.err.printf("File %s not successfully deleted.", fileName);
+            }
         }
         catch (Exception e){
             System.err.printf("Error while removing image: %s", e.getMessage());
