@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,7 +37,7 @@ public class ImageController {
     public ResponseEntity<String> saveImages(@PathVariable("saunaId") int saunaId, @RequestBody List<MultipartFile> images) throws IOException {
         for (MultipartFile image : images) {
             String filename = String.format("image_file_%d_%s.png", saunaId, UUID.randomUUID());
-            imageUploadUtil.saveFile(SAUNA_IMAGES_DIR, filename, image);
+            imageUploadUtil.saveImage(SAUNA_IMAGES_DIR, filename, image);
             createSaunaImage(saunaId, filename);
         }
         return ResponseEntity.ok("success");
@@ -53,7 +52,7 @@ public class ImageController {
 
     @RequestMapping(value = "/sauna/images/{fileName}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> getImage(@PathVariable("fileName") String fileName) throws IOException {
-        byte[] image = imageUploadUtil.getFile(SAUNA_IMAGES_DIR, fileName);
+        byte[] image = imageUploadUtil.getImage(SAUNA_IMAGES_DIR, fileName);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
     }
 

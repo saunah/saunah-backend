@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -26,9 +29,9 @@ public class SaunaController {
     private SaunaService saunaService;
 
     @Operation(description = "Allows adding a new Sauna type.")
-    @PostMapping(path = "sauna/add") // Map ONLY POST Requests
+    @PostMapping(path = "sauna/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // Map ONLY POST Requests
     public @ResponseBody
-    ResponseEntity<String> createSauna(@RequestBody SaunaTypeBody saunaTypeBody) {
+    ResponseEntity<String> createSauna(@RequestBody SaunaTypeBody saunaTypeBody, @RequestParam("images") List<MultipartFile> images) {
         Sauna createdSauna = saunaService.addSauna(saunaTypeBody);
         return ResponseEntity.ok("success");
     }
