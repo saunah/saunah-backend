@@ -3,10 +3,10 @@ package ch.saunah.saunahbackend;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 import ch.saunah.saunahbackend.model.UserRole;
-import org.h2.engine.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,6 +47,7 @@ class SaunahBackendApplicationTests {
         newUser.setPlace("Winterthur");
         newUser.setStreet("Müllerstrasse 20");
         newUser.setRole(UserRole.USER);
+        newUser.setActivationId(UUID.randomUUID().toString());
         userRepository.save(newUser);
 
         users = userRepository.findAll();

@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -74,17 +75,18 @@ public class UserService {
         user.setPlace(signUpBody.getPlace());
         user.setStreet(signUpBody.getStreet());
         user.setRole(UserRole.USER);
+        user.setActivationId(UUID.randomUUID().toString());
         return userRepository.save(user);
     }
 
     /**
      * This method checks if the user's provided id matches the existing one in the database.
      *
-     * @param id userid
+     * @param activationId userid
      * @return true if he provided id matches, false if it does not
      */
-    public boolean verifyUser(Integer id) {
-        User user = userRepository.findById(id).orElse(null);
+    public boolean verifyUser(String activationId) {
+        User user = userRepository.findByActivationId(activationId);
         if (user != null) {
             user.setActivated(true);
             userRepository.save(user);
@@ -102,6 +104,13 @@ public class UserService {
      */
     public ResponseEntity<JwtResponse> signIn(SignInBody signInBody) throws Exception {
         try {
+            User foundUser = userRepository.findByEmail(signInBody.getEmail());
+            if(foundUser == null){
+                throw new Exception("No user found with this Email!");
+            }
+            if(!foundUser.isActivated()){
+                throw new Exception("User has not been activated");
+            }
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword()));
             if (authentication == null){
                 throw new Exception("Authentication was not successful");
