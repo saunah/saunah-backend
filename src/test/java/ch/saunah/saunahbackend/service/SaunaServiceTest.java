@@ -13,7 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.util.NoSuchElementException;
+import org.webjars.NotFoundException;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,7 +84,7 @@ public class SaunaServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getSauna() {
-        assertNull(saunaService.getSauna(1));
+        assertThrows(NotFoundException.class, () -> saunaService.getSauna(1));
         saunaService.addSauna(saunaTypeBody);
         assertNotNull(saunaService.getSauna(1));
     }

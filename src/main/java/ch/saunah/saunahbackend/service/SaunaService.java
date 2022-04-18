@@ -86,7 +86,7 @@ public class SaunaService {
         return sauna;
     }
 
-    public Sauna getSauna(int id) {
+    public Sauna getSauna(int id) throws NotFoundException {
         Sauna sauna = saunaRepository.findById(id).orElse(null);
         if (sauna == null){
             throw new NotFoundException(String.format("Sauna with id %d not found!", id));
