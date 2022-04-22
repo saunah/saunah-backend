@@ -5,6 +5,7 @@ import ch.saunah.saunahbackend.controller.SaunaController;
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.SaunaImage;
+import ch.saunah.saunahbackend.model.SaunaType;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -47,13 +47,14 @@ public class SaunaServiceTest {
         saunaTypeBody = new SaunaTypeBody();
         saunaTypeBody.setName("Mobile Sauna 1");
         saunaTypeBody.setDescription("Eine Mobile Sauna");
-        saunaTypeBody.setType(true);
-        saunaTypeBody.setPrize(500);
+        saunaTypeBody.setMobile(true);
+        saunaTypeBody.setPrice(500);
         saunaTypeBody.setMaxTemp(51);
         saunaTypeBody.setNumberOfPeople(12);
         saunaTypeBody.setLocation("Zürich");
         saunaTypeBody.setStreet("Bahnhofstrasse 5");
-        saunaTypeBody.setPlz(9000);
+        saunaTypeBody.setZip(9000);
+        saunaTypeBody.setType(SaunaType.TENT);
     }
 
     @AfterEach
@@ -79,11 +80,12 @@ public class SaunaServiceTest {
         assertEquals(saunaTypeBody.getDescription(), sauna.getDescription());
         assertEquals(saunaTypeBody.getMaxTemp(), sauna.getMaxTemp());
         assertEquals(saunaTypeBody.getNumberOfPeople(), sauna.getNumberOfPeople());
-        assertEquals(saunaTypeBody.getPrize(), sauna.getPrize());
+        assertEquals(saunaTypeBody.getPrice(), sauna.getPrice());
         assertEquals(saunaTypeBody.getLocation(), sauna.getLocation());
         assertEquals(saunaTypeBody.getStreet(), sauna.getStreet());
+        assertEquals(saunaTypeBody.isMobile(), sauna.isMobile());
+        assertEquals(saunaTypeBody.getZip(), sauna.getZip());
         assertEquals(saunaTypeBody.getType(), sauna.getType());
-        assertEquals(saunaTypeBody.getPlz(), sauna.getPlz());
     }
 
     /**
@@ -107,13 +109,14 @@ public class SaunaServiceTest {
         SaunaTypeBody saunaTypeBodyChanged = new SaunaTypeBody();
         saunaTypeBodyChanged.setName("Sauna 3");
         saunaTypeBodyChanged.setDescription("Eine nicht Mobile Sauna");
-        saunaTypeBodyChanged.setType(false);
-        saunaTypeBodyChanged.setPrize(1000);
+        saunaTypeBodyChanged.setMobile(false);
+        saunaTypeBodyChanged.setPrice(1000);
         saunaTypeBodyChanged.setMaxTemp(48);
         saunaTypeBodyChanged.setNumberOfPeople(15);
         saunaTypeBodyChanged.setLocation("Winterthur");
         saunaTypeBodyChanged.setStreet("Bahnhofstrasse 6");
-        saunaTypeBodyChanged.setPlz(10000);
+        saunaTypeBodyChanged.setZip(10000);
+        saunaTypeBodyChanged.setType(SaunaType.TENT);
         sauna = saunaService.editSauna(sauna.getId(), saunaTypeBodyChanged);
         checkSaunaFields(saunaTypeBodyChanged, sauna);
     }
@@ -156,11 +159,11 @@ public class SaunaServiceTest {
         assertEquals(saunaTypeBody.getDescription(), sauna.getDescription());
         assertEquals(saunaTypeBody.getMaxTemp(), sauna.getMaxTemp());
         assertEquals(saunaTypeBody.getNumberOfPeople(), sauna.getNumberOfPeople());
-        assertEquals(saunaTypeBody.getPrize(), sauna.getPrize());
+        assertEquals(saunaTypeBody.getPrice(), sauna.getPrice());
         assertEquals(saunaTypeBody.getLocation(), sauna.getLocation());
         assertEquals(saunaTypeBody.getStreet(), sauna.getStreet());
-        assertEquals(saunaTypeBody.getType(), sauna.getType());
-        assertEquals(saunaTypeBody.getPlz(), sauna.getPlz());
+        assertEquals(saunaTypeBody.isMobile(), sauna.isMobile());
+        assertEquals(saunaTypeBody.getZip(), sauna.getZip());
     }
 
 
@@ -231,6 +234,4 @@ public class SaunaServiceTest {
             assertDoesNotThrow(() -> saunaService.getImage(image.getFileName()));
         }
     }
-
-
 }

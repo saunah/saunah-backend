@@ -1,6 +1,7 @@
 package ch.saunah.saunahbackend.dto;
 
 import ch.saunah.saunahbackend.model.Sauna;
+import ch.saunah.saunahbackend.model.SaunaType;
 
 /**
  * This class is used as the response DTO object, when sauna data was retrieved.
@@ -10,12 +11,13 @@ public class SaunaResponse {
     private String name;
     private String description;
     private boolean isMobile;
-    private int prize;
+    private int price;
     private int maxTemp;
     private int numberOfPeople;
     private String location;
     private String street;
-    private int plz;
+    private int zip;
+    private SaunaType type;
 
     /**
      * This constructor sets all the fields of this object.
@@ -24,13 +26,18 @@ public class SaunaResponse {
         this.id = sauna.getId();
         this.name = sauna.getName();
         this.description = sauna.getDescription();
-        this.isMobile = sauna.getType();
-        this.prize = sauna.getPrize();
+        this.isMobile = sauna.isMobile();
+        this.price = sauna.getPrice();
         this.maxTemp = sauna.getMaxTemp();
         this.numberOfPeople = sauna.getNumberOfPeople();
         this.location = sauna.getLocation();
         this.street = sauna.getStreet();
-        this.plz = sauna.getPlz();
+        this.zip = sauna.getZip();
+        this.type = sauna.getType();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -41,12 +48,12 @@ public class SaunaResponse {
         return description;
     }
 
-    public boolean getType() {
+    public boolean isMobile() {
         return isMobile;
     }
 
-    public int getPrize() {
-        return prize;
+    public int getPrice() {
+        return price;
     }
 
     public int getMaxTemp() { return maxTemp; }
@@ -63,9 +70,11 @@ public class SaunaResponse {
         return street;
     }
 
-    public int getPlz() {
-        return plz;
+    public int getZip() {
+        return zip;
     }
 
-
+    public SaunaType getType() {
+        return type;
+    }
 }

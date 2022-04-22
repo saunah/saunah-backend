@@ -33,9 +33,8 @@ public class SaunaController {
     @Operation(description = "Allows adding a new Sauna type.")
     @PostMapping(path = "sauna/add")
     public @ResponseBody
-    ResponseEntity<String> createSauna(@RequestBody SaunaTypeBody saunaTypeBody) {
-        saunaService.addSauna(saunaTypeBody);
-        return ResponseEntity.ok("success");
+    ResponseEntity<SaunaResponse> createSauna(@RequestBody SaunaTypeBody saunaTypeBody) {
+        return ResponseEntity.ok(new SaunaResponse(saunaService.addSauna(saunaTypeBody)));
     }
 
     @Operation(description = "Returns a list of saunas.")
@@ -60,11 +59,9 @@ public class SaunaController {
     @Operation(description = "Allows editing an existing Sauna type.")
     @PostMapping(path = "sauna/edit")
     public @ResponseBody
-    ResponseEntity<String> editSauna(@RequestParam("Id") int id, @RequestBody SaunaTypeBody saunaTypeBody) {
-        saunaService.editSauna(id, saunaTypeBody);
-        return ResponseEntity.ok("success");
+    ResponseEntity<SaunaResponse> editSauna(@RequestParam("Id") int id, @RequestBody SaunaTypeBody saunaTypeBody) {
+        return ResponseEntity.ok(new SaunaResponse(saunaService.editSauna(id, saunaTypeBody)));
     }
-
 
     @Operation(description = "Adds new images to the corresponding sauna.")
     @PostMapping(value = "/sauna/{saunaId}/addImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

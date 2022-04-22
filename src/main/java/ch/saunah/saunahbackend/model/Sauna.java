@@ -22,11 +22,11 @@ public class Sauna {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "isMobile", nullable = false)
     private boolean isMobile;
 
-    @Column(name = "prize", nullable = false)
-    private int prize;
+    @Column(name = "price", nullable = false)
+    private int price;
 
     @Column(name = "max_temp", nullable = false)
     private int maxTemp;
@@ -40,8 +40,11 @@ public class Sauna {
     @Column(name = "street", nullable = false)
     private String street;
 
-    @Column(name = "plz", nullable = false)
-    private int plz;
+    @Column(name = "zip", nullable = false)
+    private int zip;
+
+    @Column(name = "type", nullable = false)
+    private SaunaType type;
 
     @OneToMany(mappedBy="sauna", cascade = CascadeType.ALL)
     private Set<SaunaImage> saunaImages = new HashSet();
@@ -62,12 +65,12 @@ public class Sauna {
         return description;
     }
 
-    public boolean getType() {
+    public boolean isMobile() {
         return isMobile;
     }
 
-    public int getPrize() {
-        return prize;
+    public int getPrice() {
+        return price;
     }
 
     public int getMaxTemp() { return maxTemp; }
@@ -84,8 +87,12 @@ public class Sauna {
         return street;
     }
 
-    public int getPlz() {
-        return plz;
+    public int getZip() {
+        return zip;
+    }
+
+    public SaunaType getType() {
+        return type;
     }
 
     public List<SaunaImage> getSaunaImages(){
@@ -98,12 +105,12 @@ public class Sauna {
         this.description = description;
     }
 
-    public void setType(boolean isMobile) {
+    public void setIsMobile(boolean isMobile) {
         this.isMobile = isMobile;
     }
 
-    public void setPrize(int prize) {
-        this.prize = prize;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public void setMaxTemp(int maxTemp) {
@@ -122,8 +129,12 @@ public class Sauna {
         this.street = street;
     }
 
-    public void setPlz(int plz) {
-        this.plz = plz;
+    public void setZip(int zip) {
+        this.zip = zip;
+    }
+
+    public void setType(SaunaType type) {
+        this.type = type;
     }
 
     public void addSaunaImage(SaunaImage saunaImage){
