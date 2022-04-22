@@ -1,7 +1,6 @@
 package ch.saunah.saunahbackend.dto;
 
 import ch.saunah.saunahbackend.model.Sauna;
-import ch.saunah.saunahbackend.model.SaunaType;
 
 /**
  * This class is used as the response DTO object, when sauna data was retrieved.
@@ -17,7 +16,7 @@ public class SaunaResponse {
     private String location;
     private String street;
     private int zip;
-    private SaunaType type;
+    private String type;
 
     /**
      * This constructor sets all the fields of this object.
@@ -74,7 +73,7 @@ public class SaunaResponse {
         return zip;
     }
 
-    public SaunaType getType() {
+    public String getType() {
         return type;
     }
 }

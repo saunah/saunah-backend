@@ -1,7 +1,5 @@
 package ch.saunah.saunahbackend.dto;
 
-import ch.saunah.saunahbackend.model.SaunaType;
-
 /**
  * This class is used as the DTO object when creating a Sauna.
  */
@@ -15,7 +13,7 @@ public class SaunaTypeBody {
     private String location;
     private String street;
     private int zip;
-    private SaunaType type;
+    private String type;
 
     public String getName() {
         return name;
@@ -51,7 +49,7 @@ public class SaunaTypeBody {
         return zip;
     }
 
-    public SaunaType getType() {
+    public String getType() {
         return type;
     }
 
@@ -89,7 +87,7 @@ public class SaunaTypeBody {
         this.zip = zip;
     }
 
-    public void setType(SaunaType type) {
+    public void setType(String type) {
         this.type = type;
     }
 }

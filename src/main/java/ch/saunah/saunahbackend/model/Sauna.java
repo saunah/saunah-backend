@@ -44,7 +44,7 @@ public class Sauna {
     private int zip;
 
     @Column(name = "type", nullable = false)
-    private SaunaType type;
+    private String type;
 
     @OneToMany(mappedBy="sauna", cascade = CascadeType.ALL)
     private Set<SaunaImage> saunaImages = new HashSet();
@@ -91,7 +91,7 @@ public class Sauna {
         return zip;
     }
 
-    public SaunaType getType() {
+    public String getType() {
         return type;
     }
 
@@ -133,7 +133,7 @@ public class Sauna {
         this.zip = zip;
     }
 
-    public void setType(SaunaType type) {
+    public void setType(String type) {
         this.type = type;
     }
 

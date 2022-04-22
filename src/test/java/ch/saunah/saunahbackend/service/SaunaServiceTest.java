@@ -5,7 +5,6 @@ import ch.saunah.saunahbackend.controller.SaunaController;
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.SaunaImage;
-import ch.saunah.saunahbackend.model.SaunaType;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +53,7 @@ public class SaunaServiceTest {
         saunaTypeBody.setLocation("Zürich");
         saunaTypeBody.setStreet("Bahnhofstrasse 5");
         saunaTypeBody.setZip(9000);
-        saunaTypeBody.setType(SaunaType.TENT);
+        saunaTypeBody.setType("Tent");
     }
 
     @AfterEach
@@ -116,7 +115,7 @@ public class SaunaServiceTest {
         saunaTypeBodyChanged.setLocation("Winterthur");
         saunaTypeBodyChanged.setStreet("Bahnhofstrasse 6");
         saunaTypeBodyChanged.setZip(10000);
-        saunaTypeBodyChanged.setType(SaunaType.TENT);
+        saunaTypeBodyChanged.setType("TENT");
         sauna = saunaService.editSauna(sauna.getId(), saunaTypeBodyChanged);
         checkSaunaFields(saunaTypeBodyChanged, sauna);
     }
