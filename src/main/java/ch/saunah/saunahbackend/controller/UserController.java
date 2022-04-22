@@ -55,4 +55,13 @@ public class UserController {
         return ResponseEntity.ok("Account activated");
     }
 
+    @Operation(description = "Send a reset Password Mail to the user")
+    @PostMapping(value = "/resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> signUp(@RequestBody SignInBody signInBody) throws Exception {
+        User user = userService.getUserByMail(signUpBody);
+        mailService.sendUserActivationMail(user.getEmail(), user.getId());
+        return ResponseEntity.ok("success");
+    }
+
 }

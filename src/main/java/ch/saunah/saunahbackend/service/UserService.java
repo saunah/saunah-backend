@@ -76,6 +76,13 @@ public class UserService {
         user.setRole(UserRole.USER);
         return userRepository.save(user);
     }
+    /**
+    * This method returns the user with the mail
+     */
+    public User getUserByMail (SignInBody signInBody){
+        return userRepository.findByEmail(signInBody.getEmail());
+
+    }
 
     /**
      * This method checks if the user's provided id matches the existing one in the database.
