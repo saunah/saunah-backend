@@ -70,7 +70,6 @@ public class SaunaService {
         Sauna editSauna = getSauna(id);
         setSaunaFields(editSauna, saunaTypeBody);
         return saunaRepository.save(editSauna);
-
     }
 
     private Sauna setSaunaFields(Sauna sauna, SaunaTypeBody saunaTypeBody) {
