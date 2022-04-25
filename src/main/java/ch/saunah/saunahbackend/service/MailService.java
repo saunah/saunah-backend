@@ -1,15 +1,18 @@
 package ch.saunah.saunahbackend.service;
 
 
+import java.io.UnsupportedEncodingException;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 /**
  * This class contains the mail service.
@@ -22,8 +25,10 @@ public class MailService {
 
     @Value("${saunah.frontend.baseurl}")
     private String frontendBaseUrl;
-    @Value("${spring.mail.username}")
-    private String senderMail;
+    @Value("${saunah.email.from.email}")
+    private String senderEmail;
+    @Value("${saunah.email.from.name}")
+    private String senderName;
 
 
     /**
@@ -36,7 +41,7 @@ public class MailService {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-            helper.setFrom(senderMail);
+            helper.setFrom(new InternetAddress(senderEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Signup authentication");
             helper.setText("<p>Bitte klicken sie auf den Link, um ihren Account zu aktivieren: " +
@@ -47,6 +52,9 @@ public class MailService {
             System.err.printf("Error while sending the activation mail: %s\n", exception.getMessage());
         }
         catch (MailException exception){
+            System.err.printf("Error while sending the activation mail: %s\n", exception.getMessage());
+        }
+        catch (UnsupportedEncodingException exception) {
             System.err.printf("Error while sending the activation mail: %s\n", exception.getMessage());
         }
     }

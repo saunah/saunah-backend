@@ -12,6 +12,16 @@
   {
     "name": "jwt.secret",
     "type": "java.lang.String",
-    "description": "Secret for JWT"
+    "description": "Secret for JWT."
+  },
+  {
+    "name": "saunah.email.from.email",
+    "type": "java.lang.String",
+    "description": "The email address which is listed as the sender."
+  },
+  {
+    "name": "saunah.email.from.name",
+    "type": "java.lang.String",
+    "description": "The name which is listed as the sender name."
   }
 ]}
