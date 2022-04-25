@@ -41,7 +41,7 @@ To get base64 value, run
 echo -n 'yoursecret' | base64
 ```
 
-where `yoursecret` is the actual secret. Note the `-n` parameter in the echo command, which tells echo to not add a newline (\n) at the end of the string echoed (which would be the default behaviour).
+where `yoursecret` is the actual secret. Note the `-n` parameter in the echo command, which tells echo to not add a newline (`\n`) at the end of the string echoed (which would be the default behaviour).
 
 ## Deploying the Database
 
