@@ -75,13 +75,14 @@ public class SaunaService {
     private Sauna setSaunaFields(Sauna sauna, SaunaTypeBody saunaTypeBody) {
         sauna.setName(saunaTypeBody.getName());
         sauna.setDescription(saunaTypeBody.getDescription());
-        sauna.setType(saunaTypeBody.getType());
+        sauna.setIsMobile(saunaTypeBody.isMobile());
         sauna.setMaxTemp(saunaTypeBody.getMaxTemp());
-        sauna.setPrize(saunaTypeBody.getPrize());
+        sauna.setPrice(saunaTypeBody.getPrice());
         sauna.setNumberOfPeople(saunaTypeBody.getNumberOfPeople());
         sauna.setStreet(saunaTypeBody.getStreet());
         sauna.setLocation(saunaTypeBody.getLocation());
-        sauna.setPlz(saunaTypeBody.getPlz());
+        sauna.setZip(saunaTypeBody.getZip());
+        sauna.setType(saunaTypeBody.getType());
         return sauna;
     }
 
