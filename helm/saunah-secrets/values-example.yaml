@@ -1,0 +1,18 @@
+# Default values for saunah-secrets.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Secrets need to be base64 encoded (with no trailing newline char!!)
+# To get base64 value, run `echo -n 'yoursecret' | base64`, where
+# yoursecret is the actual secret. Note the `-n` param in the echo command,
+# which tells echo to not add a newline (\n) at the end of the string
+# echoed (which would be the default behaviour).
+
+namespace: default
+
+secrets:
+  database:
+    password: c2F1bmFo # saunah
+  smtp:
+    username:
+    password:
