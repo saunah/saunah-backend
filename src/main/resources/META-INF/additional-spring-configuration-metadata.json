@@ -8,5 +8,10 @@
     "name": "saunah.version",
     "type": "java.lang.String",
     "description": "Version of the application."
+  },
+  {
+    "name": "jwt.secret",
+    "type": "java.lang.String",
+    "description": "Secret for JWT"
   }
 ]}
