@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MailService {
 
+    private static final String DEFAULT_MAIL_ERROR_MESSAGE = "Error while sending the activation mail: %s%n";
+
     @Autowired
     private JavaMailSender javaMailSender;
 
@@ -48,14 +50,8 @@ public class MailService {
                 "<br><a href=\"" + frontendBaseUrl + "/verify/" + verificationId + "\">Hier drücken</a></p>", true);
             javaMailSender.send(mimeMessage);
         }
-        catch (MessagingException exception){
-            System.err.printf("Error while sending the activation mail: %s\n", exception.getMessage());
-        }
-        catch (MailException exception){
-            System.err.printf("Error while sending the activation mail: %s\n", exception.getMessage());
-        }
-        catch (UnsupportedEncodingException exception) {
-            System.err.printf("Error while sending the activation mail: %s\n", exception.getMessage());
+        catch (MessagingException | MailException | UnsupportedEncodingException exception){
+            System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
         }
     }
 }
