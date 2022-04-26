@@ -25,6 +25,10 @@ env:
     value: saunah
   - name: SAUNAH_FRONTEND_BASE_URL
     value: "http://localhost:8889"
+  - name: SAUNAH_SMTP_HOST
+    value: smtp.mailtrap.io
+  - name: SAUNAH_SMTP_PORT
+    value: "2525"
   - name: SAUNAH_SMTP_USER
     valueFrom:
       secretKeyRef:
