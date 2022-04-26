@@ -26,9 +26,9 @@ env:
   - name: SAUNAH_FRONTEND_BASE_URL
     value: "https://saunah.k8s.init-lab.ch"
   - name: SAUNAH_SMTP_HOST
-    value: smtp.mailtrap.io
+    value: smtp.mailersend.net
   - name: SAUNAH_SMTP_PORT
-    value: "2525"
+    value: "587"
   - name: SAUNAH_SMTP_USER
     valueFrom:
       secretKeyRef:
