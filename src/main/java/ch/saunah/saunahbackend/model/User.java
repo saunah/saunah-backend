@@ -1,6 +1,12 @@
 package ch.saunah.saunahbackend.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 
 /**
  * This class is used to define the table of the database of the user entity.
