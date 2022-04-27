@@ -76,7 +76,7 @@ public class UserService {
         user.setPlace(signUpBody.getPlace());
         user.setStreet(signUpBody.getStreet());
         user.setActivationId(UUID.randomUUID().toString());
-        if(checkIfUserExists()){
+        if(hasUsers()){
             user.setRole(UserRole.USER);
         }else{
             user.setRole(UserRole.ADMIN);
@@ -105,11 +105,8 @@ public class UserService {
      *
      * @return true if a user is found
      */
-    public boolean checkIfUserExists(){
-        Iterable<User> foundUsers = userRepository.findAll();
-        Iterator<User> userIterator = foundUsers.iterator();
-
-        return userIterator.hasNext();
+    public boolean hasUsers(){
+        Iterable<User> foundUsers = userRepository.findAll(); Iterator<User> userIterator = foundUsers.iterator(); return userIterator.hasNext();
     }
 
     /**

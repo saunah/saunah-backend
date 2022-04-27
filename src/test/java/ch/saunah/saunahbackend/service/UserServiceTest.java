@@ -4,6 +4,7 @@ import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.SignUpBody;
 import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,6 +107,7 @@ class UserServiceTest {
         User user = userRepository.findByEmail(signUpBody.getEmail());
         assertNotNull(user);
         assertEquals(signUpBody.getEmail(), user.getEmail());
+        assert(user.getRole() == UserRole.ADMIN);
     }
 
     /**
