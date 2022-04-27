@@ -1,6 +1,8 @@
 package ch.saunah.saunahbackend.controller;
 
 import ch.saunah.saunahbackend.dto.PriceBody;
+import ch.saunah.saunahbackend.dto.PriceResponse;
+import ch.saunah.saunahbackend.dto.SaunaResponse;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 import ch.saunah.saunahbackend.service.PriceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,9 +24,8 @@ public class PriceController {
     @Operation(description = "Allows adding a new Price structure.")
     @PostMapping(path = "price/add")
     public @ResponseBody
-    ResponseEntity<String> createPrice(@RequestBody PriceBody priceBody) {
-        priceService.addPrice(priceBody);
-        return ResponseEntity.ok("success");
+    ResponseEntity<PriceResponse> createPrice(@RequestBody PriceBody priceBody) {
+        return ResponseEntity.ok(new PriceResponse(priceService.addPrice(priceBody)));
     }
 
    // TODO getPrice function => watch saunaController
