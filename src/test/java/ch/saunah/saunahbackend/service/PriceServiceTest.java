@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.webjars.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -69,7 +70,9 @@ public class PriceServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getPrice() {
-
+        assertThrows(NotFoundException.class, () -> priceService.getPrice(1));
+        priceService.addPrice(priceBody);
+        assertNotNull(priceService.getPrice(1));
     }
 
     @Test
