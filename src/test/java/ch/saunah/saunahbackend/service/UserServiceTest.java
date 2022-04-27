@@ -107,7 +107,10 @@ class UserServiceTest {
         User user = userRepository.findByEmail(signUpBody.getEmail());
         assertNotNull(user);
         assertEquals(signUpBody.getEmail(), user.getEmail());
-        assert(user.getRole() == UserRole.ADMIN);
+        assertEquals(user.getRole(), UserRole.ADMIN);
+        signUpBody.setEmail("lorem.ipsum@mustermail.ch");
+        user = userService.signUp(signUpBody);
+        assertEquals(user.getRole(), UserRole.USER);
     }
 
     /**

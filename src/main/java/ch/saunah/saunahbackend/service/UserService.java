@@ -106,7 +106,7 @@ public class UserService {
      * @return true if a user is found
      */
     public boolean hasUsers(){
-        Iterable<User> foundUsers = userRepository.findAll(); Iterator<User> userIterator = foundUsers.iterator(); return userIterator.hasNext();
+        return userRepository.findAll().iterator().hasNext();
     }
 
     /**
