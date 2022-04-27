@@ -22,13 +22,26 @@ A sample kubeconfig file can be found in [`kubeconfig-example`](./kubeconfig-exa
 ## Installing Secrets
 
 Before installing any other deployments to the cluster, install secrets.
-A template (without actual values) can be found in `/helm/secrets-template.yaml`. Rename this file to `helm/secrets.yaml` and insert the corresponding values.
+A helm chart which contains a template for installing the needed secrets can be found at `helm/saunah-secrets`.
 
-To apply the configuration, run
+To apply the chart, run
 
 ```shell
-kubectl apply -f secrets.yaml
+helm upgrade --install -f helm/saunah-secrets/values-local.yaml saunah-secrets helm/saunah-secrets
 ```
+
+where `values-local.yaml` should be replaced with the values file inteneded for the deployment.
+
+An example for the values file can be found at `helm/saunah-secrets/values-example.yaml`.
+
+***Note*** that secrets need to be base64 encoded (**with no trailing newline char!!**).
+To get base64 value, run
+
+```shell
+echo -n 'yoursecret' | base64
+```
+
+where `yoursecret` is the actual secret. Note the `-n` parameter in the echo command, which tells echo to not add a newline (`\n`) at the end of the string echoed (which would be the default behaviour).
 
 ## Deploying the Database
 

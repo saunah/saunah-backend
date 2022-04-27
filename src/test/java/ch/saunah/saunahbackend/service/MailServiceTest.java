@@ -1,15 +1,17 @@
 package ch.saunah.saunahbackend.service;
 
-import ch.saunah.saunahbackend.SaunahBackendApplication;
-import ch.saunah.saunahbackend.model.User;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+import javax.mail.MessagingException;
+
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.mail.MessagingException;
-import static org.junit.jupiter.api.Assertions.*;
+import ch.saunah.saunahbackend.SaunahBackendApplication;
+import ch.saunah.saunahbackend.model.User;
 
 /**
  * This class tests the email method.

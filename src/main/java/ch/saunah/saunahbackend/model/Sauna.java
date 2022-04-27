@@ -1,10 +1,17 @@
 package ch.saunah.saunahbackend.model;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  * Model of a sauna type
@@ -22,11 +29,11 @@ public class Sauna {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "isMobile", nullable = false)
     private boolean isMobile;
 
-    @Column(name = "prize", nullable = false)
-    private int prize;
+    @Column(name = "price", nullable = false)
+    private int price;
 
     @Column(name = "max_temp", nullable = false)
     private int maxTemp;
@@ -40,13 +47,16 @@ public class Sauna {
     @Column(name = "street", nullable = false)
     private String street;
 
-    @Column(name = "plz", nullable = false)
-    private int plz;
+    @Column(name = "zip", nullable = false)
+    private int zip;
+
+    @Column(name = "type", nullable = false)
+    private String type;
 
     @OneToMany(mappedBy="sauna", cascade = CascadeType.ALL)
-    private Set<SaunaImage> saunaImages = new HashSet();
+    private Set<SaunaImage> saunaImages = new HashSet<>();
 
-    public  Sauna(){
+    public Sauna(){
 
     }
 
@@ -62,12 +72,12 @@ public class Sauna {
         return description;
     }
 
-    public boolean getType() {
+    public boolean isMobile() {
         return isMobile;
     }
 
-    public int getPrize() {
-        return prize;
+    public int getPrice() {
+        return price;
     }
 
     public int getMaxTemp() { return maxTemp; }
@@ -84,12 +94,16 @@ public class Sauna {
         return street;
     }
 
-    public int getPlz() {
-        return plz;
+    public int getZip() {
+        return zip;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public List<SaunaImage> getSaunaImages(){
-        return (List<SaunaImage>) saunaImages.stream().collect(Collectors.toList());
+        return saunaImages.stream().collect(Collectors.toList());
     }
 
     public void setName(String name) { this.name = name; }
@@ -98,12 +112,12 @@ public class Sauna {
         this.description = description;
     }
 
-    public void setType(boolean isMobile) {
+    public void setIsMobile(boolean isMobile) {
         this.isMobile = isMobile;
     }
 
-    public void setPrize(int prize) {
-        this.prize = prize;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public void setMaxTemp(int maxTemp) {
@@ -122,8 +136,12 @@ public class Sauna {
         this.street = street;
     }
 
-    public void setPlz(int plz) {
-        this.plz = plz;
+    public void setZip(int zip) {
+        this.zip = zip;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void addSaunaImage(SaunaImage saunaImage){

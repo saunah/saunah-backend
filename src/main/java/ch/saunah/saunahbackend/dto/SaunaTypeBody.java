@@ -7,12 +7,13 @@ public class SaunaTypeBody {
     private String name;
     private String description;
     private boolean isMobile;
-    private int prize;
+    private int price;
     private int maxTemp;
     private int numberOfPeople;
     private String location;
     private String street;
-    private int plz;
+    private int zip;
+    private String type;
 
     public String getName() {
         return name;
@@ -22,12 +23,12 @@ public class SaunaTypeBody {
         return description;
     }
 
-    public boolean getType() {
+    public boolean isMobile() {
         return isMobile;
     }
 
-    public int getPrize() {
-        return prize;
+    public int getPrice() {
+        return price;
     }
 
     public int getMaxTemp() { return maxTemp; }
@@ -44,8 +45,12 @@ public class SaunaTypeBody {
         return street;
     }
 
-    public int getPlz() {
-        return plz;
+    public int getZip() {
+        return zip;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public void setName(String name) { this.name = name;}
@@ -54,12 +59,12 @@ public class SaunaTypeBody {
         this.description = description;
     }
 
-    public void setType(boolean isMobile) {
+    public void setMobile(boolean isMobile) {
         this.isMobile = isMobile;
     }
 
-    public void setPrize(int prize) {
-        this.prize = prize;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public void setMaxTemp(int maxTemp) {
@@ -78,8 +83,11 @@ public class SaunaTypeBody {
         this.street = street;
     }
 
-    public void setPlz(int plz) {
-        this.plz = plz;
+    public void setZip(int zip) {
+        this.zip = zip;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
 }
