@@ -66,15 +66,15 @@ public class MailService {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-            helper.setFrom(senderMail);
+            helper.setFrom(new InternetAddress(senderEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Password Reset SauNah");
             helper.setText("<p>Ihr Reset Token lautet: <h1>"+ resetPasswordToken +"</h1></p><p>Bitte klicken sie auf den Link, falls Sie Ihren Passwort vergessen haben : " +
                 "<br><a href=\"" + frontendBaseUrl + "/resetPassword/" + userID + "\">Hier drücken</a></p>", true);
             javaMailSender.send(mimeMessage);
         }
-        catch (MessagingException exception){
-            System.err.printf("Error while sending the activation mail: %s\n", exception.getMessage());
+        catch (MessagingException | MailException | UnsupportedEncodingException exception){
+            System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
         }
     }
 }
