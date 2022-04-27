@@ -65,7 +65,7 @@ public class UserController {
         signInBody.setEmail(resetPasswordBody.getEmail());
 
         User user = userService.getUserByMail(signInBody);
-        Double passwordToken = userService.createResetPasswordtoken(user);
+        int passwordToken = userService.createResetPasswordtoken(user);
 
         mailService.sendPasswordResetMail(resetPasswordBody.getEmail(),user.getId() ,passwordToken);
         return ResponseEntity.ok("success");

@@ -49,8 +49,8 @@ public class User {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
-    @Column(name = "resetpassword_hash")
-    private String resetpassword_hash;
+    @Column(name = "resetpasswordhash")
+    private String resetpasswordhash;
 
     /**
      * The default constructor for the user.
@@ -151,8 +151,8 @@ public class User {
         this.role = role;
     }
 
-    public String getResetpassword_hash(){return resetpassword_hash;}
+    public String getResetpasswordHash(){return resetpasswordhash;}
 
-    public void setResetpassword_hash(String resetpassword_hash){this.resetpassword_hash = resetpassword_hash;}
+    public void setResetpasswordHash(String resetpassword_hash){this.resetpasswordhash = resetpassword_hash;}
 
 }

@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -88,15 +89,15 @@ public class UserService {
 
     }
 
-    public double createResetPasswordtoken (User user){
+    public int createResetPasswordtoken (User user){
         int min = 10000;
         int max = 99999;
 
         //Creates a random number between min and max
-        double resetToken = Math.floor(Math.random()*(max-min+1)+min);
-
+        SecureRandom random = new SecureRandom();
+        int resetToken = random.nextInt() *(max-min+1)+min;
         String hashedPassword = new BCryptPasswordEncoder().encode(Double.toString(resetToken));
-        user.setResetpassword_hash(hashedPassword);
+        user.setResetpasswordHash(hashedPassword);
         userRepository.save(user);
         return resetToken;
     }
@@ -108,13 +109,13 @@ public class UserService {
             throw new IndexOutOfBoundsException("There is no User with the ID:" + userID);
         }
         User user = optionalUser.get();
-        if(!bCryptPasswordEncoder.matches(resetPasswordBody.getResetToken(), user.getResetpassword_hash())){
+        if(!bCryptPasswordEncoder.matches(resetPasswordBody.getResetToken(), user.getResetpasswordHash())){
             throw new BadCredentialsException("The Token doesn't match");
         }
         if (!Pattern.matches(PWD_PATTERN, resetPasswordBody.getNewPassword())) {
             throw new Exception("Password does not require the conditions");
         }
-        user.setResetpassword_hash("");
+        user.setResetpasswordHash("");
         user.setPasswordHash(bCryptPasswordEncoder.encode(resetPasswordBody.getNewPassword()));
         userRepository.save(user);
 

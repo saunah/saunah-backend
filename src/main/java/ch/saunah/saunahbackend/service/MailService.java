@@ -62,7 +62,7 @@ public class MailService {
      * @param resetPasswordToken This token will be used for the authentification for the reset
      */
 
-    public void sendPasswordResetMail(String email, int userID , double resetPasswordToken) {
+    public void sendPasswordResetMail(String email, int userID , int resetPasswordToken) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
