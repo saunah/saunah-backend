@@ -1,8 +1,6 @@
 package ch.saunah.saunahbackend.controller;
 
 import ch.saunah.saunahbackend.dto.PriceBody;
-import ch.saunah.saunahbackend.dto.SaunaResponse;
-import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 import ch.saunah.saunahbackend.service.PriceService;
 import io.swagger.v3.oas.annotations.Operation;
