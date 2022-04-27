@@ -3,7 +3,9 @@ package ch.saunah.saunahbackend.service;
 import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.controller.PriceController;
 import ch.saunah.saunahbackend.dto.PriceBody;
+import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Price;
+import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,13 +60,7 @@ public class PriceServiceTest {
         Price price2 = priceService.addPrice(priceBody);
         assertNotEquals(price.getId(), price2.getId());
 
-        assertEquals(priceBody.getDeposit(), price.getDeposit());
-        assertEquals(priceBody.getWashService(), price.getWashService());
-        assertEquals(priceBody.getTransportService(), price.getTransportService());
-        assertEquals(priceBody.getHandTowel(), price.getHandTowel());
-        assertEquals(priceBody.getSaunahImp(), price.getSaunahImp());
-        assertEquals(priceBody.getWood(), price.getWood());
-
+        checkPriceFields(priceBody, price);
     }
 
     @Test
@@ -78,13 +74,31 @@ public class PriceServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void editPrice() {
-
+        Price price = priceService.addPrice(priceBody);
+        PriceBody priceBodyChanged = new PriceBody();
+        priceBodyChanged.setDeposit(1000);
+        priceBodyChanged.setTransportService(1000);
+        priceBodyChanged.setWashService(1000);
+        priceBodyChanged.setWood(1000);
+        priceBodyChanged.setHandTowel(1000);
+        priceBodyChanged.setSaunahImp(1000);
+        price = priceService.editPrice(price.getId(), priceBodyChanged);
+        checkPriceFields(priceBodyChanged, price);
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void removePrice() {
 
+    }
+
+    private void checkPriceFields(PriceBody priceBody, Price price) {
+        assertEquals(priceBody.getDeposit(), price.getDeposit());
+        assertEquals(priceBody.getWashService(), price.getWashService());
+        assertEquals(priceBody.getTransportService(), price.getTransportService());
+        assertEquals(priceBody.getHandTowel(), price.getHandTowel());
+        assertEquals(priceBody.getSaunahImp(), price.getSaunahImp());
+        assertEquals(priceBody.getWood(), price.getWood());
     }
 
 
