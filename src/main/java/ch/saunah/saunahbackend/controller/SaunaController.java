@@ -1,21 +1,28 @@
 package ch.saunah.saunahbackend.controller;
 
-import ch.saunah.saunahbackend.dto.SaunaImageResponse;
-import ch.saunah.saunahbackend.dto.SaunaResponse;
-import ch.saunah.saunahbackend.dto.SaunaTypeBody;
-import ch.saunah.saunahbackend.model.Sauna;
-import ch.saunah.saunahbackend.repository.SaunaRepository;
-import ch.saunah.saunahbackend.service.SaunaService;
-import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import ch.saunah.saunahbackend.dto.SaunaImageResponse;
+import ch.saunah.saunahbackend.dto.SaunaResponse;
+import ch.saunah.saunahbackend.dto.SaunaTypeBody;
+import ch.saunah.saunahbackend.repository.SaunaRepository;
+import ch.saunah.saunahbackend.service.SaunaService;
+import io.swagger.v3.oas.annotations.Operation;
 
 /**
  * Controls the different operation that can be done with sauna types
