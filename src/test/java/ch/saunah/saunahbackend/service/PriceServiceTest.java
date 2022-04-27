@@ -89,7 +89,12 @@ public class PriceServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void removePrice() {
-
+        priceService.addPrice(priceBody);
+        Iterable<Price> prices = priceRepository.findAll();
+        assertTrue(prices.iterator().hasNext());
+        priceService.removePrice(1);
+        prices = priceRepository.findAll();
+        assertFalse(prices.iterator().hasNext());
     }
 
     private void checkPriceFields(PriceBody priceBody, Price price) {
