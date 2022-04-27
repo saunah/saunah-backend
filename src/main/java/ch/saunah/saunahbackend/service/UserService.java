@@ -1,5 +1,6 @@
 package ch.saunah.saunahbackend.service;
 
+import ch.saunah.saunahbackend.dto.ResetPasswordBody;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -83,6 +85,38 @@ public class UserService {
      */
     public User getUserByMail (SignInBody signInBody){
         return userRepository.findByEmail(signInBody.getEmail());
+
+    }
+
+    public double createResetPasswordtoken (User user){
+        int min = 10000;
+        int max = 99999;
+
+        //Creates a random number between min and max
+        double resetToken = Math.floor(Math.random()*(max-min+1)+min);
+
+        String hashedPassword = new BCryptPasswordEncoder().encode(Double.toString(resetToken));
+        user.setResetpassword_hash(hashedPassword);
+        userRepository.save(user);
+        return resetToken;
+    }
+
+    public void resetPassword (Integer userID , ResetPasswordBody resetPasswordBody) throws Exception{
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        Optional<User> optionalUser = userRepository.findById(userID);
+        if(optionalUser.isEmpty()) {
+            throw new IndexOutOfBoundsException("There is no User with the ID:" + userID);
+        }
+        User user = optionalUser.get();
+        if(!bCryptPasswordEncoder.matches(resetPasswordBody.getResetToken(), user.getResetpassword_hash())){
+            throw new BadCredentialsException("The Token doesn't match");
+        }
+        if (!Pattern.matches(PWD_PATTERN, resetPasswordBody.getNewPassword())) {
+            throw new Exception("Password does not require the conditions");
+        }
+        user.setResetpassword_hash("");
+        user.setPasswordHash(bCryptPasswordEncoder.encode(resetPasswordBody.getNewPassword()));
+        userRepository.save(user);
 
     }
 

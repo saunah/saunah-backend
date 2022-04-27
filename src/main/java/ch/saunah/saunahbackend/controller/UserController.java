@@ -1,5 +1,6 @@
 package ch.saunah.saunahbackend.controller;
 
+import ch.saunah.saunahbackend.dto.ResetPasswordBody;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.SignUpBody;
 import ch.saunah.saunahbackend.model.User;
@@ -8,6 +9,7 @@ import ch.saunah.saunahbackend.service.MailService;
 import ch.saunah.saunahbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,12 +55,34 @@ public class UserController {
     }
 
     @Operation(description = "Send a reset Password Mail to the user")
-    @PostMapping(value = "/resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/resetPasswordRequest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> signUp(@RequestBody SignInBody signInBody) throws Exception {
-        User user = userService.getUserByMail(signUpBody);
-        mailService.sendUserActivationMail(user.getEmail(), user.getId());
+    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordBody resetPasswordBody) throws Exception {
+
+
+        SignInBody signInBody = new SignInBody();
+        //Maybe change the setEmail with just the mail string
+        signInBody.setEmail(resetPasswordBody.getEmail());
+
+        User user = userService.getUserByMail(signInBody);
+        Double passwordToken = userService.createResetPasswordtoken(user);
+
+        mailService.sendPasswordResetMail(resetPasswordBody.getEmail(),user.getId() ,passwordToken);
         return ResponseEntity.ok("success");
     }
+
+    @Operation(description = "Reset the users password with the new one")
+    @PostMapping(value = "/resetPassword/{userID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordBody resetPasswordBody , @PathVariable Integer userID) throws Exception {
+        try{
+            userService.resetPassword(userID, resetPasswordBody);
+        }
+        catch(IndexOutOfBoundsException exception){
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
+        }
+        return ResponseEntity.ok("success");
+    }
+
 
 }
