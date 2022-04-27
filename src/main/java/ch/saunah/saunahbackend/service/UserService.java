@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 @Service
 public class UserService {
 
-    private static final String PWD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
+    private static final String PWD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>.]).{8,20}$";
     private static final String EMAIL_PATTERN = "^(.+)@(\\S+)$";
 
     @Autowired
