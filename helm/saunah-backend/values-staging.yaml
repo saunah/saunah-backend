@@ -25,12 +25,28 @@ env:
     value: saunah
   - name: SAUNAH_FRONTEND_BASE_URL
     value: "https://saunah-staging.k8s.init-lab.ch"
+  - name: SAUNAH_SMTP_HOST
+    value: smtp.mailtrap.io
+  - name: SAUNAH_SMTP_PORT
+    value: "2525"
+  - name: SAUNAH_SMTP_USER
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-smtp
+        key: username
+        optional: false
+  - name: SAUNAH_SMTP_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-smtp
+        key: password
+        optional: false
 
 image:
   repository: ghcr.io/saunah/saunah-backend
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "0.1.0"
 
 imagePullSecrets: []
 nameOverride: ""

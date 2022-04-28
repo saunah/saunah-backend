@@ -1,10 +1,17 @@
 package ch.saunah.saunahbackend.model;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  * Model of a sauna type
@@ -47,9 +54,9 @@ public class Sauna {
     private String type;
 
     @OneToMany(mappedBy="sauna", cascade = CascadeType.ALL)
-    private Set<SaunaImage> saunaImages = new HashSet();
+    private Set<SaunaImage> saunaImages = new HashSet<>();
 
-    public  Sauna(){
+    public Sauna(){
 
     }
 
@@ -96,7 +103,7 @@ public class Sauna {
     }
 
     public List<SaunaImage> getSaunaImages(){
-        return (List<SaunaImage>) saunaImages.stream().collect(Collectors.toList());
+        return saunaImages.stream().collect(Collectors.toList());
     }
 
     public void setName(String name) { this.name = name; }
