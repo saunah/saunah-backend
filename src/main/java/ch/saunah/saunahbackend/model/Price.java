@@ -2,6 +2,9 @@ package ch.saunah.saunahbackend.model;
 
 import javax.persistence.*;
 
+/**
+ * Model of a price structure
+ */
 @Entity(name = "price")
 public class Price {
     @Id

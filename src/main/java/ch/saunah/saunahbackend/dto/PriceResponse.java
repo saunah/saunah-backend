@@ -1,8 +1,10 @@
 package ch.saunah.saunahbackend.dto;
 
 import ch.saunah.saunahbackend.model.Price;
-import ch.saunah.saunahbackend.model.Sauna;
 
+/**
+ * This class is used as the response DTO object, when a price structure data was retrieved.
+ */
 public class PriceResponse {
     private int id;
     private float transportService;
@@ -12,7 +14,9 @@ public class PriceResponse {
     private float handTowel;
     private float wood;
 
-
+    /**
+     * This constructor sets all the fields of this object.
+     */
     public PriceResponse(Price price) {
         this.id = price.getId();
         this.transportService = price.getTransportService();

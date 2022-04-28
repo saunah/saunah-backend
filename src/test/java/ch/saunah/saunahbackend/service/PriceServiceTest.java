@@ -3,9 +3,7 @@ package ch.saunah.saunahbackend.service;
 import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.controller.PriceController;
 import ch.saunah.saunahbackend.dto.PriceBody;
-import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Price;
-import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +18,9 @@ import org.webjars.NotFoundException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * This class tests all Price service methods
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SaunahBackendApplication.class)
 public class PriceServiceTest {
@@ -49,6 +50,9 @@ public class PriceServiceTest {
 
     }
 
+    /**
+     * This test checks if the user can create a new Price struct with the correct value for the fields
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void addNewPrice() {
@@ -62,6 +66,9 @@ public class PriceServiceTest {
         checkPriceFields(priceBody, price);
     }
 
+    /**
+     * This test checks if the user can get a specific Price struct
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getPrice() {
@@ -70,6 +77,9 @@ public class PriceServiceTest {
         assertNotNull(priceService.getPrice(1));
     }
 
+    /**
+     * This test checks if the user can edit a Price structure
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void editPrice() {
@@ -85,6 +95,9 @@ public class PriceServiceTest {
         checkPriceFields(priceBodyChanged, price);
     }
 
+    /**
+     * This test checks if the user can delete a Price Structure
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void removePrice() {
@@ -96,6 +109,11 @@ public class PriceServiceTest {
         assertFalse(prices.iterator().hasNext());
     }
 
+    /**
+     * This method helps checking if the values are correct
+     * @param priceBody the Parameters of a price structure
+     * @param price the instance of a Price
+     */
     private void checkPriceFields(PriceBody priceBody, Price price) {
         assertEquals(priceBody.getDeposit(), price.getDeposit());
         assertEquals(priceBody.getWashService(), price.getWashService());
@@ -104,6 +122,4 @@ public class PriceServiceTest {
         assertEquals(priceBody.getSaunahImp(), price.getSaunahImp());
         assertEquals(priceBody.getWood(), price.getWood());
     }
-
-
 }
