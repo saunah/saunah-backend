@@ -42,7 +42,11 @@ public class PriceService {
     }
 
     public Price getPrice(int id) throws NotFoundException {
-        return null;
+        Price price = priceRepository.findById(id).orElse(null);
+        if (price == null){
+            throw new NotFoundException(String.format("Price format with id %d not found!", id));
+        }
+        return price;
     }
 
     private Price setPriceFields (Price price, PriceBody priceBody) {
