@@ -40,7 +40,8 @@ public class PriceService {
     }
 
     public String removePrice(int id) throws NullPointerException {
-        return null;
+        priceRepository.deleteById(id);
+        return String.format("The Price Structure with id %s has been removed", id);
     }
 
     public Price getPrice(int id) throws NotFoundException {
