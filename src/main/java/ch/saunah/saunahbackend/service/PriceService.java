@@ -34,7 +34,9 @@ public class PriceService {
     }
 
     public Price editPrice(int id, PriceBody priceBody) throws NullPointerException {
-        return null;
+        Price editPrice = getPrice(id);
+        setPriceFields(editPrice, priceBody);
+        return priceRepository.save(editPrice);
     }
 
     public String removePrice(int id) throws NullPointerException {
