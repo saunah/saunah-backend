@@ -49,7 +49,6 @@ public class User {
     private boolean activated;
 
     @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     /**
