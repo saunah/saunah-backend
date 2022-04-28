@@ -44,10 +44,16 @@ In order to configure your IDE to run the application with environment variabele
 - `SAUNAH_DB_PASSWORD=saunah`
 - `SAUNAH_DB_NAME=saunah`
 - `SAUNAH_FRONTEND_BASE_URL=localhost:3000`
+- `SAUNAH_SMTP_HOST=smtp.mailtrap.io`
+- `SAUNAH_SMTP_PORT=2525`
+- `SAUNAH_SMTP_USER=replace-with-your-smtp-username`
+- `SAUNAH_SMTP_PASSWORD=replace-with-your-smtp-password`
 
-**To configure IntelliJ to use these values**, navigate to `Run → Edit Configurations`, make sure `SaunahBackendApplication` is selected on the left hand side, and enter the following string to *Environment variables*: `SAUNAH_DB_HOST=127.0.0.1;SAUNAH_DB_PORT=5556;SAUNAH_DB_USER=saunah;SAUNAH_DB_PASSWORD=saunah;SAUNAH_DB_NAME=saunah;SAUNAH_FRONTEND_BASE_URL=localhost:3000`.
+**To configure IntelliJ to use these values**, navigate to `Run → Edit Configurations`, make sure `SaunahBackendApplication` is selected on the left hand side, and enter the following string to *Environment variables*: `SAUNAH_DB_HOST=127.0.0.1;SAUNAH_DB_PORT=5556;SAUNAH_DB_USER=saunah;SAUNAH_DB_PASSWORD=saunah;SAUNAH_DB_NAME=saunah;SAUNAH_FRONTEND_BASE_URL=localhost:3000;SAUNAH_SMTP_HOST=smtp.mailtrap.io;SAUNAH_SMTP_PORT=2525;SAUNAH_SMTP_USER=replace-with-your-smtp-username;SAUNAH_SMTP_PASSWORD=replace-with-your-smtp-password`.
 
 Please make sure there is no leading or trailing space in the string, as this might cause errors otherwiese.
+
+***Note*** that the values for `SAUNAH_SMTP_USER` and `SAUNAH_SMTP_PASSWORD` need to be set to the [mailtrap.io](https://mailtrap.io) credentils of the account used for testing. It's also possible to use a different SMTP server for sending emails. In that case, `SAUNAH_SMTP_HOST` and `SAUNAH_SMTP_PORT` need to be changed as well.
 
 ## 💾 Setting up a Development Database
 
