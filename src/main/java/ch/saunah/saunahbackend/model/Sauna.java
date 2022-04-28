@@ -53,6 +53,9 @@ public class Sauna {
     @Column(name = "type", nullable = false)
     private String type;
 
+    @Column(name = "calenderid", nullable = false)
+    private String calenderid;
+
     @OneToMany(mappedBy="sauna", cascade = CascadeType.ALL)
     private Set<SaunaImage> saunaImages = new HashSet<>();
 
@@ -101,6 +104,7 @@ public class Sauna {
     public String getType() {
         return type;
     }
+    public String getCalenderid(){return calenderid;}
 
     public List<SaunaImage> getSaunaImages(){
         return saunaImages.stream().collect(Collectors.toList());
@@ -143,6 +147,8 @@ public class Sauna {
     public void setType(String type) {
         this.type = type;
     }
+
+    public void setCalenderid(String calenderid){this.calenderid = calenderid;}
 
     public void addSaunaImage(SaunaImage saunaImage){
         this.saunaImages.add(saunaImage);
