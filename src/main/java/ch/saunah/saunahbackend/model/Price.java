@@ -1,10 +1,8 @@
 package ch.saunah.saunahbackend.model;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+@Entity(name = "price")
 public class Price {
     @Id
     @Column(name="id", nullable = false)

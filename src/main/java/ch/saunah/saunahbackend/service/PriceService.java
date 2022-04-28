@@ -7,10 +7,12 @@ import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.util.Objects;
 
+@Service
 public class PriceService {
 
     @Autowired

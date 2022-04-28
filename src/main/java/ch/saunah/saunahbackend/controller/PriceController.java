@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class PriceController {
 
     @Autowired
-    private PriceRepository priceRepository;
-
-    @Autowired
     private PriceService priceService;
 
     @Operation(description = "Allows adding a new Price structure.")

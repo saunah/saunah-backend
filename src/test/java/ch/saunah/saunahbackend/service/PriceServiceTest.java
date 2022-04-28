@@ -56,7 +56,6 @@ public class PriceServiceTest {
         Iterable<Price> prices = priceRepository.findAll();
         assertTrue(prices.iterator().hasNext());
         assertThrows(NullPointerException.class, () -> priceService.addPrice(null));
-        assertThrows(NullPointerException.class, () -> priceService.addPrice(new PriceBody()));
         Price price2 = priceService.addPrice(priceBody);
         assertNotEquals(price.getId(), price2.getId());
 
