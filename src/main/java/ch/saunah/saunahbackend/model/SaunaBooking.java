@@ -1,5 +1,7 @@
 package ch.saunah.saunahbackend.model;
 
+import ch.saunah.saunahbackend.dto.BookingBody;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,8 +22,8 @@ public class SaunaBooking {
     @Column(name = "sauna_name", nullable = false)
     private String saunaName;
 
-    @Column(name = "creation", nullable = false)
-    private Date creation;
+    @Column(name = "booking_date", nullable = false)
+    private Date bookingDate;
 
     @Column(name = "state", nullable = false)
     private BookingState state;
@@ -38,18 +40,20 @@ public class SaunaBooking {
         return saunaName;
     }
 
-    public Date getCreation() {
-        return creation;
+    public Date getBookingDate() {
+        return bookingDate;
     }
 
     public BookingState getState() {
         return state;
     }
 
-    public void setSaunaName(String saunaName) { this.saunaName = saunaName; }
+    public void setSaunaName(String saunaName) {
+        this.saunaName = saunaName;
+    }
 
-    public void setCreation(Date creation) {
-        this.creation = creation;
+    public void setBookingDate(Date creation) {
+        this.bookingDate = creation;
     }
 
     public void setState(BookingState state) {
