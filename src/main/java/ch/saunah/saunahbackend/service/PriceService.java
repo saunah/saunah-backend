@@ -2,8 +2,6 @@ package ch.saunah.saunahbackend.service;
 
 import ch.saunah.saunahbackend.dto.PriceBody;
 import ch.saunah.saunahbackend.model.Price;
-import ch.saunah.saunahbackend.model.Sauna;
-import ch.saunah.saunahbackend.model.SaunaImage;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

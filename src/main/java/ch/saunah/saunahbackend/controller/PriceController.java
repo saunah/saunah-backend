@@ -2,7 +2,6 @@ package ch.saunah.saunahbackend.controller;
 
 import ch.saunah.saunahbackend.dto.PriceBody;
 import ch.saunah.saunahbackend.dto.PriceResponse;
-import ch.saunah.saunahbackend.dto.SaunaResponse;
 import ch.saunah.saunahbackend.service.PriceService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,4 @@ public class PriceController {
     public @ResponseBody ResponseEntity<PriceResponse> getPrice(@PathVariable(value = "id", required = true) Integer id) {
         return ResponseEntity.ok(new PriceResponse(priceService.getPrice(id)));
     }
-
-
-
 }
