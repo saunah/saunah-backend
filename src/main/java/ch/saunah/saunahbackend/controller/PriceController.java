@@ -36,8 +36,7 @@ public class PriceController {
     @Operation(description = "Allows editing an existing Price structure.")
     @PostMapping(path = "price/edit")
     public @ResponseBody
-    ResponseEntity<String> editPrice(@RequestParam("Id") int id, @RequestBody PriceBody priceBody) {
-        priceService.editPrice(id, priceBody);
-        return ResponseEntity.ok("success");
+    ResponseEntity<PriceResponse> editPrice(@RequestParam("Id") int id, @RequestBody PriceBody priceBody) {
+        return ResponseEntity.ok(new PriceResponse(priceService.editPrice(id, priceBody)));
     }
 }

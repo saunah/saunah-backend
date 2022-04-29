@@ -1,7 +1,6 @@
 package ch.saunah.saunahbackend.service;
 
 import ch.saunah.saunahbackend.SaunahBackendApplication;
-import ch.saunah.saunahbackend.controller.PriceController;
 import ch.saunah.saunahbackend.dto.PriceBody;
 import ch.saunah.saunahbackend.model.Price;
 import ch.saunah.saunahbackend.repository.PriceRepository;
@@ -30,9 +29,6 @@ public class PriceServiceTest {
     @Autowired
     private PriceRepository priceRepository;
     private PriceBody priceBody = null;
-
-    @Autowired
-    private PriceController priceController;
 
     @BeforeEach
     void setUp() {

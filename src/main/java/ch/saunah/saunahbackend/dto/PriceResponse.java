@@ -31,5 +31,16 @@ public class PriceResponse {
         return id;
     }
 
+    public float getTransportService() { return  transportService; }
+
+    public float getWashService() { return  washService; }
+
+    public float getSaunahImp() { return saunahImp; }
+
+    public float getDeposit() { return deposit; }
+
+    public float getHandTowel() { return handTowel; }
+
+    public float getWood() { return wood; }
 
 }

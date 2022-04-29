@@ -1,5 +1,8 @@
 package ch.saunah.saunahbackend.dto;
 
+/**
+ * This class is used as the DTO object when creating a price structure.
+ */
 public class PriceBody {
     private float transportService;
     private float washService;

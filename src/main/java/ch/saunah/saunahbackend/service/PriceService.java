@@ -2,6 +2,7 @@ package ch.saunah.saunahbackend.service;
 
 import ch.saunah.saunahbackend.dto.PriceBody;
 import ch.saunah.saunahbackend.model.Price;
+import ch.saunah.saunahbackend.model.SaunaImage;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,11 +50,14 @@ public class PriceService {
      * Remove an existing price structure from the database
      * @param id the id of the price structure that should be deleted
      * @return message if price structure has been successfully been deleted
-     * @throws NullPointerException
+     * @throws NotFoundException if no such price structure exists
      */
-    public String removePrice(int id) throws NullPointerException {
+    public void removePrice(int id) throws NotFoundException {
+        Price price = priceRepository.findById(id).orElse(null);
+        if (price == null){
+            throw new NotFoundException(String.format("Price structure with id %d not found!", id));
+        }
         priceRepository.deleteById(id);
-        return String.format("The Price Structure with id %s has been removed", id);
     }
 
     /**
