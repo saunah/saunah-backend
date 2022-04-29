@@ -2,12 +2,14 @@ package ch.saunah.saunahbackend.service;
 
 import ch.saunah.saunahbackend.dto.PriceBody;
 import ch.saunah.saunahbackend.model.Price;
+import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.SaunaImage;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -38,7 +40,7 @@ public class PriceService {
      * @param id The id of the Price structure that shall be edited
      * @param priceBody the parameters of the price structure that is being edited
      * @return The price structure with the changed values
-     * @throws NullPointerException
+     * @throws NullPointerException if no price structure exists
      */
     public Price editPrice(int id, PriceBody priceBody) throws NullPointerException {
         Price editPrice = getPrice(id);
@@ -49,7 +51,6 @@ public class PriceService {
     /**
      * Remove an existing price structure from the database
      * @param id the id of the price structure that should be deleted
-     * @return message if price structure has been successfully been deleted
      * @throws NotFoundException if no such price structure exists
      */
     public void removePrice(int id) throws NotFoundException {
@@ -74,7 +75,14 @@ public class PriceService {
         return price;
     }
 
-
+    /**
+     * Returns all price structures from the database.
+     *
+     * @return all price structures from the database
+     */
+    public List<Price> getAllPrice() {
+        return (List<Price>) priceRepository.findAll();
+    }
 
 
     /**

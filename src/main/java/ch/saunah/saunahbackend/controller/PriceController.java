@@ -44,7 +44,12 @@ public class PriceController {
         return ResponseEntity.ok(new PriceResponse(priceService.editPrice(id, priceBody)));
     }
 
-
+    @Operation(description = "Returns a list of Price structures.")
+    @GetMapping(path="prices")
+    public @ResponseBody
+    List<PriceResponse> getAllPrice() {
+        return priceService.getAllPrice().stream().map(x -> new PriceResponse(x)).collect(Collectors.toList());
+    }
 
     @Operation(description = "Returns the price with the ID specified.")
     @GetMapping(path="price/{id}")

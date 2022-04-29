@@ -74,6 +74,21 @@ public class PriceServiceTest {
     }
 
     /**
+     * This test checks if all saunas can be found that exist in the database
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void getAllPrice() {
+        priceService.addPrice(priceBody);
+        priceService.addPrice(priceBody);
+        priceService.addPrice(priceBody);
+        assertEquals(3,priceRepository.count());
+        priceService.removePrice(1);
+        assertEquals(2,priceRepository.count());
+    }
+
+
+    /**
      * This test checks if the user can edit a Price structure
      */
     @Test
