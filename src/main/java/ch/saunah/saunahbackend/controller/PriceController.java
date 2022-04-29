@@ -2,12 +2,16 @@ package ch.saunah.saunahbackend.controller;
 
 import ch.saunah.saunahbackend.dto.PriceBody;
 import ch.saunah.saunahbackend.dto.PriceResponse;
+import ch.saunah.saunahbackend.dto.SaunaResponse;
 import ch.saunah.saunahbackend.service.PriceService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controls the different operations that can be done with price
@@ -39,4 +43,15 @@ public class PriceController {
     ResponseEntity<PriceResponse> editPrice(@RequestParam("Id") int id, @RequestBody PriceBody priceBody) {
         return ResponseEntity.ok(new PriceResponse(priceService.editPrice(id, priceBody)));
     }
+
+
+
+    @Operation(description = "Returns the price with the ID specified.")
+    @GetMapping(path="price/{id}")
+    public @ResponseBody ResponseEntity<PriceResponse> getPrice(@PathVariable(value = "id", required = true) Integer id) {
+        return ResponseEntity.ok(new PriceResponse(priceService.getPrice(id)));
+    }
+
+
+
 }
