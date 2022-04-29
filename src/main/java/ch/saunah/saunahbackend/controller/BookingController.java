@@ -2,7 +2,6 @@ package ch.saunah.saunahbackend.controller;
 
 import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.dto.BookingResponse;
-import ch.saunah.saunahbackend.repository.BookingRepository;
 import ch.saunah.saunahbackend.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,6 @@ import java.util.stream.Collectors;
 public class BookingController {
 
     @Autowired
-    private BookingRepository bookingRepository;
-
-    @Autowired
     private BookingService bookingService;
 
     @Operation(description = "Creates a new booking.")
@@ -33,11 +29,16 @@ public class BookingController {
         return  ResponseEntity.ok("success");
     }
 
-    @Operation(description = "Returns a list of bookings.")
+    @Operation(description = "Returns the list of all bookings.")
     @GetMapping(path="bookings")
     public @ResponseBody
     List<BookingResponse> getAllBooking() {
         return bookingService.getAllBookings().stream().map(x -> new BookingResponse(x)).collect(Collectors.toList());
     }
 
+    @Operation(description = "Returns the booking with the specified ID.")
+    @GetMapping(path="booking/{id}")
+    public @ResponseBody ResponseEntity<BookingResponse> getBooking(@PathVariable(value = "id", required = true) Integer id) {
+        return ResponseEntity.ok(new BookingResponse(bookingService.getBooking(id)));
+    }
 }

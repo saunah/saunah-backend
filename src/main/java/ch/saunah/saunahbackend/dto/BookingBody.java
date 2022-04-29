@@ -1,9 +1,16 @@
 package ch.saunah.saunahbackend.dto;
 
+import ch.saunah.saunahbackend.model.BookingState;
+
+import java.util.Date;
+
 /**
  * This class is used as the DTO object when creating a Booking.
  */
 public class BookingBody {
+    private String saunaName;
+    private Date bookingDate;
+    private BookingState state;
     private int userID;
     private int saunaId;
     private String location;
@@ -13,6 +20,30 @@ public class BookingBody {
     private boolean deposit;
     private boolean handTowel;
     private boolean wood;
+
+    public String getSaunaName() {
+        return saunaName;
+    }
+
+    public void setSaunaName(String saunaName) {
+        this.saunaName = saunaName;
+    }
+
+    public Date getBookingDate() {
+        return bookingDate;
+    }
+
+    public void setBookingDate(Date bookingDate) {
+        this.bookingDate = bookingDate;
+    }
+
+    public BookingState getState() {
+        return state;
+    }
+
+    public void setState(BookingState state) {
+        this.state = state;
+    }
 
     public int getUserID() {
         return userID;
