@@ -5,5 +5,6 @@ package ch.saunah.saunahbackend.model;
  */
 public enum BookingState {
     OPENED,
-    APPROVED
+    APPROVED,
+    CANCELED
 }

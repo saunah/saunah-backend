@@ -1,6 +1,5 @@
 package ch.saunah.saunahbackend.dto;
 
-import ch.saunah.saunahbackend.model.BookingState;
 
 import java.util.Date;
 
@@ -9,8 +8,9 @@ import java.util.Date;
  */
 public class BookingBody {
     private String saunaName;
-    private Date bookingDate;
-    private BookingState state;
+    private Date startBookingDate;
+    private Date endBookingDate;
+    private Date creation;
     private int userID;
     private int saunaId;
     private String location;
@@ -29,20 +29,28 @@ public class BookingBody {
         this.saunaName = saunaName;
     }
 
-    public Date getBookingDate() {
-        return bookingDate;
+    public Date getStartBookingDate() {
+        return startBookingDate;
     }
 
-    public void setBookingDate(Date bookingDate) {
-        this.bookingDate = bookingDate;
+    public void setStartBookingDate(Date startBookingDate) {
+        this.startBookingDate = startBookingDate;
     }
 
-    public BookingState getState() {
-        return state;
+    public Date getEndBookingDate() {
+        return endBookingDate;
     }
 
-    public void setState(BookingState state) {
-        this.state = state;
+    public void setEndBookingDate(Date endBookingDate) {
+        this.endBookingDate = endBookingDate;
+    }
+
+    public Date getCreation() {
+        return creation;
+    }
+
+    public void setCreation(Date creation) {
+        this.creation = creation;
     }
 
     public int getUserID() {

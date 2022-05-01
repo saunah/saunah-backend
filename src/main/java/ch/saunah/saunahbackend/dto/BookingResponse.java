@@ -1,7 +1,7 @@
 package ch.saunah.saunahbackend.dto;
 
 import ch.saunah.saunahbackend.model.BookingState;
-import ch.saunah.saunahbackend.model.SaunaBooking;
+import ch.saunah.saunahbackend.model.Booking;
 
 import java.util.Date;
 
@@ -11,7 +11,9 @@ import java.util.Date;
 public class BookingResponse {
 
     private String saunaName;
-    private Date bookingDate;
+    private Date startBookingDate;
+    private Date endBookingDate;
+    private Date creation;
     private BookingState state;
     private int userID;
     private int saunaId;
@@ -23,27 +25,40 @@ public class BookingResponse {
     private boolean handTowel;
     private boolean wood;
 
-    public BookingResponse(SaunaBooking saunaBooking) {
-        this.saunaName = saunaBooking.getSaunaName();
-        this.bookingDate = saunaBooking.getBookingDate();
-        this.state = saunaBooking.getState();
-        this.userID = saunaBooking.getUserId();
-        this.saunaId = saunaBooking.getSaunaId();
-        this.location = saunaBooking.getLocation();
-        this.transportService = saunaBooking.isTransportService();
-        this.washService = saunaBooking.isWashService();
-        this.saunahImp = saunaBooking.isSaunahImp();
-        this.deposit = saunaBooking.isDeposit();
-        this.handTowel = saunaBooking.isHandTowel();
-        this.wood = saunaBooking.isWood();
+    /**
+     * This constructor sets all the fields of this object.
+     */
+    public BookingResponse(Booking booking) {
+        this.saunaName = booking.getSaunaName();
+        this.startBookingDate = booking.getStartBookingDate();
+        this.endBookingDate = booking.getEndBookingDate();
+        this.creation = booking.getCreation();
+        this.state = booking.getState();
+        this.userID = booking.getUserId();
+        this.saunaId = booking.getSaunaId();
+        this.location = booking.getLocation();
+        this.transportService = booking.isTransportService();
+        this.washService = booking.isWashService();
+        this.saunahImp = booking.isSaunahImp();
+        this.deposit = booking.isDeposit();
+        this.handTowel = booking.isHandTowel();
+        this.wood = booking.isWood();
     }
 
     public String getSaunaName() {
         return saunaName;
     }
 
-    public Date getBookingDate() {
-        return bookingDate;
+    public Date getStartBookingDate() {
+        return startBookingDate;
+    }
+
+    public Date getEndBookingDate() {
+        return endBookingDate;
+    }
+
+    public Date getCreation() {
+        return creation;
     }
 
     public BookingState getState() {

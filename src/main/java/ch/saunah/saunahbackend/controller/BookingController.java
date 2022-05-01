@@ -24,21 +24,45 @@ public class BookingController {
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "booking/add")
     @ResponseBody
-    ResponseEntity<String> createBooking(@RequestBody BookingBody bookingBody) {
+    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody) {
         bookingService.addBooking(bookingBody);
-        return  ResponseEntity.ok("success");
+        return ResponseEntity.ok(new BookingResponse(bookingService.addBooking(bookingBody)));
+    }
+
+    @Operation(description = "Approves a existing booking structure with the ID specified.")
+    @PostMapping(path = "booking/approve")
+    public @ResponseBody
+    ResponseEntity<String> approveBooking(@RequestParam("Id") int id) {
+        bookingService.approveBooking(id);
+        return ResponseEntity.ok("success");
+    }
+
+    @Operation(description = "Cancels a existing booking structure with the ID specified.")
+    @PostMapping(path = "booking/cancel")
+    public @ResponseBody
+    ResponseEntity<String> cancelBooking(@RequestParam("Id") int id) {
+        bookingService.cancelBooking(id);
+        return ResponseEntity.ok("success");
+    }
+
+    @Operation(description = "Allows editing an existing Booking structure.")
+    @PostMapping(path = "booking/edit")
+    public @ResponseBody
+    ResponseEntity<BookingResponse> editBooking(@RequestParam("Id") int id, @RequestBody BookingBody bookingBody) {
+        return ResponseEntity.ok(new BookingResponse(bookingService.editBooking(id, bookingBody)));
     }
 
     @Operation(description = "Returns the list of all bookings.")
-    @GetMapping(path="bookings")
+    @GetMapping(path = "bookings")
     public @ResponseBody
     List<BookingResponse> getAllBooking() {
-        return bookingService.getAllBookings().stream().map(x -> new BookingResponse(x)).collect(Collectors.toList());
+        return bookingService.getAllBooking().stream().map(x -> new BookingResponse(x)).collect(Collectors.toList());
     }
 
-    @Operation(description = "Returns the booking with the specified ID.")
-    @GetMapping(path="booking/{id}")
-    public @ResponseBody ResponseEntity<BookingResponse> getBooking(@PathVariable(value = "id", required = true) Integer id) {
+    @Operation(description = "Returns the booking with the ID specified.")
+    @GetMapping(path = "booking/{id}")
+    public @ResponseBody
+    ResponseEntity<BookingResponse> getBooking(@PathVariable(value = "id", required = true) Integer id) {
         return ResponseEntity.ok(new BookingResponse(bookingService.getBooking(id)));
     }
 }

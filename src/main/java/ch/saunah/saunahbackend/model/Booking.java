@@ -1,6 +1,5 @@
 package ch.saunah.saunahbackend.model;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,20 +8,26 @@ import javax.persistence.Id;
 import java.util.Date;
 
 /**
- * Model of a sauna booking
+ * Model of a booking structure
  */
-@Entity(name = "sauna_booking")
-public class SaunaBooking {
+@Entity(name = "booking")
+public class Booking {
     @Id
-    @Column(name="id", nullable = false)
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "sauna_name", nullable = false)
     private String saunaName;
 
-    @Column(name = "booking_date", nullable = false)
-    private Date bookingDate;
+    @Column(name = "start_booking_date", nullable = false)
+    private Date startBookingDate;
+
+    @Column(name = "end_booking_date", nullable = false)
+    private Date endBookingDate;
+
+    @Column(name = "creation", nullable = false)
+    private Date creation;
 
     @Column(name = "state", nullable = false)
     private BookingState state;
@@ -54,7 +59,7 @@ public class SaunaBooking {
     @Column(name = "wood", nullable = false)
     private boolean wood;
 
-    public SaunaBooking(){
+    public Booking() {
 
     }
 
@@ -70,12 +75,28 @@ public class SaunaBooking {
         this.saunaName = saunaName;
     }
 
-    public Date getBookingDate() {
-        return bookingDate;
+    public Date getStartBookingDate() {
+        return startBookingDate;
     }
 
-    public void setBookingDate(Date bookingDate) {
-        this.bookingDate = bookingDate;
+    public void setStartBookingDate(Date startBookingDate) {
+        this.startBookingDate = startBookingDate;
+    }
+
+    public Date getEndBookingDate() {
+        return endBookingDate;
+    }
+
+    public void setEndBookingDate(Date endBookingDate) {
+        this.endBookingDate = endBookingDate;
+    }
+
+    public Date getCreation() {
+        return creation;
+    }
+
+    public void setCreation(Date creation) {
+        this.creation = creation;
     }
 
     public BookingState getState() {
