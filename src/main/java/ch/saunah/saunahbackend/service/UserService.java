@@ -89,6 +89,11 @@ public class UserService {
 
     }
 
+    /**
+     * Create a crypto secure token to authenicate the password requester and saves it on the user
+     * @param user The user that requested the password change
+     * @return an int with 5 digits
+     */
     public int createResetPasswordtoken (User user){
         int min = 10000;
         int max = 99999;
@@ -102,6 +107,12 @@ public class UserService {
         return resetToken;
     }
 
+    /**
+     * Reset the users password if all conditons are met.
+     * @param userID Int to identify
+     * @param resetPasswordBody
+     * @throws Exception
+     */
     public void resetPassword (Integer userID , ResetPasswordBody resetPasswordBody) throws Exception{
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         Optional<User> optionalUser = userRepository.findById(userID);
