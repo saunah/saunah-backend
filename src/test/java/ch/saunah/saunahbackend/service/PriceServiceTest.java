@@ -1,28 +1,30 @@
 package ch.saunah.saunahbackend.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.webjars.NotFoundException;
+
 import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.dto.PriceBody;
 import ch.saunah.saunahbackend.model.Price;
 import ch.saunah.saunahbackend.repository.PriceRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.webjars.NotFoundException;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * This class tests all Price service methods
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = SaunahBackendApplication.class)
-public class PriceServiceTest {
+class PriceServiceTest {
 
     @Autowired
     private PriceService priceService;
