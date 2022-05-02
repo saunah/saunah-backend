@@ -49,6 +49,9 @@ public class User {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
+    @Column(name = "resetpasswordhash")
+    private String resetpasswordhash;
+
     /**
      * The default constructor for the user.
      */
@@ -147,4 +150,9 @@ public class User {
     public void setRole(UserRole role) {
         this.role = role;
     }
+
+    public String getResetpasswordHash(){return resetpasswordhash;}
+
+    public void setResetpasswordHash(String resetpassword_hash){this.resetpasswordhash = resetpassword_hash;}
+
 }

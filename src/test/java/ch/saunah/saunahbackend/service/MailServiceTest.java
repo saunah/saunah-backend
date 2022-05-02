@@ -33,8 +33,12 @@ class MailServiceTest {
         User user = new User();
         user.setEmail("test@mail.ch");
         String verificationId = "1";
+        int userID= 1111;
+        int resetToken = 12345;
         assertDoesNotThrow(() -> mailService.sendUserActivationMail(user.getEmail(), verificationId));
+        assertDoesNotThrow(() ->mailService.sendPasswordResetMail(user.getEmail(), userID ,resetToken));
         user.setEmail("bad email");
         assertDoesNotThrow(() -> mailService.sendUserActivationMail(user.getEmail(), verificationId));
+
     }
 }
