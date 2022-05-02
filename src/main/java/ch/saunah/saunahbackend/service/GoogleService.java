@@ -5,6 +5,10 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.javanet.ConnectionFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
@@ -13,6 +17,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,6 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +37,7 @@ import java.util.List;
 public class GoogleService {
     @Value("${google.api.key}")
     private String googleApiKey;
+
     /** Application name. */
     private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
     /** Global instance of the JSON factory. */
@@ -48,16 +56,46 @@ public class GoogleService {
 
 
     public GoogleService() throws GeneralSecurityException, IOException {
-                service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+
+
+
+        NetHttpTransport transport = new NetHttpTransport.Builder().build();
+        HttpRequestInitializer httpRequestInitializer = request -> {
+            request.setInterceptor(intercepted -> intercepted.getUrl().set("key", googleApiKey));
+        };
+
+        service = new Calendar.Builder(transport, JSON_FACTORY, httpRequestInitializer)
             .setApplicationName(APPLICATION_NAME)
             .build();
+
     }
-    /**
+
+
     public static void main(String[] args) throws GeneralSecurityException, IOException {
         GoogleService googleService = new GoogleService();
+        googleService.createCalender("SaunaTest");
+        Event event = new Event()
+            .setSummary("Google I/O 2015")
+            .setLocation("800 Howard St., San Francisco, CA 94103")
+            .setDescription("A chance to hear more about Google's developer products.");
+
+        DateTime startDateTime = new DateTime("2015-05-28T09:00:00-07:00");
+        EventDateTime start = new EventDateTime()
+            .setDateTime(startDateTime)
+            .setTimeZone("America/Los_Angeles");
+        event.setStart(start);
+
+        DateTime endDateTime = new DateTime("2015-05-28T17:00:00-07:00");
+        EventDateTime end = new EventDateTime()
+            .setDateTime(endDateTime)
+            .setTimeZone("America/Los_Angeles");
+        event.setEnd(end);
+
+        googleService.insertEvent("SaunaTest",event );
+
         googleService.getNextEvents("test");
     }
-    */
+
     /**
      * Creates an authorized Credential object.
      * @param HTTP_TRANSPORT The network HTTP Transport.
@@ -115,7 +153,7 @@ public class GoogleService {
 
     public String updateEvent  (String calenderID ,String eventID ) throws IOException {
         service.events().get(calenderID, eventID).execute();
-        eve
+        return "";
     }
 
 }
