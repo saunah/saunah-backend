@@ -20,8 +20,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
 import java.security.SecureRandom;
 import java.util.Optional;
+import java.util.Iterator;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -31,7 +33,7 @@ import java.util.regex.Pattern;
 @Service
 public class UserService {
 
-    private static final String PWD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
+    private static final String PWD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()%[{}]:;',?/*~$^+=<>._|`-]).{8,20}$";
     private static final String EMAIL_PATTERN = "^(.+)@(\\S+)$";
 
     @Autowired
@@ -77,8 +79,12 @@ public class UserService {
         user.setPlz(signUpBody.getPlz());
         user.setPlace(signUpBody.getPlace());
         user.setStreet(signUpBody.getStreet());
-        user.setRole(UserRole.USER);
         user.setActivationId(UUID.randomUUID().toString());
+        if(hasUsers()){
+            user.setRole(UserRole.USER);
+        }else{
+            user.setRole(UserRole.ADMIN);
+        }
         return userRepository.save(user);
     }
     /**
@@ -146,6 +152,15 @@ public class UserService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * This method checks the Repository if a user exists
+     *
+     * @return true if a user is found
+     */
+    public boolean hasUsers(){
+        return userRepository.findAll().iterator().hasNext();
     }
 
     /**
