@@ -58,17 +58,6 @@ public class GoogleCalendarService {
         .build();
     }
 
-    public static void main(String[] args) throws GeneralSecurityException, IOException {
-
-        // insert base64 json of service account credentials here
-        GoogleCalendarService googleService = new GoogleCalendarService("insert-base64-json-here");
-
-        // id of calendar
-        List<Event> events = googleService.getNextEvents("cs85d7fer742u5v5r4v6e7jink@group.calendar.google.com");
-
-        System.out.println(events);
-    }
-
     /**
      * Creates ServiceAccountCredentials object
      * @param httpTransport The network HTTP Transport.
