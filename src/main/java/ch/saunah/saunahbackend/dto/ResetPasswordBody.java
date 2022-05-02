@@ -12,6 +12,7 @@ public class ResetPasswordBody {
     public String getNewPassword (){return newPassword;}
 
     /**
+     * This constructor sets all the fields of this object.
      *
      * @param email Email of the requester
      * @param resetToken Unique Reset token , that is send over mail
