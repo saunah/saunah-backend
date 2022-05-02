@@ -45,13 +45,6 @@ public class BookingController {
         return ResponseEntity.ok("success");
     }
 
-    @Operation(description = "Allows editing an existing Booking structure.")
-    @PostMapping(path = "booking/edit")
-    public @ResponseBody
-    ResponseEntity<BookingResponse> editBooking(@RequestParam("Id") int id, @RequestBody BookingBody bookingBody) {
-        return ResponseEntity.ok(new BookingResponse(bookingService.editBooking(id, bookingBody)));
-    }
-
     @Operation(description = "Returns the list of all bookings.")
     @GetMapping(path = "bookings")
     public @ResponseBody

@@ -37,20 +37,6 @@ public class BookingService {
     }
 
     /**
-     * Lets the user edit an existing booking structure
-     *
-     * @param id          The id of the booking structure that shall be edited
-     * @param bookingBody the parameters of the booking structure that is being edited
-     * @return The booking structure with the changed values
-     * @throws NullPointerException if no booking structure exists
-     */
-    public Booking editBooking(int id, BookingBody bookingBody) throws NullPointerException {
-        Booking booking = getBooking(id);
-        setBookingFields(booking, bookingBody);
-        return bookingRepository.save(booking);
-    }
-
-    /**
      * Approves a booking structure from the database
      *
      * @param id the id of the booking structure that should be approved
@@ -90,7 +76,7 @@ public class BookingService {
     public Booking getBooking(Integer id) throws NotFoundException {
         Booking booking = bookingRepository.findById(id).orElse(null);
         if (booking == null) {
-            throw new NotFoundException(String.format("Sauna with id %d not found!", id));
+            throw new NotFoundException(String.format("Booking with id %d not found!", id));
         }
         return booking;
     }
@@ -113,7 +99,7 @@ public class BookingService {
         booking.setSaunaId(bookingBody.getSaunaId());
         booking.setLocation(bookingBody.getLocation());
         booking.setTransportService(bookingBody.isTransportService());
-        booking.setWashService(booking.isWashService());
+        booking.setWashService(bookingBody.isWashService());
         booking.setSaunahImp(bookingBody.isSaunahImp());
         booking.setDeposit(bookingBody.isDeposit());
         booking.setHandTowel(bookingBody.isHandTowel());

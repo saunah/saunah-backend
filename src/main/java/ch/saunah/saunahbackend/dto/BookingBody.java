@@ -1,6 +1,5 @@
 package ch.saunah.saunahbackend.dto;
 
-
 import java.util.Date;
 
 /**
@@ -58,7 +57,7 @@ public class BookingBody {
     }
 
     public void setUserID(int userID) {
-        this.userID = saunaId;
+        this.userID = userID;
     }
 
     public int getSaunaId() {

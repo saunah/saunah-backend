@@ -20,7 +20,9 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+/**
+ * This class tests the booking service methods
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SaunahBackendApplication.class)
 class BookingServiceTest {
@@ -69,34 +71,27 @@ class BookingServiceTest {
     }
 
     /**
-     * This test checks if the user can edit a booking structure
-     */
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void editBooking() {
-
-    }
-
-    /**
-     * This test Checks if a booking can be approved
+     * This test checks if a booking can be approved
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void approveBooking() {
+        assertThrows(NotFoundException.class, () -> bookingService.approveBooking(1));
         Booking booking = bookingService.addBooking(bookingBody);
         bookingService.approveBooking(booking.getId());
-        assertEquals(BookingState.APPROVED, booking.getState());
+        assertEquals(BookingState.APPROVED, bookingService.getBooking(booking.getId()).getState());
     }
 
     /**
-     * This test Checks if a booking can be canceled
+     * This test checks if a booking can be canceled
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void cancelBooking() {
+        assertThrows(NotFoundException.class, () -> bookingService.cancelBooking(1));
         Booking booking = bookingService.addBooking(bookingBody);
         bookingService.cancelBooking(booking.getId());
-        assertEquals(BookingState.CANCELED, booking.getState());
+        assertEquals(BookingState.CANCELED, bookingService.getBooking(booking.getId()).getState());
     }
 
     /**
