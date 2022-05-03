@@ -35,7 +35,6 @@ class GoogleCalendarServiceTest {
         List<Event> events = calendarService.getNextEvents(TEST_CALENDAR_ID);
 
         assertNotNull(events);
-        System.out.println(events);
     }
 
     /**
