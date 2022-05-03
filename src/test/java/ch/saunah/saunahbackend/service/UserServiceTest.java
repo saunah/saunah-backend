@@ -1,13 +1,13 @@
 package ch.saunah.saunahbackend.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.*;
+import ch.saunah.saunahbackend.SaunahBackendApplication;
+import ch.saunah.saunahbackend.dto.ResetPasswordBody;
+import ch.saunah.saunahbackend.dto.SignInBody;
+import ch.saunah.saunahbackend.dto.SignUpBody;
+import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
+import ch.saunah.saunahbackend.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -162,4 +162,26 @@ class UserServiceTest {
         signInBody.setEmail("both wrong");
         assertThrows(Exception.class, () -> userService.signIn(signInBody));
     }
+    /**
+     * Test if a user can sign in with the right and with the wrong credentials
+     *
+     * @throws Exception throws an exception when the login does not work with the right credentials
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void passwordreset() throws Exception {
+        userService.signUp(signUpBody);
+        User user = userRepository.findByEmail("hans.muster@mustermail.ch");
+        user.setActivated(true);
+        userRepository.save(user);
+        double resetPasswordToken = userService.createResetPasswordtoken(user);
+
+        ResetPasswordBody resetPasswordBody = new ResetPasswordBody("hansmuster@mail.ch", "badToken" ,"newPassword12!");
+        assertThrows(Exception.class, () -> userService.resetPassword(user.getId(),resetPasswordBody));
+        ResetPasswordBody resetPasswordBody1 = new ResetPasswordBody("hansmuster@mail.ch", Double.toString(resetPasswordToken) ,"badPassword");
+        assertThrows(Exception.class, () -> userService.resetPassword(user.getId(),resetPasswordBody1));
+        ResetPasswordBody resetPasswordBody2 = new ResetPasswordBody("hansmuster@mail.ch", Double.toString(resetPasswordToken) ,"newPassword12!");
+        assertDoesNotThrow(() -> userService.resetPassword(user.getId(),resetPasswordBody2));
+    }
+
 }
