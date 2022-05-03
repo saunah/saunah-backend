@@ -2,12 +2,18 @@ package ch.saunah.saunahbackend.controller;
 
 import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.dto.BookingResponse;
+import ch.saunah.saunahbackend.model.Booking;
+import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.service.BookingService;
+import ch.saunah.saunahbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +26,8 @@ public class BookingController {
 
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private UserService userService;
 
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "booking/add")
@@ -45,16 +53,29 @@ public class BookingController {
     }
 
     @Operation(description = "Returns the list of all bookings.")
-    @GetMapping(path = "bookings")
+    @GetMapping(path = "allBookings")
     public @ResponseBody
     List<BookingResponse> getAllBooking() {
         return bookingService.getAllBooking().stream().map(x -> new BookingResponse(x)).collect(Collectors.toList());
     }
 
+    @Operation(description = "Returns the list of all bookings.")
+    @GetMapping(path = "bookings")
+    public @ResponseBody
+    List<BookingResponse> getUserBookings(Principal principal) {
+        User user = userService.getUserByMail(principal.getName());
+        return bookingService.getAllBooking().stream().filter(x -> x.getUserId() == user.getId()).map(x -> new BookingResponse(x)).collect(Collectors.toList());
+    }
+
     @Operation(description = "Returns the booking with the ID specified.")
     @GetMapping(path = "booking/{id}")
     public @ResponseBody
-    ResponseEntity<BookingResponse> getBooking(@PathVariable(value = "id", required = true) Integer id) {
-        return ResponseEntity.ok(new BookingResponse(bookingService.getBooking(id)));
+    ResponseEntity<BookingResponse> getBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
+        Booking booking = bookingService.getBooking(id);
+        User user = userService.getUserByMail(principal.getName());
+        if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
+            return ResponseEntity.ok(new BookingResponse(booking));
+        }
+        throw new AuthenticationException("crinsch");
     }
 }

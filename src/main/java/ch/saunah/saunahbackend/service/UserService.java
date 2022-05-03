@@ -80,33 +80,35 @@ public class UserService {
         user.setPlace(signUpBody.getPlace());
         user.setStreet(signUpBody.getStreet());
         user.setActivationId(UUID.randomUUID().toString());
-        if(hasUsers()){
+        if (hasUsers()) {
             user.setRole(UserRole.USER);
-        }else{
+        } else {
             user.setRole(UserRole.ADMIN);
         }
         return userRepository.save(user);
     }
+
     /**
-    * This method returns the user with the mail
+     * This method returns the user with the mail
      */
-    public User getUserByMail (SignInBody signInBody){
-        return userRepository.findByEmail(signInBody.getEmail());
+    public User getUserByMail(String mail) {
+        return userRepository.findByEmail(mail);
 
     }
 
     /**
      * Create a crypto secure token to authenicate the password requester and saves it on the user
+     *
      * @param user The user that requested the password change
      * @return an int with 5 digits
      */
-    public int createResetPasswordtoken (User user){
+    public int createResetPasswordtoken(User user) {
         int min = 10000;
         int max = 99999;
 
         //Creates a random number between min and max
         SecureRandom random = new SecureRandom();
-        int resetToken = random.nextInt() *(max-min+1)+min;
+        int resetToken = random.nextInt() * (max - min + 1) + min;
         String hashedPassword = new BCryptPasswordEncoder().encode(Double.toString(resetToken));
         user.setResetpasswordHash(hashedPassword);
         userRepository.save(user);
@@ -115,18 +117,19 @@ public class UserService {
 
     /**
      * Reset the users password if all conditons are met.
-     * @param userID Int to identify
+     *
+     * @param userID            Int to identify
      * @param resetPasswordBody
      * @throws Exception
      */
-    public void resetPassword (Integer userID , ResetPasswordBody resetPasswordBody) throws Exception{
+    public void resetPassword(Integer userID, ResetPasswordBody resetPasswordBody) throws Exception {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         Optional<User> optionalUser = userRepository.findById(userID);
-        if(optionalUser.isEmpty()) {
+        if (optionalUser.isEmpty()) {
             throw new IndexOutOfBoundsException("There is no User with the ID:" + userID);
         }
         User user = optionalUser.get();
-        if(!bCryptPasswordEncoder.matches(resetPasswordBody.getResetToken(), user.getResetpasswordHash())){
+        if (!bCryptPasswordEncoder.matches(resetPasswordBody.getResetToken(), user.getResetpasswordHash())) {
             throw new BadCredentialsException("The Token doesn't match");
         }
         if (!Pattern.matches(PWD_PATTERN, resetPasswordBody.getNewPassword())) {
@@ -159,7 +162,7 @@ public class UserService {
      *
      * @return true if a user is found
      */
-    public boolean hasUsers(){
+    public boolean hasUsers() {
         return userRepository.findAll().iterator().hasNext();
     }
 
@@ -173,17 +176,16 @@ public class UserService {
     public ResponseEntity<JwtResponse> signIn(SignInBody signInBody) throws Exception {
         try {
             User foundUser = userRepository.findByEmail(signInBody.getEmail());
-            if(foundUser == null){
+            if (foundUser == null) {
                 throw new Exception("No user found with this Email!");
             }
-            if(!foundUser.isActivated()){
+            if (!foundUser.isActivated()) {
                 throw new Exception("User has not been activated");
             }
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword()));
-            if (authentication == null){
+            if (authentication == null) {
                 throw new Exception("Authentication was not successful");
-            }
-            else{
+            } else {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 context.setAuthentication(authentication);
             }

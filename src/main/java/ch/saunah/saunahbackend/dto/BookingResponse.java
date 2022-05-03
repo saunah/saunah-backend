@@ -10,6 +10,8 @@ import java.util.Date;
  */
 public class BookingResponse {
 
+
+    private int id;
     private Date startBookingDate;
     private Date endBookingDate;
     private Date creation;
@@ -29,6 +31,7 @@ public class BookingResponse {
      * This constructor sets all the fields of this object.
      */
     public BookingResponse(Booking booking) {
+        this.id = booking.getId();
         this.startBookingDate = booking.getStartBookingDate();
         this.endBookingDate = booking.getEndBookingDate();
         this.creation = booking.getCreation();
@@ -43,6 +46,10 @@ public class BookingResponse {
         this.deposit = booking.isDeposit();
         this.handTowel = booking.isHandTowel();
         this.wood = booking.isWood();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Date getStartBookingDate() {

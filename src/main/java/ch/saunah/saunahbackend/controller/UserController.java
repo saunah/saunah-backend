@@ -67,21 +67,20 @@ public class UserController {
         //Maybe change the setEmail with just the mail string
         signInBody.setEmail(resetPasswordBody.getEmail());
 
-        User user = userService.getUserByMail(signInBody);
+        User user = userService.getUserByMail(signInBody.getEmail());
         int passwordToken = userService.createResetPasswordtoken(user);
 
-        mailService.sendPasswordResetMail(resetPasswordBody.getEmail(),user.getId() ,passwordToken);
+        mailService.sendPasswordResetMail(resetPasswordBody.getEmail(), user.getId(), passwordToken);
         return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Reset the users password with the new one")
     @PostMapping(value = "/resetPassword/{userID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordBody resetPasswordBody , @PathVariable Integer userID) throws Exception {
-        try{
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordBody resetPasswordBody, @PathVariable Integer userID) throws Exception {
+        try {
             userService.resetPassword(userID, resetPasswordBody);
-        }
-        catch(IndexOutOfBoundsException exception){
+        } catch (IndexOutOfBoundsException exception) {
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
         }
         return ResponseEntity.ok("success");
