@@ -1,27 +1,31 @@
 package ch.saunah.saunahbackend.service;
 
-import ch.saunah.saunahbackend.SaunahBackendApplication;
-import ch.saunah.saunahbackend.dto.SignInBody;
-import ch.saunah.saunahbackend.dto.SignUpBody;
-import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.repository.UserRepository;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 
-
-import static org.junit.jupiter.api.Assertions.*;
+import ch.saunah.saunahbackend.SaunahBackendApplication;
+import ch.saunah.saunahbackend.dto.SignInBody;
+import ch.saunah.saunahbackend.dto.SignUpBody;
+import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
+import ch.saunah.saunahbackend.repository.UserRepository;
 
 /**
  * This class tests all user service methods.
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = SaunahBackendApplication.class)
 class UserServiceTest {
 
@@ -106,6 +110,10 @@ class UserServiceTest {
         User user = userRepository.findByEmail(signUpBody.getEmail());
         assertNotNull(user);
         assertEquals(signUpBody.getEmail(), user.getEmail());
+        assertEquals(user.getRole(), UserRole.ADMIN);
+        signUpBody.setEmail("lorem.ipsum@mustermail.ch");
+        user = userService.signUp(signUpBody);
+        assertEquals(user.getRole(), UserRole.USER);
     }
 
     /**

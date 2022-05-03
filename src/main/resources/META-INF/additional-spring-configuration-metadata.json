@@ -23,5 +23,10 @@
     "name": "saunah.email.from.name",
     "type": "java.lang.String",
     "description": "The name which is listed as the sender name."
+  },
+  {
+    "name": "saunah.credentials.google-service",
+    "type": "java.lang.String",
+    "description": "Google service account json credentials, base64 encoded."
   }
 ]}

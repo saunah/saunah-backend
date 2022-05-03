@@ -22,7 +22,7 @@ public class SaunahBackendConfiguration {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins(frontendBaseUrl); //wieso localhost:3000? zum testen musste ich es auf localhost:8080 setzen.
+                registry.addMapping("/**").allowedOrigins(frontendBaseUrl);
             }
         };
     }
