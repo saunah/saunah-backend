@@ -32,6 +32,9 @@ public class Booking {
     @Column(name = "state", nullable = false)
     private BookingState state;
 
+    @Column(name = "endPrice", nullable = false)
+    private double endPrice;
+
     @Column(name = "userId", nullable = false)
     private int userId;
 
@@ -105,6 +108,14 @@ public class Booking {
 
     public void setState(BookingState state) {
         this.state = state;
+    }
+
+    public double getEndPrice() {
+        return endPrice;
+    }
+
+    public void setEndPrice(double endPrice) {
+        this.endPrice = endPrice;
     }
 
     public int getUserId() {

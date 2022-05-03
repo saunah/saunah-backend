@@ -3,11 +3,15 @@ package ch.saunah.saunahbackend.service;
 import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.BookingState;
+import ch.saunah.saunahbackend.model.Price;
+import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.BookingRepository;
+import ch.saunah.saunahbackend.repository.PriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,9 +23,13 @@ public class BookingService {
 
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private PriceRepository priceRepository;
+    @Autowired
+    private SaunaService saunaService;
 
     /**
-     * Add a new booking to the database
+     * Add a new booking to the database and assigns the end price to it.
      *
      * @param bookingBody the required parameters for creating a booking
      * @return the newly created booking object
@@ -29,10 +37,28 @@ public class BookingService {
      */
     public Booking addBooking(BookingBody bookingBody) throws NullPointerException {
         Objects.requireNonNull(bookingBody, "BookingBody must not be null!");
-        Booking booking = new Booking();
-        booking.setState(BookingState.OPENED);
-        setBookingFields(booking, bookingBody);
+        Price price = priceRepository.findAll().iterator().next();
+        if (price == null) {
+            throw new NotFoundException("No Price available in the database!");
+        }
+        Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
 
+        Booking booking = new Booking();
+        booking.setSaunaName(sauna.getName());
+        booking.setStartBookingDate(bookingBody.getStartBookingDate());
+        booking.setEndBookingDate(bookingBody.getEndBookingDate());
+        booking.setUserId(bookingBody.getUserId());
+        booking.setSaunaId(bookingBody.getSaunaId());
+        booking.setLocation(bookingBody.getLocation());
+        booking.setTransportService(bookingBody.isTransportService());
+        booking.setWashService(bookingBody.isWashService());
+        booking.setSaunahImp(bookingBody.isSaunahImp());
+        booking.setDeposit(bookingBody.isDeposit());
+        booking.setHandTowel(bookingBody.isHandTowel());
+        booking.setWood(bookingBody.isWood());
+        booking.setCreation(new Date(System.currentTimeMillis()));
+        booking.setState(BookingState.OPENED);
+        booking.setEndPrice(calculatePrice(bookingBody, sauna, price));
         return bookingRepository.save(booking);
     }
 
@@ -90,20 +116,28 @@ public class BookingService {
         return (List<Booking>) bookingRepository.findAll();
     }
 
-    private Booking setBookingFields(Booking booking, BookingBody bookingBody) {
-        booking.setSaunaName(bookingBody.getSaunaName());
-        booking.setStartBookingDate(bookingBody.getStartBookingDate());
-        booking.setEndBookingDate(bookingBody.getEndBookingDate());
-        booking.setCreation(bookingBody.getCreation());
-        booking.setUserId(bookingBody.getUserID());
-        booking.setSaunaId(bookingBody.getSaunaId());
-        booking.setLocation(bookingBody.getLocation());
-        booking.setTransportService(bookingBody.isTransportService());
-        booking.setWashService(bookingBody.isWashService());
-        booking.setSaunahImp(bookingBody.isSaunahImp());
-        booking.setDeposit(bookingBody.isDeposit());
-        booking.setHandTowel(bookingBody.isHandTowel());
-        booking.setWood(bookingBody.isWood());
-        return booking;
+    private double calculatePrice(BookingBody bookingBody, Sauna sauna, Price price) {
+        double endPrice = 0;
+        endPrice += sauna.getPrice();
+        if (bookingBody.isTransportService()) {
+            endPrice += price.getTransportService();
+        }
+        if (bookingBody.isWashService()) {
+            endPrice += price.getWashService();
+        }
+        if (bookingBody.isSaunahImp()) {
+            endPrice += price.getSaunahImp();
+        }
+        if (bookingBody.isDeposit()) {
+            endPrice += price.getDeposit();
+        }
+        if (bookingBody.isHandTowel()) {
+            endPrice += price.getHandTowel();
+        }
+        if (bookingBody.isWood()) {
+            endPrice += price.getWood();
+        }
+
+        return endPrice;
     }
 }

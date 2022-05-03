@@ -10,12 +10,12 @@ import java.util.Date;
  */
 public class BookingResponse {
 
-    private String saunaName;
     private Date startBookingDate;
     private Date endBookingDate;
     private Date creation;
     private BookingState state;
-    private int userID;
+    private double endPrice;
+    private int userId;
     private int saunaId;
     private String location;
     private boolean transportService;
@@ -29,12 +29,12 @@ public class BookingResponse {
      * This constructor sets all the fields of this object.
      */
     public BookingResponse(Booking booking) {
-        this.saunaName = booking.getSaunaName();
         this.startBookingDate = booking.getStartBookingDate();
         this.endBookingDate = booking.getEndBookingDate();
         this.creation = booking.getCreation();
         this.state = booking.getState();
-        this.userID = booking.getUserId();
+        this.endPrice = booking.getEndPrice();
+        this.userId = booking.getUserId();
         this.saunaId = booking.getSaunaId();
         this.location = booking.getLocation();
         this.transportService = booking.isTransportService();
@@ -43,10 +43,6 @@ public class BookingResponse {
         this.deposit = booking.isDeposit();
         this.handTowel = booking.isHandTowel();
         this.wood = booking.isWood();
-    }
-
-    public String getSaunaName() {
-        return saunaName;
     }
 
     public Date getStartBookingDate() {
@@ -65,8 +61,12 @@ public class BookingResponse {
         return state;
     }
 
-    public int getUserID() {
-        return userID;
+    public double getEndPrice() {
+        return endPrice;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 
     public int getSaunaId() {

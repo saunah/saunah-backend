@@ -6,11 +6,9 @@ import java.util.Date;
  * This class is used as the DTO object when creating a Booking.
  */
 public class BookingBody {
-    private String saunaName;
     private Date startBookingDate;
     private Date endBookingDate;
-    private Date creation;
-    private int userID;
+    private int userId;
     private int saunaId;
     private String location;
     private boolean transportService;
@@ -19,14 +17,6 @@ public class BookingBody {
     private boolean deposit;
     private boolean handTowel;
     private boolean wood;
-
-    public String getSaunaName() {
-        return saunaName;
-    }
-
-    public void setSaunaName(String saunaName) {
-        this.saunaName = saunaName;
-    }
 
     public Date getStartBookingDate() {
         return startBookingDate;
@@ -44,20 +34,12 @@ public class BookingBody {
         this.endBookingDate = endBookingDate;
     }
 
-    public Date getCreation() {
-        return creation;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setCreation(Date creation) {
-        this.creation = creation;
-    }
-
-    public int getUserID() {
-        return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getSaunaId() {

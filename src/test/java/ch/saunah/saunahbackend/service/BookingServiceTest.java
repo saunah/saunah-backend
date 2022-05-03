@@ -2,9 +2,11 @@ package ch.saunah.saunahbackend.service;
 
 import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.dto.BookingBody;
-import ch.saunah.saunahbackend.model.Booking;
-import ch.saunah.saunahbackend.model.BookingState;
+import ch.saunah.saunahbackend.model.*;
 import ch.saunah.saunahbackend.repository.BookingRepository;
+import ch.saunah.saunahbackend.repository.PriceRepository;
+import ch.saunah.saunahbackend.repository.SaunaRepository;
+import ch.saunah.saunahbackend.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookingServiceTest {
 
     @Autowired
+    private SaunaRepository saunaRepository;
+    @Autowired
+    private PriceRepository priceRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private BookingService bookingService;
     @Autowired
     private BookingRepository bookingRepository;
@@ -35,13 +44,47 @@ class BookingServiceTest {
 
     @BeforeEach
     void setUp() {
+        Sauna sauna = new Sauna();
+        sauna.setName("Mobile Sauna 1");
+        sauna.setDescription("Eine Mobile Sauna");
+        sauna.setIsMobile(true);
+        sauna.setPrice(500);
+        sauna.setMaxTemp(51);
+        sauna.setNumberOfPeople(12);
+        sauna.setLocation("Zürich");
+        sauna.setStreet("Bahnhofstrasse 5");
+        sauna.setZip(9000);
+        sauna.setType("Tent");
+        saunaRepository.save(sauna);
+
+        Price price = new Price();
+        price.setTransportService(1.50F);
+        price.setWashService(50.00F);
+        price.setSaunahImp(25.00F);
+        price.setDeposit(100F);
+        price.setHandTowel(5.00F);
+        price.setWood(20.00F);
+        priceRepository.save(price);
+
+        User user = new User();
+        user.setFirstName("Hans");
+        user.setLastName("Muster");
+        user.setPlace("Winterthur");
+        user.setEmail("hans.muster@mustermail.ch");
+        user.setPhoneNumber("0123");
+        user.setStreet("Teststrasse 123");
+        user.setPasswordHash("ZH_a?!WD32");
+        user.setPlz("1324");
+        user.setActivationId("activated");
+        user.setActivated(true);
+        user.setRole(UserRole.USER);
+        userRepository.save(user);
+
         bookingBody = new BookingBody();
-        bookingBody.setSaunaName("Saunah_01");
         bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 20));
         bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 1));
-        bookingBody.setCreation(new Date(2022, Calendar.AUGUST, 1));
-        bookingBody.setUserID(1);
-        bookingBody.setSaunaId(1);
+        bookingBody.setUserId(user.getId());
+        bookingBody.setSaunaId(sauna.getId());
         bookingBody.setLocation("Zürich");
         bookingBody.setTransportService(true);
         bookingBody.setWashService(true);
