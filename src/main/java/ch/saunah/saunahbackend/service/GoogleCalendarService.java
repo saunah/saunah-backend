@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -15,6 +16,7 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -28,9 +30,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class GoogleCalendarService {
-    private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
+    private static final String APPLICATION_NAME = "SAUNAH";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_EVENTS);
+    private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
+    private static final String TIMEZONE = "Europe/Zurich";
 
     private final NetHttpTransport httpTransport;
 
@@ -54,13 +57,12 @@ public class GoogleCalendarService {
             JSON_FACTORY,
             new HttpCredentialsAdapter(googleCredentials)
         )
-        .setApplicationName(APPLICATION_NAME)
-        .build();
+            .setApplicationName(APPLICATION_NAME)
+            .build();
     }
 
     /**
      * Creates ServiceAccountCredentials object
-     * @param httpTransport The network HTTP Transport.
      * @param credentialsJsonB64 Base64 encoded credentials.json string
      * @return The ServiceAccountCredentials object.
      * @throws IOException If the credentials.json file cannot be found.
@@ -72,36 +74,87 @@ public class GoogleCalendarService {
         return ServiceAccountCredentials.fromStream(credentialsStream);
     }
 
-    public String createCalender (String saunaName) throws IOException {
-        com.google.api.services.calendar.model.Calendar calendar  = new com.google.api.services.calendar.model.Calendar();
-        calendar.setSummary(saunaName);
-        calendar.setTimeZone("Switzerland/Bern");
-        com.google.api.services.calendar.model.Calendar createdCalendar = service.calendars().insert(calendar).execute();
-        return  createdCalendar.getId();
+    /**
+     * Get the Next 10 events on the google calender
+     * @param calenderID Id of the google Calender
+     * @return The next ten events
+     * @throws IOException
+     */
+    public List<Event> getNextEvents (String calenderID) throws IOException {
+        return getEvents(calenderID , new DateTime(System.currentTimeMillis()) , 10 );
     }
 
-    public List<Event> getNextEvents (String calenderID) throws IOException {
-        DateTime now = new DateTime(System.currentTimeMillis());
+    /**
+     *  Get Events in a specific time period
+     * @param calenderID Id of the google Calender
+     * @param startTime Specify the startrange
+     * @param maxResults Specify how many result are returned
+     * @return List of events after the specific startTime
+     * @throws IOException
+     */
+    public List<Event> getEvents (String calenderID,DateTime startTime, int maxResults) throws IOException {
         Events events = service.events().list(calenderID)
-            .setMaxResults(10)
-            .setTimeMin(now)
+            .setMaxResults(maxResults)
+            .setTimeMin(startTime)
             .setOrderBy("startTime")
             .setSingleEvents(true)
             .execute();
         return events.getItems();
     }
 
+    /**
+     * Get an event with the event id
+     * @param calenderID Id of the google Calender
+     * @param eventID Id of the Event
+     * @return Get the Event with the specified ID back
+     * @throws IOException
+     */
+    public Event getEvent (String calenderID , String eventID) throws IOException {
+        return service.events().get(calenderID, eventID).execute();
+    }
+
+
+    /**
+     * Insert an Event on the Google Api
+     * @param calenderID Id of the google Calender
+     * @param event The event to insert in the google api
+     * @return The id of the event
+     * @throws IOException
+     */
     public String insertEvent (String calenderID , Event event) throws IOException {
         event = service.events().insert(calenderID, event).execute();
         return event.getId();
     }
-
+    /**
+     * Delete an Event on the Google Api
+     * @param calenderID Id of the google Calendar
+     * @param eventID Id of the Event
+     * @throws IOException
+     */
     public void deleteEvent (String calenderID , String eventID ) throws IOException {
         service.events().delete(calenderID, eventID).execute();
     }
 
-    public String updateEvent  (String calenderID ,String eventID ) throws IOException {
-        service.events().get(calenderID, eventID).execute();
-        return "";
+    /**
+     * Change start and endtime on the specified event
+     * @param calenderID Id of the google Calendar
+     * @param eventID id of the event
+     * @param startDate Starttime to what it will be changed
+     * @param endDate Endtime to what it will be changed
+     * @throws IOException
+     */
+    public void updateEvent  (String calenderID ,String eventID , DateTime startDate , DateTime endDate) throws IOException {
+        Event event =service.events().get(calenderID, eventID).execute();
+        EventDateTime start = new EventDateTime()
+            .setDateTime(startDate)
+            .setTimeZone(TIMEZONE);
+        event.setStart(start);
+
+        EventDateTime end = new EventDateTime()
+            .setDateTime(endDate)
+            .setTimeZone(TIMEZONE);
+        event.setEnd(end);
+
+        service.events().update(calenderID, event.getId(), event).execute();
     }
 }
