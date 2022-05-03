@@ -33,7 +33,7 @@ class GoogleCalendarServiceTest {
      * @throws IOException
      */
     @Test
-    public void testDemoListEvents() throws IOException {
+    void testDemoListEvents() throws IOException {
         List<Event> events = calendarService.getNextEvents(TEST_CALENDAR_ID);
 
         assertNotNull(events);
@@ -45,7 +45,7 @@ class GoogleCalendarServiceTest {
      * @throws IOException
      */
     @Test
-    public void CrudcalenderTest () throws IOException {
+    void CrudcalenderTest () throws IOException {
         Event event = createEvent();
         String eventID = calendarService.insertEvent(TEST_CALENDAR_ID,event);
         assertNotNull(eventID);
