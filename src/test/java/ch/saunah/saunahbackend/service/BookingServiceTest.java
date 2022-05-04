@@ -10,7 +10,6 @@ import ch.saunah.saunahbackend.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -25,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * This class tests the booking service methods
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = SaunahBackendApplication.class)
 class BookingServiceTest {
 
