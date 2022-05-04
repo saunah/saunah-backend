@@ -25,6 +25,8 @@ env:
     value: saunah
   - name: SAUNAH_FRONTEND_BASE_URL
     value: "https://saunah.k8s.init-lab.ch"
+  - name: SAUNAH_EXTRA_ALLOWED_CORS
+    value: "http://localhost:3000"
   - name: SAUNAH_SMTP_HOST
     value: smtp.mailersend.net
   - name: SAUNAH_SMTP_PORT
