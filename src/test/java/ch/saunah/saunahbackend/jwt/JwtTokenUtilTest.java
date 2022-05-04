@@ -1,26 +1,26 @@
 package ch.saunah.saunahbackend.jwt;
 
-import ch.saunah.saunahbackend.SaunahBackendApplication;
-import ch.saunah.saunahbackend.security.JwtTokenUtil;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.User;
+
+import ch.saunah.saunahbackend.SaunahBackendApplication;
+import ch.saunah.saunahbackend.security.JwtTokenUtil;
 
 /**
  * This class tests the JWT Token creation and their corresponding methods.
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = SaunahBackendApplication.class)
-public class JwtTokenUtilTest {
+class JwtTokenUtilTest {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;

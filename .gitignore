@@ -38,7 +38,7 @@ out/
 
 ### VS Code ###
 .vscode/**/*
-!.vscode/settings.json
+!.vscode/settings-example.json
 !.vscode/tasks.json
 !.vscode/extensions.json
 

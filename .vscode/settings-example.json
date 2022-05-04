@@ -3,7 +3,8 @@
     "java.saveActions.organizeImports": true,
     "java.test.config": {
         "env": {
-            "spring.config.location": "${workspaceFolder}/src/test/resources/"
+            "spring.config.location": "${workspaceFolder}/src/test/resources/",
+            "SAUNAH_CREDENTIALS_GOOGLE_SERVICE": "put-your-cedentials-in-here"
         }
     }
 }
