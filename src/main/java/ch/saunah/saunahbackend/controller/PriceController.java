@@ -23,23 +23,23 @@ public class PriceController {
     private PriceService priceService;
 
     @Operation(description = "Allows adding a new Price structure.")
-    @PostMapping(path = "price/add")
+    @PostMapping(path = "prices")
     public @ResponseBody
     ResponseEntity<PriceResponse> createPrice(@RequestBody PriceBody priceBody) {
         return ResponseEntity.ok(new PriceResponse(priceService.addPrice(priceBody)));
     }
 
     @Operation(description = "Allows removing a existing Price structure with the ID specified.")
-    @PostMapping(path = "price/remove")
-    public @ResponseBody ResponseEntity<String> removePrice(@RequestParam("Id") int id) {
+    @DeleteMapping(path = "prices/{id}")
+    public @ResponseBody ResponseEntity<String> removePrice(@PathVariable("id") int id) {
         priceService.removePrice(id);
         return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Allows editing an existing Price structure.")
-    @PostMapping(path = "price/edit")
+    @PutMapping(path = "prices/{id}")
     public @ResponseBody
-    ResponseEntity<PriceResponse> editPrice(@RequestParam("Id") int id, @RequestBody PriceBody priceBody) {
+    ResponseEntity<PriceResponse> editPrice(@PathVariable("id") int id, @RequestBody PriceBody priceBody) {
         return ResponseEntity.ok(new PriceResponse(priceService.editPrice(id, priceBody)));
     }
 
@@ -51,7 +51,7 @@ public class PriceController {
     }
 
     @Operation(description = "Returns the price with the ID specified.")
-    @GetMapping(path="price/{id}")
+    @GetMapping(path="prices/{id}")
     public @ResponseBody ResponseEntity<PriceResponse> getPrice(@PathVariable(value = "id", required = true) Integer id) {
         return ResponseEntity.ok(new PriceResponse(priceService.getPrice(id)));
     }

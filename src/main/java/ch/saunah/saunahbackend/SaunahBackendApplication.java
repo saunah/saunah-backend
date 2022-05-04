@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -18,6 +19,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import ch.saunah.saunahbackend.model.UserRole;
+import ch.saunah.saunahbackend.security.JwtAuthenticationEntryPoint;
+import ch.saunah.saunahbackend.security.JwtRequestFilter;
 
 /**
  * This class starts the application
@@ -51,12 +56,46 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
         http.cors().and()
             .csrf().disable()
             .authorizeRequests()
-            .antMatchers("/api-docs/**", "/login", "/signup", "/users", "/saunas", "/verify/**", "/resetpassword/**", "/resetpasswordrequest").permitAll()
-            .antMatchers("/user/**", "/bookings", "/booking/**").hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
-            .antMatchers("/sauna/add", "/sauna/edit", "/sauna/remove", "/sauna/**/addImage", "/sauna/images/remove/**",
-                "/price/add", "/price/remove", "/price/edit", "/prices", "/price/{id}", "/allBookings").hasAuthority(UserRole.ADMIN.toString())
-            .antMatchers("/sauna/**").permitAll()
-            .anyRequest().authenticated()
+            // api-docs
+            .antMatchers(
+                "/api-docs/**"
+            ).permitAll()
+            // user management
+            .antMatchers(
+                "/login",
+                "/signup",
+                "/verify/**",
+                "/resetpassword/**",
+                "/resetpasswordrequest"
+            ).permitAll()
+            // saunas
+            .mvcMatchers(
+                HttpMethod.GET,
+                "/saunas",
+                "/saunas/{id}"
+            ).permitAll()
+            .antMatchers(
+                "/saunas/{id}"
+            ).hasAuthority(UserRole.ADMIN.toString())
+            // sauna images
+            .mvcMatchers(
+                HttpMethod.GET,
+                "/saunas/{id}/images",
+                "/saunas/images/{fileName}"
+            ).permitAll()
+            .antMatchers(
+                "/saunas/{id}/images",
+                "/saunas/images/{id}"
+            ).hasAuthority(UserRole.ADMIN.toString())
+            // prices
+            .mvcMatchers(
+                HttpMethod.GET,
+                "/prices",
+                "/prices/{id}"
+            ).permitAll()
+            .antMatchers(
+                "/prices/{id}"
+            ).hasAuthority(UserRole.ADMIN.toString())
             .and()
             .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
