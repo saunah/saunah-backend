@@ -23,5 +23,10 @@
     "name": "saunah.email.from.name",
     "type": "java.lang.String",
     "description": "The name which is listed as the sender name."
+  },
+  {
+    "name": "saunah.extra-allowed-cors",
+    "type": "java.lang.String",
+    "description": "Comma separated list of additional allowed CORS urls.'"
   }
 ]}
