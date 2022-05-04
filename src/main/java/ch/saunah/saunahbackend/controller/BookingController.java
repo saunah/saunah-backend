@@ -76,6 +76,6 @@ public class BookingController {
         if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
             return ResponseEntity.ok(new BookingResponse(booking));
         }
-        throw new AuthenticationException("crinsch");
+        throw new AuthenticationException("user is not authenticated to view this booking");
     }
 }
