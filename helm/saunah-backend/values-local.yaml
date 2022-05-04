@@ -25,6 +25,8 @@ env:
     value: saunah
   - name: SAUNAH_FRONTEND_BASE_URL
     value: "http://localhost:8889"
+  - name: SAUNAH_EXTRA_ALLOWED_CORS
+    value: ""
   - name: SAUNAH_SMTP_HOST
     value: smtp.mailtrap.io
   - name: SAUNAH_SMTP_PORT
