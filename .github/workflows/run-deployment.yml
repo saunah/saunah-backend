@@ -24,6 +24,7 @@ jobs:
     uses: ./.github/workflows/build.yml
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      CREDENTIALS_GOOGLE_SERVICE: ${{ secrets.CREDENTIALS_GOOGLE_SERVICE }}
 
   container:
     name: Create and Publish Container

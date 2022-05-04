@@ -1,45 +1,44 @@
 package ch.saunah.saunahbackend.service;
 
-import ch.saunah.saunahbackend.SaunahBackendApplication;
-import ch.saunah.saunahbackend.controller.SaunaController;
-import ch.saunah.saunahbackend.dto.SaunaTypeBody;
-import ch.saunah.saunahbackend.model.Sauna;
-import ch.saunah.saunahbackend.model.SaunaImage;
-import ch.saunah.saunahbackend.repository.SaunaRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.multipart.MultipartFile;
-import org.webjars.NotFoundException;
-
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
+
+import ch.saunah.saunahbackend.SaunahBackendApplication;
+import ch.saunah.saunahbackend.dto.SaunaTypeBody;
+import ch.saunah.saunahbackend.model.Sauna;
+import ch.saunah.saunahbackend.model.SaunaImage;
+import ch.saunah.saunahbackend.repository.SaunaRepository;
 
 /**
  * This class tests all sauna service methods
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = SaunahBackendApplication.class)
-public class SaunaServiceTest {
+class SaunaServiceTest {
 
     @Autowired
     private SaunaService saunaService;
     @Autowired
     private SaunaRepository saunaRepository;
     private SaunaTypeBody saunaTypeBody = null;
-
-    @Autowired
-    private SaunaController saunaController;
 
     @BeforeEach
     void setUp() {

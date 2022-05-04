@@ -43,6 +43,12 @@ env:
         name: saunah-secrets-smtp
         key: password
         optional: false
+  - name: SAUNAH_CREDENTIALS_GOOGLE_SERVICE
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-credentials
+        key: googleServiceAccount
+        optional: false
 
 image:
   repository: ghcr.io/saunah/saunah-backend

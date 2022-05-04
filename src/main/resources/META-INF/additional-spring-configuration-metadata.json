@@ -25,6 +25,11 @@
     "description": "The name which is listed as the sender name."
   },
   {
+    "name": "saunah.credentials.google-service",
+    "type": "java.lang.String",
+    "description": "Google service account json credentials, base64 encoded."
+  },
+  {
     "name": "saunah.extra-allowed-cors",
     "type": "java.lang.String",
     "description": "Comma separated list of additional allowed CORS urls.'"
