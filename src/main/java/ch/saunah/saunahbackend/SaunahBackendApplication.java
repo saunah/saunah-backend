@@ -20,10 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import ch.saunah.saunahbackend.model.UserRole;
-import ch.saunah.saunahbackend.security.JwtAuthenticationEntryPoint;
-import ch.saunah.saunahbackend.security.JwtRequestFilter;
-
 /**
  * This class starts the application
  */
