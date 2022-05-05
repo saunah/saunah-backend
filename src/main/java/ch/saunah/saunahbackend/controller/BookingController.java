@@ -30,33 +30,10 @@ public class BookingController {
     private UserService userService;
 
     @Operation(description = "Creates a new booking.")
-    @PostMapping(path = "booking/add")
-    @ResponseBody
+    @PostMapping(path = "bookings")
+    public @ResponseBody
     ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody) {
         return ResponseEntity.ok(new BookingResponse(bookingService.addBooking(bookingBody)));
-    }
-
-    @Operation(description = "Approves a existing booking structure with the ID specified.")
-    @PostMapping(path = "booking/approve")
-    public @ResponseBody
-    ResponseEntity<String> approveBooking(@RequestParam("Id") int id) {
-        bookingService.approveBooking(id);
-        return ResponseEntity.ok("success");
-    }
-
-    @Operation(description = "Cancels a existing booking structure with the ID specified.")
-    @PostMapping(path = "booking/cancel")
-    public @ResponseBody
-    ResponseEntity<String> cancelBooking(@RequestParam("Id") int id) {
-        bookingService.cancelBooking(id);
-        return ResponseEntity.ok("success");
-    }
-
-    @Operation(description = "Returns the list of all bookings.")
-    @GetMapping(path = "allBookings")
-    public @ResponseBody
-    List<BookingResponse> getAllBooking() {
-        return bookingService.getAllBooking().stream().map(x -> new BookingResponse(x)).collect(Collectors.toList());
     }
 
     @Operation(description = "Returns the list of all bookings.")
@@ -68,7 +45,7 @@ public class BookingController {
     }
 
     @Operation(description = "Returns the booking with the ID specified.")
-    @GetMapping(path = "booking/{id}")
+    @GetMapping(path = "bookings/{id}")
     public @ResponseBody
     ResponseEntity<BookingResponse> getBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
         Booking booking = bookingService.getBooking(id);
@@ -77,5 +54,28 @@ public class BookingController {
             return ResponseEntity.ok(new BookingResponse(booking));
         }
         throw new AuthenticationException("user is not authenticated to view this booking");
+    }
+
+    @Operation(description = "Approves a existing booking structure with the ID specified.")
+    @PostMapping(path = "bookings/approve")
+    public @ResponseBody
+    ResponseEntity<String> approveBooking(@RequestParam(value = "Id", required = true) int id) {
+        bookingService.approveBooking(id);
+        return ResponseEntity.ok("success");
+    }
+
+    @Operation(description = "Cancels a existing booking structure with the ID specified.")
+    @PostMapping(path = "bookings/cancel")
+    public @ResponseBody
+    ResponseEntity<String> cancelBooking(@RequestParam(value = "Id", required = true) int id) {
+        bookingService.cancelBooking(id);
+        return ResponseEntity.ok("success");
+    }
+
+    @Operation(description = "Returns the list of all bookings.")
+    @GetMapping(path = "allBookings")
+    public @ResponseBody
+    List<BookingResponse> getAllBooking() {
+        return bookingService.getAllBooking().stream().map(x -> new BookingResponse(x)).collect(Collectors.toList());
     }
 }
