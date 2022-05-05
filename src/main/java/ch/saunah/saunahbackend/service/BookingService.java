@@ -44,11 +44,9 @@ public class BookingService {
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
 
         Booking booking = new Booking();
-        booking.setSaunaName(sauna.getName());
         booking.setStartBookingDate(bookingBody.getStartBookingDate());
         booking.setEndBookingDate(bookingBody.getEndBookingDate());
         booking.setUserId(bookingBody.getUserId());
-        booking.setSaunaId(bookingBody.getSaunaId());
         booking.setLocation(bookingBody.getLocation());
         booking.setTransportService(bookingBody.isTransportService());
         booking.setWashService(bookingBody.isWashService());
@@ -59,6 +57,19 @@ public class BookingService {
         booking.setCreation(new Date(System.currentTimeMillis()));
         booking.setState(BookingState.OPENED);
         booking.setEndPrice(calculatePrice(bookingBody, sauna, price));
+
+        booking.setSaunaId(bookingBody.getSaunaId());
+        booking.setSaunaName(sauna.getName());
+        booking.setSaunaDescription(sauna.getDescription());
+        booking.setSaunaIsMobile(sauna.isMobile());
+        booking.setSaunaPrice(sauna.getPrice());
+        booking.setSaunaMaxTemp(sauna.getMaxTemp());
+        booking.setSaunaNumberOfPeople(sauna.getNumberOfPeople());
+        booking.setSaunaLocation(sauna.getLocation());
+        booking.setSaunaStreet(sauna.getStreet());
+        booking.setSaunaZip(sauna.getZip());
+        booking.setSaunaType(sauna.getType());
+
         return bookingRepository.save(booking);
     }
 
