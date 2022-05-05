@@ -36,7 +36,7 @@ public class BookingController {
         return ResponseEntity.ok(new BookingResponse(bookingService.addBooking(bookingBody)));
     }
 
-    @Operation(description = "Returns the list of all bookings.")
+    @Operation(description = "Returns the list of the bookings of the current user.")
     @GetMapping(path = "bookings")
     public @ResponseBody
     List<BookingResponse> getUserBookings(Principal principal) {
@@ -57,19 +57,24 @@ public class BookingController {
     }
 
     @Operation(description = "Approves a existing booking structure with the ID specified.")
-    @PostMapping(path = "bookings/approve")
+    @PostMapping(path = "bookings/{id}/approve")
     public @ResponseBody
-    ResponseEntity<String> approveBooking(@RequestParam(value = "Id", required = true) int id) {
+    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) {
         bookingService.approveBooking(id);
         return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Cancels a existing booking structure with the ID specified.")
-    @PostMapping(path = "bookings/cancel")
+    @PostMapping(path = "bookings/{id}/cancel")
     public @ResponseBody
-    ResponseEntity<String> cancelBooking(@RequestParam(value = "Id", required = true) int id) {
-        bookingService.cancelBooking(id);
-        return ResponseEntity.ok("success");
+    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
+        Booking booking = bookingService.getBooking(id);
+        User user = userService.getUserByMail(principal.getName());
+        if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
+            bookingService.cancelBooking(id);
+            return ResponseEntity.ok("success");
+        }
+        throw new AuthenticationException("user is not authorized to cancel this booking");
     }
 
     @Operation(description = "Returns the list of all bookings.")

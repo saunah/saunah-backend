@@ -92,6 +92,16 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
             .antMatchers(
                 "/prices/{id}"
             ).hasAuthority(UserRole.ADMIN.toString())
+            // bookings
+            .mvcMatchers(
+                "/bookings",
+                "/bookings/{id}",
+                "/bookings/{id}/cancel"
+            ).hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
+            .antMatchers(
+                "/allBookings",
+                "/bookings/{id}/approve"
+            ).hasAuthority(UserRole.ADMIN.toString())
             .and()
             .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

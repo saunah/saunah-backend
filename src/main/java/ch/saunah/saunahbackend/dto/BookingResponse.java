@@ -26,6 +26,16 @@ public class BookingResponse {
     private boolean deposit;
     private boolean handTowel;
     private boolean wood;
+    private String saunaName;
+    private String saunaDescription;
+    private boolean saunaIsMobile;
+    private int saunaPrice;
+    private int saunaMaxTemp;
+    private int saunaNumberOfPeople;
+    private String saunaLocation;
+    private String saunaStreet;
+    private int saunaZip;
+    private String saunaType;
 
     /**
      * This constructor sets all the fields of this object.
@@ -38,7 +48,6 @@ public class BookingResponse {
         this.state = booking.getState();
         this.endPrice = booking.getEndPrice();
         this.userId = booking.getUserId();
-        this.saunaId = booking.getSaunaId();
         this.location = booking.getLocation();
         this.transportService = booking.isTransportService();
         this.washService = booking.isWashService();
@@ -46,6 +55,17 @@ public class BookingResponse {
         this.deposit = booking.isDeposit();
         this.handTowel = booking.isHandTowel();
         this.wood = booking.isWood();
+        this.saunaId = booking.getSaunaId();
+        this.saunaName = booking.getSaunaName();
+        this.saunaDescription = booking.getSaunaDescription();
+        this.saunaIsMobile = booking.isSaunaIsMobile();
+        this.saunaPrice = booking.getSaunaId();
+        this.saunaMaxTemp = booking.getSaunaId();
+        this.saunaNumberOfPeople = booking.getSaunaId();
+        this.saunaLocation = booking.getSaunaLocation();
+        this.saunaStreet = booking.getSaunaStreet();
+        this.saunaZip = booking.getSaunaZip();
+        this.saunaType = booking.getSaunaType();
     }
 
     public int getId() {
@@ -106,5 +126,41 @@ public class BookingResponse {
 
     public boolean isWood() {
         return wood;
+    }
+
+    public String getSaunaDescription() {
+        return saunaDescription;
+    }
+
+    public boolean isSaunaIsMobile() {
+        return saunaIsMobile;
+    }
+
+    public int getSaunaPrice() {
+        return saunaPrice;
+    }
+
+    public int getSaunaMaxTemp() {
+        return saunaMaxTemp;
+    }
+
+    public int getSaunaNumberOfPeople() {
+        return saunaNumberOfPeople;
+    }
+
+    public String getSaunaLocation() {
+        return saunaLocation;
+    }
+
+    public String getSaunaStreet() {
+        return saunaStreet;
+    }
+
+    public int getSaunaZip() {
+        return saunaZip;
+    }
+
+    public String getSaunaType() {
+        return saunaType;
     }
 }
