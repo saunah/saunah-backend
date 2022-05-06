@@ -52,25 +52,11 @@ public class BookingService {
             throw new Exception("Invalid start date");
         }
         List<Booking> allSaunaBookings = bookingRepository.findAllBySaunaId(bookingBody.getSaunaId());
-        if (allSaunaBookings.stream().anyMatch(x ->
-            bookingBody.getStartBookingDate().before(x.getStartBookingDate()) && (bookingBody.getEndBookingDate().getTime() == x.getEndBookingDate().getTime())
-                && bookingBody.getEndBookingDate().after(x.getStartBookingDate())
-                || bookingBody.getStartBookingDate().before(x.getEndBookingDate()) && (bookingBody.getStartBookingDate().getTime() == x.getStartBookingDate().getTime())
-                && bookingBody.getEndBookingDate().after(x.getEndBookingDate())
-                || bookingBody.getStartBookingDate().before(x.getStartBookingDate())
-                && bookingBody.getEndBookingDate().after(x.getStartBookingDate())
-                || bookingBody.getStartBookingDate().before(x.getEndBookingDate())
-                && bookingBody.getEndBookingDate().after(x.getEndBookingDate())
-                || bookingBody.getStartBookingDate().before(x.getStartBookingDate())
-                && bookingBody.getEndBookingDate().after(x.getEndBookingDate())
-                || bookingBody.getStartBookingDate().after(x.getStartBookingDate())
-                && bookingBody.getEndBookingDate().before(x.getEndBookingDate())
-                || ((bookingBody.getStartBookingDate().getTime() == x.getStartBookingDate().getTime())
-                && (bookingBody.getEndBookingDate().getTime() == x.getEndBookingDate().getTime()))
-                || (bookingBody.getEndBookingDate().getTime() == x.getEndBookingDate().getTime())
-                || (bookingBody.getStartBookingDate().getTime() == x.getStartBookingDate().getTime()))) {
-            throw new Exception("Sauna not available");
+        if (allSaunaBookings.stream().anyMatch(x -> dateRangeCollide(bookingBody.getStartBookingDate(),
+            bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate()))) {
+            throw new Exception("Sauna is not available during this date range");
         }
+
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
         Booking booking = new Booking();
         booking.setStartBookingDate(bookingBody.getStartBookingDate());
@@ -99,6 +85,12 @@ public class BookingService {
         booking.setState(BookingState.OPENED);
 
         return bookingRepository.save(booking);
+    }
+
+    private boolean dateRangeCollide(Date start, Date end, Date startExisting, Date endExisting) {
+        return start.getTime() >= startExisting.getTime() && start.getTime() <= endExisting.getTime() ||
+            end.getTime() >= startExisting.getTime() && end.getTime() <= endExisting.getTime() ||
+            start.getTime() < startExisting.getTime() && end.getTime() > endExisting.getTime();
     }
 
     /**
