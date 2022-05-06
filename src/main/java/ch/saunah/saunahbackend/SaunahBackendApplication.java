@@ -1,5 +1,8 @@
 package ch.saunah.saunahbackend;
 
+import ch.saunah.saunahbackend.model.UserRole;
+import ch.saunah.saunahbackend.security.JwtAuthenticationEntryPoint;
+import ch.saunah.saunahbackend.security.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,9 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import ch.saunah.saunahbackend.model.UserRole;
-import ch.saunah.saunahbackend.security.JwtAuthenticationEntryPoint;
-import ch.saunah.saunahbackend.security.JwtRequestFilter;
 
 /**
  * This class starts the application
@@ -46,7 +46,6 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
     public static void main(String[] args) {
         SpringApplication.run(SaunahBackendApplication.class, args);
     }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -92,6 +91,16 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
             ).permitAll()
             .antMatchers(
                 "/prices/{id}"
+            ).hasAuthority(UserRole.ADMIN.toString())
+            // bookings
+            .mvcMatchers(
+                "/bookings",
+                "/bookings/{id}",
+                "/bookings/{id}/cancel"
+            ).hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
+            .antMatchers(
+                "/allBookings",
+                "/bookings/{id}/approve"
             ).hasAuthority(UserRole.ADMIN.toString())
             .and()
             .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()

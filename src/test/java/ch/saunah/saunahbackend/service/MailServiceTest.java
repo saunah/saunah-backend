@@ -22,8 +22,6 @@ class MailServiceTest {
 
     /**
      * This method tests if the email is sent once to the correct user.
-     *
-     * @throws MessagingException
      */
     @Test
     void sendMail() {
