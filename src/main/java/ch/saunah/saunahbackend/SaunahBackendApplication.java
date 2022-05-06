@@ -62,8 +62,8 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
                 "/login",
                 "/signup",
                 "/verify/**",
-                "/resetpassword/**",
-                "/resetpasswordrequest"
+                "/reset-password/**",
+                "/reset-password"
             ).permitAll()
             // saunas
             .mvcMatchers(

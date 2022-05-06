@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @Operation(description = "Send a reset Password Mail to the user")
-    @PostMapping(value = "/resetPasswordRequest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/reset-password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordBody resetPasswordBody) throws Exception {
 
@@ -72,7 +72,7 @@ public class UserController {
     }
 
     @Operation(description = "Reset the users password with the new one")
-    @PostMapping(value = "/resetPassword/{userID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/reset-password/{userID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordBody resetPasswordBody , @PathVariable Integer userID) throws Exception {
         try{
