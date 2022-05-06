@@ -176,13 +176,13 @@ class UserServiceTest {
         User user = userRepository.findByEmail("hans.muster@mustermail.ch");
         user.setActivated(true);
         userRepository.save(user);
-        double resetPasswordToken = userService.createResetPasswordtoken(user);
+        Integer resetPasswordToken = userService.createResetPasswordtoken(user);
 
         ResetPasswordBody resetPasswordBody = new ResetPasswordBody("hansmuster@mail.ch", "badToken" ,"newPassword12!");
         assertThrows(Exception.class, () -> userService.resetPassword(user.getId(),resetPasswordBody));
-        ResetPasswordBody resetPasswordBody1 = new ResetPasswordBody("hansmuster@mail.ch", Double.toString(resetPasswordToken) ,"badPassword");
+        ResetPasswordBody resetPasswordBody1 = new ResetPasswordBody("hansmuster@mail.ch", Integer.toString(resetPasswordToken) ,"badPassword");
         assertThrows(Exception.class, () -> userService.resetPassword(user.getId(),resetPasswordBody1));
-        ResetPasswordBody resetPasswordBody2 = new ResetPasswordBody("hansmuster@mail.ch", Double.toString(resetPasswordToken) ,"newPassword12!");
+        ResetPasswordBody resetPasswordBody2 = new ResetPasswordBody("hansmuster@mail.ch", Integer.toString(resetPasswordToken) ,"newPassword12!");
         assertDoesNotThrow(() -> userService.resetPassword(user.getId(),resetPasswordBody2));
     }
 

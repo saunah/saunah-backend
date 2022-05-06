@@ -10,20 +10,18 @@ import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.SignUpBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import javax.management.BadAttributeValueExpException;
+import javax.validation.ValidationException;
 import java.security.SecureRandom;
 import java.util.Optional;
-import java.util.Iterator;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -48,6 +46,9 @@ public class UserService {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     /**
      * This method registers a new user to the database.
      *
@@ -69,7 +70,7 @@ public class UserService {
             throw new Exception("Password does not require the conditions");
         }
 
-        String hashedPassword = new BCryptPasswordEncoder().encode(signUpBody.getPassword());
+        String hashedPassword = passwordEncoder.encode(signUpBody.getPassword());
         user = new User();
         user.setEmail(signUpBody.getEmail());
         user.setPasswordHash(hashedPassword);
@@ -108,8 +109,9 @@ public class UserService {
 
         //Creates a random number between min and max
         SecureRandom random = new SecureRandom();
-        int resetToken = random.nextInt() * (max - min + 1) + min;
-        String hashedPassword = new BCryptPasswordEncoder().encode(Double.toString(resetToken));
+        int resetToken = Math.abs(random.nextInt() *(max-min+1)+min);
+        String resetTokenValue = Integer.toString(resetToken);
+        String hashedPassword = passwordEncoder.encode(resetTokenValue);
         user.setResetpasswordHash(hashedPassword);
         userRepository.save(user);
         return resetToken;
@@ -122,21 +124,24 @@ public class UserService {
      * @param resetPasswordBody
      * @throws Exception
      */
-    public void resetPassword(Integer userID, ResetPasswordBody resetPasswordBody) throws Exception {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    public void resetPassword (Integer userID , ResetPasswordBody resetPasswordBody) throws Exception{
         Optional<User> optionalUser = userRepository.findById(userID);
-        if (optionalUser.isEmpty()) {
+        if(optionalUser.isEmpty()) {
             throw new IndexOutOfBoundsException("There is no User with the ID:" + userID);
         }
         User user = optionalUser.get();
-        if (!bCryptPasswordEncoder.matches(resetPasswordBody.getResetToken(), user.getResetpasswordHash())) {
+        if(user.getResetpasswordHash().isBlank()){
+            throw new BadAttributeValueExpException("This user didn't request a new password");
+        }
+        if(!passwordEncoder.matches(resetPasswordBody.getResetToken(), user.getResetpasswordHash())){
             throw new BadCredentialsException("The Token doesn't match");
         }
+
         if (!Pattern.matches(PWD_PATTERN, resetPasswordBody.getNewPassword())) {
-            throw new Exception("Password does not require the conditions");
+            throw new ValidationException("Password does not require the conditions");
         }
         user.setResetpasswordHash("");
-        user.setPasswordHash(bCryptPasswordEncoder.encode(resetPasswordBody.getNewPassword()));
+        user.setPasswordHash(passwordEncoder.encode(resetPasswordBody.getNewPassword()));
         userRepository.save(user);
 
     }
