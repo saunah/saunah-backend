@@ -18,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import javax.management.BadAttributeValueExpException;
+import javax.validation.ValidationException;
 import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.UUID;
@@ -129,14 +131,14 @@ public class UserService {
         }
         User user = optionalUser.get();
         if(user.getResetpasswordHash().isBlank()){
-            throw new Exception("There is no new password request");
+            throw new BadAttributeValueExpException("This user didn't request a new password");
         }
         if(!passwordEncoder.matches(resetPasswordBody.getResetToken(), user.getResetpasswordHash())){
             throw new BadCredentialsException("The Token doesn't match");
         }
 
         if (!Pattern.matches(PWD_PATTERN, resetPasswordBody.getNewPassword())) {
-            throw new Exception("Password does not require the conditions");
+            throw new ValidationException("Password does not require the conditions");
         }
         user.setResetpasswordHash("");
         user.setPasswordHash(passwordEncoder.encode(resetPasswordBody.getNewPassword()));
