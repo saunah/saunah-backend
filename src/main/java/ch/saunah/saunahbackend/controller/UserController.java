@@ -61,15 +61,8 @@ public class UserController {
     @PostMapping(value = "/resetPasswordRequest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordBody resetPasswordBody) throws Exception {
-
-
-        SignInBody signInBody = new SignInBody();
-        //Maybe change the setEmail with just the mail string
-        signInBody.setEmail(resetPasswordBody.getEmail());
-
-        User user = userService.getUserByMail(signInBody.getEmail());
+        User user = userService.getUserByMail(resetPasswordBody.getEmail());
         int passwordToken = userService.createResetPasswordtoken(user);
-
         mailService.sendPasswordResetMail(resetPasswordBody.getEmail(), user.getId(), passwordToken);
         return ResponseEntity.ok("success");
     }
