@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.webjars.NotFoundException;
 
 import java.util.Calendar;
@@ -102,11 +101,36 @@ class BookingServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void addNewBooking() {
+    void addNewBooking() throws Exception {
         Booking booking = bookingService.addBooking(bookingBody);
         Iterable<Booking> bookings = bookingRepository.findAll();
         assertTrue(bookings.iterator().hasNext());
         assertThrows(NullPointerException.class, () -> bookingService.addBooking(null));
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
+        bookingBody.setStartBookingDate(new Date(2022, Calendar.MAY, 3));
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
+        bookingBody.setStartBookingDate(new Date(2022, Calendar.SEPTEMBER, 10));
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
+        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 10));
+        bookingBody.setEndBookingDate(new Date(2022, Calendar.AUGUST, 30));
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
+        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 25));
+        bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 30));
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
+        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 10));
+        bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 30));
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
+        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 20));
+        bookingBody.setEndBookingDate(new Date(2022, Calendar.AUGUST, 25));
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
+        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 15));
+        bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 1));
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
+        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 20));
+        bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 1));
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
+        bookingBody.setStartBookingDate(new Date(2022, Calendar.SEPTEMBER, 10));
+        bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 30));
         Booking booking2 = bookingService.addBooking(bookingBody);
         assertNotEquals(booking.getId(), booking2.getId());
     }
@@ -116,7 +140,7 @@ class BookingServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void approveBooking() {
+    void approveBooking() throws Exception {
         assertThrows(NotFoundException.class, () -> bookingService.approveBooking(1));
         Booking booking = bookingService.addBooking(bookingBody);
         bookingService.approveBooking(booking.getId());
@@ -128,7 +152,7 @@ class BookingServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void cancelBooking() {
+    void cancelBooking() throws Exception {
         assertThrows(NotFoundException.class, () -> bookingService.cancelBooking(1));
         Booking booking = bookingService.addBooking(bookingBody);
         bookingService.cancelBooking(booking.getId());
@@ -140,7 +164,7 @@ class BookingServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getBooking() {
+    void getBooking() throws Exception {
         assertThrows(NotFoundException.class, () -> bookingService.getBooking(1));
         bookingService.addBooking(bookingBody);
         assertNotNull(bookingService.getBooking(1));
@@ -151,9 +175,13 @@ class BookingServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getAllBooking() {
+    void getAllBooking() throws Exception {
         bookingService.addBooking(bookingBody);
+        bookingBody.setStartBookingDate(new Date(2022, Calendar.SEPTEMBER, 25));
+        bookingBody.setEndBookingDate(new Date(2022, Calendar.OCTOBER, 1));
         bookingService.addBooking(bookingBody);
+        bookingBody.setStartBookingDate(new Date(2022, Calendar.OCTOBER, 25));
+        bookingBody.setEndBookingDate(new Date(2022, Calendar.NOVEMBER, 1));
         bookingService.addBooking(bookingBody);
         assertEquals(3, bookingRepository.count());
     }

@@ -35,14 +35,43 @@ public class BookingService {
      * @return the newly created booking object
      * @throws NullPointerException if the required object is null
      */
-    public Booking addBooking(BookingBody bookingBody) throws NullPointerException {
+    public Booking addBooking(BookingBody bookingBody) throws Exception {
         Objects.requireNonNull(bookingBody, "BookingBody must not be null!");
+        Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
+        Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
+        Objects.requireNonNull(bookingBody.getLocation(), "Location must not be null!");
         Price price = priceRepository.findAll().iterator().next();
         if (price == null) {
             throw new NotFoundException("No Price available in the database!");
         }
+        Date now = new Date(System.currentTimeMillis());
+        if (now.after(bookingBody.getStartBookingDate())) {
+            throw new Exception("Booking date is in the past");
+        }
+        if (bookingBody.getStartBookingDate().after(bookingBody.getEndBookingDate())) {
+            throw new Exception("Invalid start date");
+        }
+        List<Booking> allSaunaBookings = bookingRepository.findAllBySaunaId(bookingBody.getSaunaId());
+        if (allSaunaBookings.stream().anyMatch(x ->
+            bookingBody.getStartBookingDate().before(x.getStartBookingDate()) && (bookingBody.getEndBookingDate().getTime() == x.getEndBookingDate().getTime())
+                && bookingBody.getEndBookingDate().after(x.getStartBookingDate())
+                || bookingBody.getStartBookingDate().before(x.getEndBookingDate()) && (bookingBody.getStartBookingDate().getTime() == x.getStartBookingDate().getTime())
+                && bookingBody.getEndBookingDate().after(x.getEndBookingDate())
+                || bookingBody.getStartBookingDate().before(x.getStartBookingDate())
+                && bookingBody.getEndBookingDate().after(x.getStartBookingDate())
+                || bookingBody.getStartBookingDate().before(x.getEndBookingDate())
+                && bookingBody.getEndBookingDate().after(x.getEndBookingDate())
+                || bookingBody.getStartBookingDate().before(x.getStartBookingDate())
+                && bookingBody.getEndBookingDate().after(x.getEndBookingDate())
+                || bookingBody.getStartBookingDate().after(x.getStartBookingDate())
+                && bookingBody.getEndBookingDate().before(x.getEndBookingDate())
+                || ((bookingBody.getStartBookingDate().getTime() == x.getStartBookingDate().getTime())
+                && (bookingBody.getEndBookingDate().getTime() == x.getEndBookingDate().getTime()))
+                || (bookingBody.getEndBookingDate().getTime() == x.getEndBookingDate().getTime())
+                || (bookingBody.getStartBookingDate().getTime() == x.getStartBookingDate().getTime()))) {
+            throw new Exception("Sauna not available");
+        }
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
-
         Booking booking = new Booking();
         booking.setStartBookingDate(bookingBody.getStartBookingDate());
         booking.setEndBookingDate(bookingBody.getEndBookingDate());
@@ -55,9 +84,7 @@ public class BookingService {
         booking.setHandTowel(bookingBody.isHandTowel());
         booking.setWood(bookingBody.isWood());
         booking.setCreation(new Date(System.currentTimeMillis()));
-        booking.setState(BookingState.OPENED);
         booking.setEndPrice(calculatePrice(bookingBody, sauna, price));
-
         booking.setSaunaId(bookingBody.getSaunaId());
         booking.setSaunaName(sauna.getName());
         booking.setSaunaDescription(sauna.getDescription());
@@ -69,6 +96,7 @@ public class BookingService {
         booking.setSaunaStreet(sauna.getStreet());
         booking.setSaunaZip(sauna.getZip());
         booking.setSaunaType(sauna.getType());
+        booking.setState(BookingState.OPENED);
 
         return bookingRepository.save(booking);
     }
