@@ -46,15 +46,15 @@ public class BookingService {
         }
         Date now = new Date(System.currentTimeMillis());
         if (now.after(bookingBody.getStartBookingDate())) {
-            throw new Exception("Booking date is in the past");
+            throw new IllegalArgumentException("Booking date is in the past");
         }
         if (bookingBody.getStartBookingDate().after(bookingBody.getEndBookingDate())) {
-            throw new Exception("Invalid start date");
+            throw new IllegalArgumentException("Invalid start date");
         }
         List<Booking> allSaunaBookings = bookingRepository.findAllBySaunaId(bookingBody.getSaunaId());
         if (allSaunaBookings.stream().anyMatch(x -> dateRangeCollide(bookingBody.getStartBookingDate(),
             bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate()))) {
-            throw new Exception("Sauna is not available during this date range");
+            throw new IllegalArgumentException("Sauna is not available during this date range");
         }
 
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
