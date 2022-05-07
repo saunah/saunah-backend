@@ -10,13 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,23 +78,23 @@ public class UserController {
     @GetMapping(path="users")
     public @ResponseBody
     List<UserResponse> getAllUsers() {
-        return null;
+        return userService.getAllUser().stream().map(x -> new UserResponse(x)).collect(Collectors.toList());
     }
 
     @Operation(description = "Returns the user with the ID specified.")
-    @GetMapping(path="saunas/{id}")
+    @GetMapping(path="users/{id}")
     public @ResponseBody ResponseEntity<UserResponse> getUser(@PathVariable(value = "id", required = true) Integer id) {
-        return null;
+        return ResponseEntity.ok(new UserResponse(userService.getUser(id)));
     }
 
     @Operation(description = "Returns the user with the ID specified.")
-    @GetMapping(path="saunas/{id}")
+    @PutMapping(path="users/userRole/{id}")
     public @ResponseBody ResponseEntity<UserResponse> changeUserRole(@PathVariable(value = "id", required = true) Integer id) {
         return null;
     }
 
     @Operation(description = "Returns the user with the ID specified.")
-    @GetMapping(path="saunas/{id}")
+    @PutMapping(path="users/{id}")
     public @ResponseBody ResponseEntity<UserResponse> editUser(@PathVariable(value = "id", required = true) Integer id) {
         return null;
     }

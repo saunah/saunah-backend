@@ -1,6 +1,7 @@
 package ch.saunah.saunahbackend.service;
 
 import ch.saunah.saunahbackend.dto.ResetPasswordBody;
+import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
@@ -16,11 +17,13 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 
 import javax.management.BadAttributeValueExpException;
 import javax.validation.ValidationException;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -203,4 +206,33 @@ public class UserService {
 
         return ResponseEntity.ok(new JwtResponse(jwtToken));
     }
+
+    /**
+     * Get the user according to the provided ID
+     *
+     * @param id the id of the user to find
+     * @return The required user
+     * @throws NotFoundException
+     */
+    public User getUser(int id) throws NotFoundException {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null){
+            throw new NotFoundException(String.format("User with id %d not found!", id));
+        }
+        return user;
+    }
+
+    /**
+     * Return a list of all Users
+     *
+     * @return list of users
+     */
+    public List<User> getAllUser() {
+        return (List<User>) userRepository.findAll();
+    }
+
+
+
+
+
 }

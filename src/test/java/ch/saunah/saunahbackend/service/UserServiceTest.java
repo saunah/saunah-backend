@@ -24,6 +24,7 @@ import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
 import ch.saunah.saunahbackend.dto.ResetPasswordBody;
+import org.webjars.NotFoundException;
 
 /**
  * This class tests all user service methods.
@@ -185,5 +186,31 @@ class UserServiceTest {
         ResetPasswordBody resetPasswordBody2 = new ResetPasswordBody("hansmuster@mail.ch", Integer.toString(resetPasswordToken) ,"newPassword12!");
         assertDoesNotThrow(() -> userService.resetPassword(user.getId(),resetPasswordBody2));
     }
+
+    /**
+     * This test, checks if a user can be found via it's id
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void getUser() throws Exception {
+        assertThrows(NotFoundException.class, () -> userService.getUser(1));
+        userService.signUp(signUpBody);
+        assertNotNull(userService.getUser(1));
+    }
+
+    /**
+     * This test checks if all saunas can be found that exist in the database
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void getAllUser() throws Exception {
+        userService.signUp(signUpBody);
+        userService.signUp(signUpBody);
+        userService.signUp(signUpBody);
+        assertEquals(3,userRepository.count());
+        userService.signUp(signUpBody);
+        assertEquals(4,userRepository.count());
+    }
+
 
 }
