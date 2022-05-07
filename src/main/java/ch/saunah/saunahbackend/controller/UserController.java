@@ -1,6 +1,7 @@
 package ch.saunah.saunahbackend.controller;
 
 import ch.saunah.saunahbackend.dto.ResetPasswordBody;
+import ch.saunah.saunahbackend.dto.SaunaResponse;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.SignUpBody;
 import ch.saunah.saunahbackend.model.User;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controls the different operations of a user account.
@@ -79,5 +83,29 @@ public class UserController {
         return ResponseEntity.ok("success");
     }
 
+    @Operation(description = "Returns a list of all Users.")
+    @GetMapping(path="users")
+    public @ResponseBody
+    List<SaunaResponse> getAllUsers() {
+        return null;
+    }
+
+    @Operation(description = "Returns the user with the ID specified.")
+    @GetMapping(path="saunas/{id}")
+    public @ResponseBody ResponseEntity<SaunaResponse> getUser(@PathVariable(value = "id", required = true) Integer id) {
+        return null;
+    }
+
+    @Operation(description = "Returns the user with the ID specified.")
+    @GetMapping(path="saunas/{id}")
+    public @ResponseBody ResponseEntity<SaunaResponse> changeUserRole(@PathVariable(value = "id", required = true) Integer id) {
+        return null;
+    }
+
+    @Operation(description = "Returns the user with the ID specified.")
+    @GetMapping(path="saunas/{id}")
+    public @ResponseBody ResponseEntity<SaunaResponse> editUser(@PathVariable(value = "id", required = true) Integer id) {
+        return null;
+    }
 
 }
