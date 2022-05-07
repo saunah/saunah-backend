@@ -1,0 +1,87 @@
+package ch.saunah.saunahbackend.dto;
+
+import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
+
+/**
+ * This class is used as the response DTO object, when user data was retrieved.
+ */
+public class UserResponse {
+    private int id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String passwordHash;
+    private String phoneNumber;
+    private String street;
+    private String place;
+    private String plz;
+    private boolean activated;
+    private UserRole role;
+    private String resetpasswordhash;
+
+    /**
+     * This constructor sets all the fields of this object.
+     */
+    public UserResponse(User user) {
+        this.id = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+        this.passwordHash = user.getPasswordHash();
+        this.phoneNumber = user.getPhoneNumber();
+        this.street = user.getStreet();
+        this.place = user.getPlace();
+        this.plz = user.getPlz();
+        this.activated = user.isActivated();
+        this.role = user.getRole();
+        this.resetpasswordhash = user.getResetpasswordHash();
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public String getPlz() {
+        return plz;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public String getResetpasswordHash(){return resetpasswordhash;}
+
+}

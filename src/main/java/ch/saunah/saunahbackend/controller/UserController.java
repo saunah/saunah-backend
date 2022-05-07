@@ -1,9 +1,6 @@
 package ch.saunah.saunahbackend.controller;
 
-import ch.saunah.saunahbackend.dto.ResetPasswordBody;
-import ch.saunah.saunahbackend.dto.SaunaResponse;
-import ch.saunah.saunahbackend.dto.SignInBody;
-import ch.saunah.saunahbackend.dto.SignUpBody;
+import ch.saunah.saunahbackend.dto.*;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.security.JwtResponse;
 import ch.saunah.saunahbackend.service.MailService;
@@ -86,25 +83,25 @@ public class UserController {
     @Operation(description = "Returns a list of all Users.")
     @GetMapping(path="users")
     public @ResponseBody
-    List<SaunaResponse> getAllUsers() {
+    List<UserResponse> getAllUsers() {
         return null;
     }
 
     @Operation(description = "Returns the user with the ID specified.")
     @GetMapping(path="saunas/{id}")
-    public @ResponseBody ResponseEntity<SaunaResponse> getUser(@PathVariable(value = "id", required = true) Integer id) {
+    public @ResponseBody ResponseEntity<UserResponse> getUser(@PathVariable(value = "id", required = true) Integer id) {
         return null;
     }
 
     @Operation(description = "Returns the user with the ID specified.")
     @GetMapping(path="saunas/{id}")
-    public @ResponseBody ResponseEntity<SaunaResponse> changeUserRole(@PathVariable(value = "id", required = true) Integer id) {
+    public @ResponseBody ResponseEntity<UserResponse> changeUserRole(@PathVariable(value = "id", required = true) Integer id) {
         return null;
     }
 
     @Operation(description = "Returns the user with the ID specified.")
     @GetMapping(path="saunas/{id}")
-    public @ResponseBody ResponseEntity<SaunaResponse> editUser(@PathVariable(value = "id", required = true) Integer id) {
+    public @ResponseBody ResponseEntity<UserResponse> editUser(@PathVariable(value = "id", required = true) Integer id) {
         return null;
     }
 
