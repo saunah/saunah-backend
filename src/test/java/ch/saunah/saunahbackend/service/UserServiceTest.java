@@ -205,9 +205,12 @@ class UserServiceTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getAllUser() throws Exception {
         userService.signUp(signUpBody);
+        signUpBody.setEmail("test1@gmail.com");
         userService.signUp(signUpBody);
+        signUpBody.setEmail("test2@gmail.com");
         userService.signUp(signUpBody);
         assertEquals(3,userRepository.count());
+        signUpBody.setEmail("test3@gmail.com");
         userService.signUp(signUpBody);
         assertEquals(4,userRepository.count());
     }

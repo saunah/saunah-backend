@@ -2,6 +2,7 @@ package ch.saunah.saunahbackend.controller;
 
 import ch.saunah.saunahbackend.dto.*;
 import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.security.JwtResponse;
 import ch.saunah.saunahbackend.service.MailService;
 import ch.saunah.saunahbackend.service.UserService;
@@ -12,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,8 +86,12 @@ public class UserController {
 
     @Operation(description = "Returns the user with the ID specified.")
     @GetMapping(path="users/{id}")
-    public @ResponseBody ResponseEntity<UserResponse> getUser(@PathVariable(value = "id", required = true) Integer id) {
-        return ResponseEntity.ok(new UserResponse(userService.getUser(id)));
+    public @ResponseBody ResponseEntity<UserResponse> getUser(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
+        User currentUser = userService.getUserByMail(principal.getName());
+        if (currentUser.getRole().equals(UserRole.ADMIN) || currentUser.getId() == id) {
+            return ResponseEntity.ok(new UserResponse(userService.getUser(id)));
+        }
+        throw new AuthenticationException("user is not authenticated to view this booking");
     }
 
     @Operation(description = "Returns the user with the ID specified.")
@@ -98,5 +105,7 @@ public class UserController {
     public @ResponseBody ResponseEntity<UserResponse> editUser(@PathVariable(value = "id", required = true) Integer id) {
         return null;
     }
+
+    // TODO Princaple to identify whoami => see getUser() method
 
 }
