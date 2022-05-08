@@ -91,7 +91,7 @@ public class UserController {
         if (currentUser.getRole().equals(UserRole.ADMIN) || currentUser.getId() == id) {
             return ResponseEntity.ok(new UserResponse(userService.getUser(id)));
         }
-        throw new AuthenticationException("user is not authenticated to view this booking");
+        throw new AuthenticationException("user is not authenticated to view other users than himself");
     }
 
     @Operation(description = "Returns the user with the ID specified.")
@@ -102,8 +102,12 @@ public class UserController {
 
     @Operation(description = "Returns the user with the ID specified.")
     @PutMapping(path="users/{id}")
-    public @ResponseBody ResponseEntity<UserResponse> editUser(@PathVariable(value = "id", required = true) Integer id) {
-        return null;
+    public @ResponseBody ResponseEntity<UserResponse> editUser(@PathVariable(value = "id", required = true) Integer id, Principal principal, @RequestBody SignUpBody signUpBody) throws AuthenticationException {
+        User currentUser = userService.getUserByMail(principal.getName());
+        if (currentUser.getRole().equals(UserRole.ADMIN) || currentUser.getId() == id) {
+            return ResponseEntity.ok(new UserResponse(userService.editUser(id, signUpBody)));
+        }
+        throw new AuthenticationException("user is not authenticated to edit other users");
     }
 
     // TODO Princaple to identify whoami => see getUser() method

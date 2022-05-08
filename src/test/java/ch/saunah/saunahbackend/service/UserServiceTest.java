@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
+import ch.saunah.saunahbackend.dto.SaunaTypeBody;
+import ch.saunah.saunahbackend.model.Sauna;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -214,6 +216,39 @@ class UserServiceTest {
         userService.signUp(signUpBody);
         assertEquals(4,userRepository.count());
     }
+
+    /**
+     * This test checks if the fields values of an existing user can be edited
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void editUser() throws Exception {
+        User user = userService.signUp(signUpBody);
+        SignUpBody signUpBodyChanged = new SignUpBody();
+        signUpBodyChanged.setFirstName("Maya");
+        signUpBodyChanged.setLastName("Meier");
+        signUpBodyChanged.setStreet("Inkastrasse");
+        signUpBodyChanged.setPlace("Azteken");
+        signUpBodyChanged.setPlz("666");
+        signUpBodyChanged.setPhoneNumber("077 777 66 77");
+        user = userService.editUser(user.getId(), signUpBodyChanged);
+        checkUserFields(signUpBodyChanged, user);
+    }
+
+    /**
+     * This method helps checking if the values are correct
+     * @param signUpBody The user parameters
+     * @param user the instance of a user
+     */
+    private void checkUserFields(SignUpBody signUpBody, User user) {
+        assertEquals(signUpBody.getFirstName(), user.getFirstName());
+        assertEquals(signUpBody.getLastName(), user.getLastName());
+        assertEquals(signUpBody.getPhoneNumber(), user.getPhoneNumber());
+        assertEquals(signUpBody.getPlace(), user.getPlace());
+        assertEquals(signUpBody.getPlz(), user.getPlz());
+        assertEquals(signUpBody.getStreet(), user.getStreet());
+    }
+
 
 
 }

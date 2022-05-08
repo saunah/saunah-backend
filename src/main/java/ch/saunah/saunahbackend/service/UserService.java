@@ -1,6 +1,7 @@
 package ch.saunah.saunahbackend.service;
 
 import ch.saunah.saunahbackend.dto.ResetPasswordBody;
+import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
@@ -231,7 +232,27 @@ public class UserService {
         return (List<User>) userRepository.findAll();
     }
 
+    /**
+     * Edit an already existing User
+     * @param id the id of the user to be edited
+     * @param signUpBody the parameters to be changed
+     * @return
+     */
+    public User editUser(int id, SignUpBody signUpBody) {
+        User editUser = getUser(id);
+        setUserFields(editUser, signUpBody);
+        return userRepository.save(editUser);
+    }
 
+    private User setUserFields(User user, SignUpBody signUpBody) {
+        user.setFirstName(signUpBody.getFirstName());
+        user.setLastName(signUpBody.getLastName());
+        user.setPhoneNumber(signUpBody.getPhoneNumber());
+        user.setPlace(signUpBody.getPlace());
+        user.setPlz(signUpBody.getPlz());;
+        user.setStreet(signUpBody.getStreet());
+        return user;
+    }
 
 
 
