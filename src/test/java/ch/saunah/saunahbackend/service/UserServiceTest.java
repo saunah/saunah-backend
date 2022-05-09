@@ -30,7 +30,6 @@ import org.webjars.NotFoundException;
  */
 @SpringBootTest(classes = SaunahBackendApplication.class)
 class UserServiceTest {
-
     @Autowired
     private UserService userService;
     @Autowired
