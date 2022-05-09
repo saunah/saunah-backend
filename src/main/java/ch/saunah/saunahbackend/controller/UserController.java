@@ -88,7 +88,7 @@ public class UserController {
     @GetMapping(path="users/{id}")
     public @ResponseBody ResponseEntity<UserResponse> getUser(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
         User currentUser = userService.getUserByMail(principal.getName());
-        if (currentUser.getRole().equals(UserRole.ADMIN) || currentUser.getId() == id) {
+        if (currentUser.getRole().equals(UserRole.ADMIN) || currentUser.getId().equals(id)) {
             return ResponseEntity.ok(new UserResponse(userService.getUser(id)));
         }
         throw new AuthenticationException("user is not authenticated to view other users than himself");
@@ -113,7 +113,7 @@ public class UserController {
     @PutMapping(path="users/{id}")
     public @ResponseBody ResponseEntity<UserResponse> editUser(@PathVariable(value = "id", required = true) Integer id, Principal principal, @RequestBody SignUpBody signUpBody) throws AuthenticationException {
         User currentUser = userService.getUserByMail(principal.getName());
-        if (currentUser.getRole().equals(UserRole.ADMIN) || currentUser.getId() == id) {
+        if (currentUser.getRole().equals(UserRole.ADMIN) || currentUser.getId().equals(id)) {
             return ResponseEntity.ok(new UserResponse(userService.editUser(id, signUpBody)));
         }
         throw new AuthenticationException("user is not authenticated to edit other users");
