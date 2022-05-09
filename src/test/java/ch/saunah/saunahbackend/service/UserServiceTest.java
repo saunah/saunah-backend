@@ -8,9 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
-import ch.saunah.saunahbackend.dto.SaunaTypeBody;
-import ch.saunah.saunahbackend.model.Sauna;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +25,6 @@ import ch.saunah.saunahbackend.repository.UserRepository;
 import ch.saunah.saunahbackend.dto.ResetPasswordBody;
 import org.webjars.NotFoundException;
 
-import java.security.Principal;
-
 /**
  * This class tests all user service methods.
  */
@@ -41,7 +36,6 @@ class UserServiceTest {
     @Autowired
     private UserRepository userRepository;
     private SignUpBody signUpBody = null;
-    private SignInBody signInBody = null;
 
     @BeforeEach
     void setUp() {
@@ -252,6 +246,10 @@ class UserServiceTest {
         assertEquals(signUpBody.getStreet(), user.getStreet());
     }
 
+    /**
+     * This test, checks if an Admin can change the Userrole of others
+     * @throws Exception
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void editUserRole() throws Exception {
@@ -267,18 +265,5 @@ class UserServiceTest {
         assertEquals(UserRole.ADMIN,userNotAdmin.getRole());
     }
 
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void whoami() throws Exception {
-        assertThrows(Exception.class, () -> userService.whoami());
-        User user = userService.signUp(signUpBody);
-        userService.verifyUser(user.getActivationId());
-        signInBody = new SignInBody();
-        signInBody.setEmail("hans.muster@mustermail.ch");
-        signInBody.setEmail(signUpBody.getEmail());
-        signInBody.setPassword(signUpBody.getPassword());
-        userService.signIn(signInBody);
-        //assertEquals(user, userService.whoami());
-    }
 
 }

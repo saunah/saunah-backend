@@ -121,7 +121,7 @@ public class UserController {
 
     @Operation(description = "Returns the current logged in User.")
     @GetMapping(path="users/whoami")
-    public @ResponseBody ResponseEntity<UserResponse> whoami(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws Exception {
-        return ResponseEntity.ok(new UserResponse(userService.whoami()));
+    public @ResponseBody ResponseEntity<UserResponse> whoami(Principal principal) {
+        return ResponseEntity.ok(new UserResponse(userService.getUserByMail(principal.getName())));
     }
 }
