@@ -119,6 +119,9 @@ public class UserController {
         throw new AuthenticationException("user is not authenticated to edit other users");
     }
 
-    // TODO Princaple to identify whoami => see getUser() method
-
+    @Operation(description = "Returns the current logged in User.")
+    @GetMapping(path="users/whoami")
+    public @ResponseBody ResponseEntity<UserResponse> whoami(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws Exception {
+        return ResponseEntity.ok(new UserResponse(userService.whoami()));
+    }
 }

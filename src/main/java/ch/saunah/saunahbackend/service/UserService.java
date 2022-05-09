@@ -19,10 +19,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
+import java.security.Principal;
 
 
 import javax.management.BadAttributeValueExpException;
 import javax.validation.ValidationException;
+import java.security.Principal;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +39,7 @@ public class UserService {
 
     private static final String PWD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()%[{}]:;',?/*~$^+=<>._|`-]).{8,20}$";
     private static final String EMAIL_PATTERN = "^(.+)@(\\S+)$";
+    private Principal principal;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -262,6 +265,20 @@ public class UserService {
      */
     public User editUserRole(User user, UserRole userRole) {
         user.setRole(userRole);
+        return user;
+    }
+
+    /**
+     * Return the currently logged in user
+     * @return the user if he is logged in
+     */
+    public User whoami() throws NullPointerException {
+        User user = getUserByMail(principal.getName());
+        System.out.println(principal.getName());
+        System.out.println(user);
+        if (user == null){
+            throw new NullPointerException(String.format("User %s was not found!", user));
+        }
         return user;
     }
 

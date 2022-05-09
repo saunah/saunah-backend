@@ -28,6 +28,8 @@ import ch.saunah.saunahbackend.repository.UserRepository;
 import ch.saunah.saunahbackend.dto.ResetPasswordBody;
 import org.webjars.NotFoundException;
 
+import java.security.Principal;
+
 /**
  * This class tests all user service methods.
  */
@@ -39,6 +41,7 @@ class UserServiceTest {
     @Autowired
     private UserRepository userRepository;
     private SignUpBody signUpBody = null;
+    private SignInBody signInBody = null;
 
     @BeforeEach
     void setUp() {
@@ -262,6 +265,20 @@ class UserServiceTest {
         userService.editUserRole(userNotAdmin, UserRole.ADMIN);
         assertEquals(UserRole.USER,userAdmin.getRole());
         assertEquals(UserRole.ADMIN,userNotAdmin.getRole());
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void whoami() throws Exception {
+        assertThrows(Exception.class, () -> userService.whoami());
+        User user = userService.signUp(signUpBody);
+        userService.verifyUser(user.getActivationId());
+        signInBody = new SignInBody();
+        signInBody.setEmail("hans.muster@mustermail.ch");
+        signInBody.setEmail(signUpBody.getEmail());
+        signInBody.setPassword(signUpBody.getPassword());
+        userService.signIn(signInBody);
+        //assertEquals(user, userService.whoami());
     }
 
 }
