@@ -249,6 +249,19 @@ class UserServiceTest {
         assertEquals(signUpBody.getStreet(), user.getStreet());
     }
 
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void editUserRole() throws Exception {
+        User userAdmin = userService.signUp(signUpBody);
+        signUpBody.setEmail("test1@gmail.com");
+        User userNotAdmin = userService.signUp(signUpBody);
+        assertEquals(UserRole.ADMIN,userAdmin.getRole());
+        assertEquals(UserRole.USER,userNotAdmin.getRole());
 
+        userService.editUserRole(userAdmin, UserRole.USER);
+        userService.editUserRole(userNotAdmin, UserRole.ADMIN);
+        assertEquals(UserRole.USER,userAdmin.getRole());
+        assertEquals(UserRole.ADMIN,userNotAdmin.getRole());
+    }
 
 }

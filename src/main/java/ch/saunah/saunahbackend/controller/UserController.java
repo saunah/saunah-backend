@@ -96,8 +96,17 @@ public class UserController {
 
     @Operation(description = "Returns the user with the ID specified.")
     @PutMapping(path="users/userRole/{id}")
-    public @ResponseBody ResponseEntity<UserResponse> changeUserRole(@PathVariable(value = "id", required = true) Integer id) {
-        return null;
+    public @ResponseBody ResponseEntity<UserResponse> changeUserRole(@PathVariable(value = "id", required = true) Integer id,  Principal principal) throws AuthenticationException {
+        User currentUser = userService.getUserByMail(principal.getName());
+        if (currentUser.getRole().equals(UserRole.ADMIN)) {
+            User changedUser = userService.getUser(id);
+            if (changedUser.getRole().equals(UserRole.ADMIN)) {
+                return ResponseEntity.ok(new UserResponse(userService.editUserRole(changedUser, UserRole.USER)));
+            } else {
+                return ResponseEntity.ok(new UserResponse(userService.editUserRole(changedUser, UserRole.ADMIN)));
+            }
+        }
+        throw new AuthenticationException("user is not authenticated to change the userRole");
     }
 
     @Operation(description = "Returns the user with the ID specified.")

@@ -254,6 +254,16 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Change the Role of a user
+     * @param user the user whose role should be changed
+     * @param userRole the new role of the user
+     * @return return the changed user
+     */
+    public User editUserRole(User user, UserRole userRole) {
+        user.setRole(userRole);
+        return user;
+    }
 
 
 }
