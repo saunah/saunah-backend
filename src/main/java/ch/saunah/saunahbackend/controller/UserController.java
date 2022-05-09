@@ -1,6 +1,10 @@
 package ch.saunah.saunahbackend.controller;
 
 import ch.saunah.saunahbackend.dto.*;
+import ch.saunah.saunahbackend.dto.ResetPasswordBody;
+import ch.saunah.saunahbackend.dto.ResetPasswordRequestBody;
+import ch.saunah.saunahbackend.dto.SignInBody;
+import ch.saunah.saunahbackend.dto.SignUpBody;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.security.JwtResponse;
@@ -50,7 +54,7 @@ public class UserController {
     @Operation(description = "Activates the account for the user with the specified verificationId.")
     @GetMapping(value = "/verify/{verificationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> verify(@PathVariable String verificationId) throws Exception {
+    public ResponseEntity<String> verify(@PathVariable String verificationId){
         userService.verifyUser(verificationId);
         return ResponseEntity.ok("Account activated");
     }
@@ -58,10 +62,10 @@ public class UserController {
     @Operation(description = "Send a reset Password Mail to the user")
     @PostMapping(value = "/reset-password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordBody resetPasswordBody) throws Exception {
-        User user = userService.getUserByMail(resetPasswordBody.getEmail());
+    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequestBody resetPasswordRequestBody){
+        User user = userService.getUserByMail(resetPasswordRequestBody.getEmail());
         int passwordToken = userService.createResetPasswordtoken(user);
-        mailService.sendPasswordResetMail(resetPasswordBody.getEmail(), user.getId(), passwordToken);
+        mailService.sendPasswordResetMail(resetPasswordRequestBody.getEmail(), user.getId(), passwordToken);
         return ResponseEntity.ok("success");
     }
 
