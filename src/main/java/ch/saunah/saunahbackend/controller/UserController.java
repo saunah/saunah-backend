@@ -53,7 +53,7 @@ public class UserController {
     @Operation(description = "Activates the account for the user with the specified verificationId.")
     @GetMapping(value = "/verify/{verificationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> verify(@PathVariable String verificationId) throws Exception {
+    public ResponseEntity<String> verify(@PathVariable String verificationId){
         userService.verifyUser(verificationId);
         return ResponseEntity.ok("Account activated");
     }
@@ -61,7 +61,7 @@ public class UserController {
     @Operation(description = "Send a reset Password Mail to the user")
     @PostMapping(value = "/reset-password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequestBody resetPasswordRequestBody) throws Exception {
+    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequestBody resetPasswordRequestBody){
         User user = userService.getUserByMail(resetPasswordRequestBody.getEmail());
         int passwordToken = userService.createResetPasswordtoken(user);
         mailService.sendPasswordResetMail(resetPasswordRequestBody.getEmail(), user.getId(), passwordToken);
