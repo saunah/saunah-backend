@@ -40,8 +40,8 @@ public class User {
     @Column(name = "place", nullable = false)
     private String place;
 
-    @Column(name = "plz", nullable = false)
-    private String plz;
+    @Column(name = "zip", nullable = false)
+    private String zip;
 
     @Column(name = "activated", nullable = false)
     private boolean activated;
@@ -95,8 +95,8 @@ public class User {
         return place;
     }
 
-    public String getPlz() {
-        return plz;
+    public String getZip() {
+        return zip;
     }
 
     public void setActivationId(String activationId) {
@@ -131,8 +131,8 @@ public class User {
         this.place = place;
     }
 
-    public void setPlz(String plz) {
-        this.plz = plz;
+    public void setZip(String zip) {
+        this.zip = zip;
     }
 
     public boolean isActivated() {
