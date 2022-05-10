@@ -11,14 +11,12 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private String email;
-    private String passwordHash;
     private String phoneNumber;
     private String street;
     private String place;
-    private String plz;
+    private String zip;
     private boolean activated;
     private UserRole role;
-    private String resetpasswordhash;
 
     /**
      * This constructor sets all the fields of this object.
@@ -28,14 +26,12 @@ public class UserResponse {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-        this.passwordHash = user.getPasswordHash();
         this.phoneNumber = user.getPhoneNumber();
         this.street = user.getStreet();
         this.place = user.getPlace();
-        this.plz = user.getPlz();
+        this.zip = user.getPlz();
         this.activated = user.isActivated();
         this.role = user.getRole();
-        this.resetpasswordhash = user.getResetpasswordHash();
     }
 
     public Integer getId() {
@@ -54,10 +50,6 @@ public class UserResponse {
         return email;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -70,8 +62,8 @@ public class UserResponse {
         return place;
     }
 
-    public String getPlz() {
-        return plz;
+    public String getZip() {
+        return zip;
     }
 
     public boolean isActivated() {
@@ -81,7 +73,5 @@ public class UserResponse {
     public UserRole getRole() {
         return role;
     }
-
-    public String getResetpasswordHash(){return resetpasswordhash;}
 
 }

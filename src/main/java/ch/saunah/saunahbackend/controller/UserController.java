@@ -4,7 +4,7 @@ import ch.saunah.saunahbackend.dto.*;
 import ch.saunah.saunahbackend.dto.ResetPasswordBody;
 import ch.saunah.saunahbackend.dto.ResetPasswordRequestBody;
 import ch.saunah.saunahbackend.dto.SignInBody;
-import ch.saunah.saunahbackend.dto.SignUpBody;
+import ch.saunah.saunahbackend.dto.UserBody;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.security.JwtResponse;
@@ -38,8 +38,8 @@ public class UserController {
     @Operation(description = "Registers an account and sends a verification mail to the specified mail.")
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> signUp(@RequestBody SignUpBody signUpBody) throws Exception {
-        User createdUser = userService.signUp(signUpBody);
+    public ResponseEntity<String> signUp(@RequestBody UserBody userBody) throws Exception {
+        User createdUser = userService.signUp(userBody);
         mailService.sendUserActivationMail(createdUser.getEmail(), createdUser.getActivationId());
         return ResponseEntity.ok("success");
     }
@@ -98,29 +98,21 @@ public class UserController {
         throw new AuthenticationException("user is not authenticated to view other users than himself");
     }
 
-    @Operation(description = "Returns the user with the ID specified.")
-    @PutMapping(path="users/userRole/{id}")
-    public @ResponseBody ResponseEntity<UserResponse> changeUserRole(@PathVariable(value = "id", required = true) Integer id,  Principal principal) throws AuthenticationException {
-        User currentUser = userService.getUserByMail(principal.getName());
-        if (currentUser.getRole().equals(UserRole.ADMIN)) {
-            User changedUser = userService.getUser(id);
-            if (changedUser.getRole().equals(UserRole.ADMIN)) {
-                return ResponseEntity.ok(new UserResponse(userService.editUserRole(changedUser, UserRole.USER)));
-            } else {
-                return ResponseEntity.ok(new UserResponse(userService.editUserRole(changedUser, UserRole.ADMIN)));
-            }
-        }
-        throw new AuthenticationException("user is not authenticated to change the userRole");
-    }
-
-    @Operation(description = "Returns the user with the ID specified.")
+    @Operation(description = "update the user information.")
     @PutMapping(path="users/{id}")
-    public @ResponseBody ResponseEntity<UserResponse> editUser(@PathVariable(value = "id", required = true) Integer id, Principal principal, @RequestBody SignUpBody signUpBody) throws AuthenticationException {
+    public @ResponseBody ResponseEntity<UserResponse> editUser(@PathVariable(value = "id", required = true) Integer id, Principal principal, @RequestBody UserBody userBody) throws AuthenticationException {
         User currentUser = userService.getUserByMail(principal.getName());
         if (currentUser.getRole().equals(UserRole.ADMIN) || currentUser.getId().equals(id)) {
-            return ResponseEntity.ok(new UserResponse(userService.editUser(id, signUpBody)));
+            sanitizeUserBodyForRole(currentUser.getRole(), userBody);
+            return ResponseEntity.ok(new UserResponse(userService.editUser(id, userBody)));
         }
         throw new AuthenticationException("user is not authenticated to edit other users");
+    }
+
+    private void sanitizeUserBodyForRole(UserRole role, UserBody userBody) {
+        if (!role.equals(UserRole.ADMIN)) {
+            userBody.setRole(null);
+        }
     }
 
     @Operation(description = "Returns the current logged in User.")
