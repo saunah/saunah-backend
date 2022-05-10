@@ -7,7 +7,7 @@ import ch.saunah.saunahbackend.repository.UserRepository;
 import ch.saunah.saunahbackend.security.JwtResponse;
 import ch.saunah.saunahbackend.security.JwtTokenUtil;
 import ch.saunah.saunahbackend.dto.SignInBody;
-import ch.saunah.saunahbackend.dto.SignUpBody;
+import ch.saunah.saunahbackend.dto.UserBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
@@ -16,11 +16,13 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 
 import javax.management.BadAttributeValueExpException;
 import javax.validation.ValidationException;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -52,34 +54,34 @@ public class UserService {
     /**
      * This method registers a new user to the database.
      *
-     * @param signUpBody contains all user credentials
+     * @param userBody contains all user credentials
      * @return createdUser
      * @throws Exception
      */
-    public User signUp(SignUpBody signUpBody) throws Exception {
-        User user = userRepository.findByEmail(signUpBody.getEmail());
+    public User signUp(UserBody userBody) throws Exception {
+        User user = userRepository.findByEmail(userBody.getEmail());
         if (user != null) {
             throw new Exception("Email already taken");
         }
 
-        if (!Pattern.matches(EMAIL_PATTERN, signUpBody.getEmail())) {
+        if (!Pattern.matches(EMAIL_PATTERN, userBody.getEmail())) {
             throw new Exception("The email is not valid");
         }
 
-        if (!Pattern.matches(PWD_PATTERN, signUpBody.getPassword())) {
+        if (!Pattern.matches(PWD_PATTERN, userBody.getPassword())) {
             throw new Exception("Password does not require the conditions");
         }
 
-        String hashedPassword = passwordEncoder.encode(signUpBody.getPassword());
+        String hashedPassword = passwordEncoder.encode(userBody.getPassword());
         user = new User();
-        user.setEmail(signUpBody.getEmail());
+        user.setEmail(userBody.getEmail());
         user.setPasswordHash(hashedPassword);
-        user.setFirstName(signUpBody.getFirstName());
-        user.setLastName(signUpBody.getLastName());
-        user.setPhoneNumber(signUpBody.getPhoneNumber());
-        user.setPlz(signUpBody.getPlz());
-        user.setPlace(signUpBody.getPlace());
-        user.setStreet(signUpBody.getStreet());
+        user.setFirstName(userBody.getFirstName());
+        user.setLastName(userBody.getLastName());
+        user.setPhoneNumber(userBody.getPhoneNumber());
+        user.setPlz(userBody.getPlz());
+        user.setPlace(userBody.getPlace());
+        user.setStreet(userBody.getStreet());
         user.setActivationId(UUID.randomUUID().toString());
         if (hasUsers()) {
             user.setRole(UserRole.USER);
@@ -202,5 +204,54 @@ public class UserService {
         String jwtToken = jwtTokenUtil.generateToken(userDetailsService.loadUserByUsername(signInBody.getEmail()));
 
         return ResponseEntity.ok(new JwtResponse(jwtToken));
+    }
+
+    /**
+     * Get the user according to the provided ID
+     *
+     * @param id the id of the user to find
+     * @return The required user
+     * @throws NotFoundException if no such user exists
+     */
+    public User getUser(int id) throws NotFoundException {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null){
+            throw new NotFoundException(String.format("User with id %d not found!", id));
+        }
+        return user;
+    }
+
+    /**
+     * Return a list of all Users
+     *
+     * @return list of users
+     */
+    public List<User> getAllUser() {
+        return (List<User>) userRepository.findAll();
+    }
+
+    /**
+     * Edit an already existing User
+     * @param id the id of the user to be edited
+     * @param userBody the parameters to be changed
+     * @return
+     */
+    public User editUser(int id, UserBody userBody) {
+        User editUser = getUser(id);
+        setUserFields(editUser, userBody);
+        return userRepository.save(editUser);
+    }
+
+    private User setUserFields(User user, UserBody userBody) {
+        user.setFirstName(userBody.getFirstName());
+        user.setLastName(userBody.getLastName());
+        user.setPhoneNumber(userBody.getPhoneNumber());
+        user.setPlace(userBody.getPlace());
+        user.setPlz(userBody.getPlz());;
+        user.setStreet(userBody.getStreet());
+        if(user.getRole() != null) {
+            user.setRole(userBody.getRole());
+        }
+        return user;
     }
 }
