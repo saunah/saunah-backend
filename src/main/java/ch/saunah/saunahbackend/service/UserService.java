@@ -8,6 +8,8 @@ import ch.saunah.saunahbackend.security.JwtResponse;
 import ch.saunah.saunahbackend.security.JwtTokenUtil;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.UserBody;
+import org.apache.http.auth.AuthenticationException;
+import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
@@ -58,18 +60,18 @@ public class UserService {
      * @return createdUser
      * @throws Exception
      */
-    public User signUp(UserBody userBody) throws Exception {
+    public User signUp(UserBody userBody) throws IllegalArgumentException {
         User user = userRepository.findByEmail(userBody.getEmail());
         if (user != null) {
-            throw new Exception("Email already taken");
+            throw new IllegalArgumentException("Email already taken");
         }
 
         if (!Pattern.matches(EMAIL_PATTERN, userBody.getEmail())) {
-            throw new Exception("The email is not valid");
+            throw new IllegalArgumentException("The email is not valid");
         }
 
         if (!Pattern.matches(PWD_PATTERN, userBody.getPassword())) {
-            throw new Exception("Password does not require the conditions");
+            throw new IllegalArgumentException("Password does not require the conditions");
         }
 
         String hashedPassword = passwordEncoder.encode(userBody.getPassword());
@@ -125,10 +127,10 @@ public class UserService {
      * @param resetPasswordBody
      * @throws Exception
      */
-    public void resetPassword (Integer userID , ResetPasswordBody resetPasswordBody) throws Exception{
+    public void resetPassword (Integer userID , ResetPasswordBody resetPasswordBody) throws Exception {
         Optional<User> optionalUser = userRepository.findById(userID);
         if(optionalUser.isEmpty()) {
-            throw new IndexOutOfBoundsException("There is no User with the ID:" + userID);
+            throw new NotFoundException("There is no User with the ID:" + userID);
         }
         User user = optionalUser.get();
         if(user.getResetpasswordHash().isBlank()){
@@ -144,7 +146,6 @@ public class UserService {
         user.setResetpasswordHash("");
         user.setPasswordHash(passwordEncoder.encode(resetPasswordBody.getNewPassword()));
         userRepository.save(user);
-
     }
 
     /**
@@ -153,14 +154,13 @@ public class UserService {
      * @param activationId userid
      * @return true if he provided id matches, false if it does not
      */
-    public boolean verifyUser(String activationId) {
-        User user = userRepository.findByActivationId(activationId);
-        if (user != null) {
-            user.setActivated(true);
-            userRepository.save(user);
-            return true;
+    public void verifyUser(String activationId) throws NotFoundException{
+        User user = userRepository.findByActivationId(activationId).orElse(null);
+        if (user == null) {
+            throw new NotFoundException(String.format("User with the activation id %s not found!", activationId));
         }
-        return false;
+        user.setActivated(true);
+        userRepository.save(user);
     }
 
     /**
@@ -183,25 +183,24 @@ public class UserService {
         try {
             User foundUser = userRepository.findByEmail(signInBody.getEmail());
             if (foundUser == null) {
-                throw new Exception("No user found with this Email!");
+                throw new NotFoundException("No user found with this Email!");
             }
             if (!foundUser.isActivated()) {
-                throw new Exception("User has not been activated");
+                throw new IllegalAccessException("User has not been activated");
             }
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword()));
             if (authentication == null) {
-                throw new Exception("Authentication was not successful");
+                throw new AuthenticationException("Authentication was not successful");
             } else {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 context.setAuthentication(authentication);
             }
         } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
+            throw new DisabledException("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
+            throw new BadCredentialsException("INVALID_CREDENTIALS", e);
         }
         String jwtToken = jwtTokenUtil.generateToken(userDetailsService.loadUserByUsername(signInBody.getEmail()));
-
         return ResponseEntity.ok(new JwtResponse(jwtToken));
     }
 

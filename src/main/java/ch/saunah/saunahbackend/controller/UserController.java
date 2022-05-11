@@ -38,7 +38,7 @@ public class UserController {
     @Operation(description = "Registers an account and sends a verification mail to the specified mail.")
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> signUp(@RequestBody UserBody userBody) throws Exception {
+    public ResponseEntity<String> signUp(@RequestBody UserBody userBody) throws IllegalArgumentException {
         User createdUser = userService.signUp(userBody);
         mailService.sendUserActivationMail(createdUser.getEmail(), createdUser.getActivationId());
         return ResponseEntity.ok("success");
@@ -73,11 +73,7 @@ public class UserController {
     @PostMapping(value = "/reset-password/{userID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordBody resetPasswordBody, @PathVariable Integer userID) throws Exception {
-        try {
-            userService.resetPassword(userID, resetPasswordBody);
-        } catch (IndexOutOfBoundsException exception) {
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
-        }
+        userService.resetPassword(userID, resetPasswordBody);
         return ResponseEntity.ok("success");
     }
 

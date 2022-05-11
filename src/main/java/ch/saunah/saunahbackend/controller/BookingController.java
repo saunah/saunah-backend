@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 
 import javax.naming.AuthenticationException;
 import java.security.Principal;
@@ -47,7 +48,7 @@ public class BookingController {
     @Operation(description = "Returns the booking with the ID specified.")
     @GetMapping(path = "bookings/{id}")
     public @ResponseBody
-    ResponseEntity<BookingResponse> getBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
+    ResponseEntity<BookingResponse> getBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws NotFoundException, AuthenticationException {
         Booking booking = bookingService.getBooking(id);
         User user = userService.getUserByMail(principal.getName());
         if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
@@ -59,7 +60,7 @@ public class BookingController {
     @Operation(description = "Approves a existing booking structure with the ID specified.")
     @PostMapping(path = "bookings/{id}/approve")
     public @ResponseBody
-    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) {
+    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws NotFoundException {
         bookingService.approveBooking(id);
         return ResponseEntity.ok("success");
     }

@@ -10,7 +10,6 @@ public class ApiError {
 
     private Date timestamp;
     private HttpStatus status;
-    private int statusCode;
     private String message;
     private List<String> errors;
 
@@ -34,12 +33,12 @@ public class ApiError {
         return timestamp;
     }
 
-    public HttpStatus getStatus() {
-        return status;
-    }
-
     public int getStatusCode() {
         return status.value();
+    }
+
+    public HttpStatus getStatus() {
+        return status;
     }
 
     public String getMessage() {

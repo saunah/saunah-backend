@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,13 +26,13 @@ public class PriceController {
     @Operation(description = "Allows adding a new Price structure.")
     @PostMapping(path = "prices")
     public @ResponseBody
-    ResponseEntity<PriceResponse> createPrice(@RequestBody PriceBody priceBody) {
+    ResponseEntity<PriceResponse> createPrice(@RequestBody PriceBody priceBody) throws NullPointerException {
         return ResponseEntity.ok(new PriceResponse(priceService.addPrice(priceBody)));
     }
 
     @Operation(description = "Allows removing a existing Price structure with the ID specified.")
     @DeleteMapping(path = "prices/{id}")
-    public @ResponseBody ResponseEntity<String> removePrice(@PathVariable("id") int id) {
+    public @ResponseBody ResponseEntity<String> removePrice(@PathVariable("id") int id) throws NotFoundException {
         priceService.removePrice(id);
         return ResponseEntity.ok("success");
     }
@@ -39,7 +40,7 @@ public class PriceController {
     @Operation(description = "Allows editing an existing Price structure.")
     @PutMapping(path = "prices/{id}")
     public @ResponseBody
-    ResponseEntity<PriceResponse> editPrice(@PathVariable("id") int id, @RequestBody PriceBody priceBody) {
+    ResponseEntity<PriceResponse> editPrice(@PathVariable("id") int id, @RequestBody PriceBody priceBody) throws NotFoundException {
         return ResponseEntity.ok(new PriceResponse(priceService.editPrice(id, priceBody)));
     }
 
@@ -52,7 +53,7 @@ public class PriceController {
 
     @Operation(description = "Returns the price with the ID specified.")
     @GetMapping(path="prices/{id}")
-    public @ResponseBody ResponseEntity<PriceResponse> getPrice(@PathVariable(value = "id", required = true) Integer id) {
+    public @ResponseBody ResponseEntity<PriceResponse> getPrice(@PathVariable(value = "id", required = true) Integer id) throws NotFoundException {
         return ResponseEntity.ok(new PriceResponse(priceService.getPrice(id)));
     }
 }
