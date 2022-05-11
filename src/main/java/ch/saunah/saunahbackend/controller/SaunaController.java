@@ -7,14 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import ch.saunah.saunahbackend.dto.SaunaImageResponse;
@@ -38,7 +31,7 @@ public class SaunaController {
     private SaunaService saunaService;
 
     @Operation(description = "Allows adding a new Sauna type.")
-    @PostMapping(path = "sauna/add")
+    @PostMapping(path = "saunas")
     public @ResponseBody
     ResponseEntity<SaunaResponse> createSauna(@RequestBody SaunaTypeBody saunaTypeBody) {
         return ResponseEntity.ok(new SaunaResponse(saunaService.addSauna(saunaTypeBody)));
@@ -51,53 +44,53 @@ public class SaunaController {
     }
 
     @Operation(description = "Returns the sauna with the ID specified.")
-    @GetMapping(path="sauna/{id}")
+    @GetMapping(path="saunas/{id}")
     public @ResponseBody ResponseEntity<SaunaResponse> getSauna(@PathVariable(value = "id", required = true) Integer id) {
         return ResponseEntity.ok(new SaunaResponse(saunaService.getSauna(id)));
     }
 
     @Operation(description = "Allows removing a existing Sauna with the ID specified.")
-    @PostMapping(path = "sauna/remove")
-    public @ResponseBody ResponseEntity<String> removeSauna(@RequestParam("Id") int id) {
+    @DeleteMapping(path = "saunas/{id}")
+    public @ResponseBody ResponseEntity<String> removeSauna(@PathVariable("id") int id) {
         saunaService.removeSauna(id);
         return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Allows editing an existing Sauna type.")
-    @PostMapping(path = "sauna/edit")
+    @PutMapping(path = "saunas/{id}")
     public @ResponseBody
-    ResponseEntity<SaunaResponse> editSauna(@RequestParam("Id") int id, @RequestBody SaunaTypeBody saunaTypeBody) {
+    ResponseEntity<SaunaResponse> editSauna(@PathVariable("id") int id, @RequestBody SaunaTypeBody saunaTypeBody) {
         return ResponseEntity.ok(new SaunaResponse(saunaService.editSauna(id, saunaTypeBody)));
     }
 
     @Operation(description = "Adds new images to the corresponding sauna.")
-    @PostMapping(value = "/sauna/{saunaId}/addImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/saunas/{id}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> saveImages(@PathVariable("saunaId") int saunaId, @RequestBody List<MultipartFile> images)  {
+    public ResponseEntity<String> saveImages(@PathVariable("id") int saunaId, @RequestBody List<MultipartFile> images)  {
         saunaService.addSaunaImages(saunaId, images);
         return ResponseEntity.ok("success");
     }
 
 
     @Operation(description = "Removes the image of the specified Id.")
-    @PostMapping(path = "sauna/images/remove/{imageId}")
+    @DeleteMapping(path = "saunas/images/{id}")
     @ResponseBody
-    public ResponseEntity<String> removeImage(@RequestParam("imageId") int imageId) {
+    public ResponseEntity<String> removeImage(@PathVariable("id") int imageId) {
         saunaService.removeSaunaImage(imageId);
         return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Returns the image file of the corresponding file name.")
-    @GetMapping(value = "/sauna/images/{fileName}")
+    @GetMapping(value = "/saunas/images/{fileName}")
     @ResponseBody
     public ResponseEntity<byte[]> getImage(@PathVariable("fileName") String fileName) throws IOException {
         return saunaService.getImage(fileName);
     }
 
     @Operation(description = "Returns a list of all the images of a sauna with all their data.")
-    @GetMapping(value = "/sauna/{saunaId}/images")
+    @GetMapping(value = "/saunas/{id}/images")
     @ResponseBody
-    public ResponseEntity<List<SaunaImageResponse>> getSaunaImages(@PathVariable("saunaId") int saunaId) {
+    public ResponseEntity<List<SaunaImageResponse>> getSaunaImages(@PathVariable("id") int saunaId) {
         List<SaunaImageResponse> saunaImages = saunaService.getSaunaImages(saunaId)
             .stream().map(x -> new SaunaImageResponse(x.getId(), saunaId, x.getFileName())).collect(Collectors.toList());
         return ResponseEntity.ok().body(saunaImages);

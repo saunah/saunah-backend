@@ -25,6 +25,8 @@ env:
     value: saunah
   - name: SAUNAH_FRONTEND_BASE_URL
     value: "https://saunah.k8s.init-lab.ch"
+  - name: SAUNAH_EXTRA_ALLOWED_CORS
+    value: "http://localhost:3000"
   - name: SAUNAH_SMTP_HOST
     value: smtp.mailersend.net
   - name: SAUNAH_SMTP_PORT
@@ -41,12 +43,18 @@ env:
         name: saunah-secrets-smtp
         key: password
         optional: false
+  - name: SAUNAH_CREDENTIALS_GOOGLE_SERVICE
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-credentials
+        key: googleServiceAccount
+        optional: false
 
 image:
   repository: ghcr.io/saunah/saunah-backend
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.1.0"
+  tag: "0.2.0"
 
 imagePullSecrets: []
 nameOverride: ""

@@ -5,6 +5,8 @@ on:
     secrets:
       SONAR_TOKEN:
         required: true
+      CREDENTIALS_GOOGLE_SERVICE:
+        required: true
 
 jobs:
   build:
@@ -38,3 +40,4 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SAUNAH_CREDENTIALS_GOOGLE_SERVICE: ${{ secrets.CREDENTIALS_GOOGLE_SERVICE }}
