@@ -6,6 +6,7 @@ import java.util.Date;
  * This class is used as the DTO object when creating a Booking.
  */
 public class BookingBody {
+
     private Date startBookingDate;
     private Date endBookingDate;
     private int userId;

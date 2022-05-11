@@ -32,7 +32,7 @@ public class BookingController {
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "bookings")
     public @ResponseBody
-    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody) throws Exception {
+    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody) throws IllegalArgumentException {
         return ResponseEntity.ok(new BookingResponse(bookingService.addBooking(bookingBody)));
     }
 

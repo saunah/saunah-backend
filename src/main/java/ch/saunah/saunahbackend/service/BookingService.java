@@ -5,6 +5,7 @@ import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.BookingState;
 import ch.saunah.saunahbackend.model.Price;
 import ch.saunah.saunahbackend.model.Sauna;
+import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.repository.BookingRepository;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class BookingService {
     private PriceRepository priceRepository;
     @Autowired
     private SaunaService saunaService;
+    @Autowired
+    private UserService userService;
 
     /**
      * Add a new booking to the database and assigns the end price to it.
@@ -35,7 +38,7 @@ public class BookingService {
      * @return the newly created booking object
      * @throws NullPointerException if the required object is null
      */
-    public Booking addBooking(BookingBody bookingBody) throws Exception {
+    public Booking addBooking(BookingBody bookingBody) throws IllegalArgumentException {
         Objects.requireNonNull(bookingBody, "BookingBody must not be null!");
         Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
@@ -58,10 +61,11 @@ public class BookingService {
         }
 
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
+        User user = userService.getUser(bookingBody.getUserId());
         Booking booking = new Booking();
         booking.setStartBookingDate(bookingBody.getStartBookingDate());
         booking.setEndBookingDate(bookingBody.getEndBookingDate());
-        booking.setUserId(bookingBody.getUserId());
+        booking.setUserId(user.getId());
         booking.setLocation(bookingBody.getLocation());
         booking.setTransportService(bookingBody.isTransportService());
         booking.setWashService(bookingBody.isWashService());
@@ -71,7 +75,7 @@ public class BookingService {
         booking.setWood(bookingBody.isWood());
         booking.setCreation(new Date(System.currentTimeMillis()));
         booking.setEndPrice(calculatePrice(bookingBody, sauna, price));
-        booking.setSaunaId(bookingBody.getSaunaId());
+        booking.setSaunaId(sauna.getId());
         booking.setSaunaName(sauna.getName());
         booking.setSaunaDescription(sauna.getDescription());
         booking.setSaunaIsMobile(sauna.isMobile());
