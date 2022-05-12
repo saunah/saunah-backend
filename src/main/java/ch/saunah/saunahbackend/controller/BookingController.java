@@ -40,9 +40,6 @@ public class BookingController {
     private BookingService bookingService;
 
     @Autowired
-    private BookingRepository bookingRepository;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
@@ -57,8 +54,8 @@ public class BookingController {
     ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws Exception {
         User currentUser = userService.getUserByMail(principal.getName());
         Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
-        mailService.sendAdminOpenedBookingMail(userRepository.findByRole(UserRole.ADMIN), bookingRepository.findById(booking.getId()).get(), bookingRepository.findById(booking.getId()).get().getId());
-        mailService.sendUserOpenedBookingMail(userService.getUser(booking.getUserId()).getEmail(), bookingRepository.findById(booking.getId()).get());
+        mailService.sendAdminOpenedBookingMail(userRepository.findByRole(UserRole.ADMIN), booking);
+        mailService.sendUserOpenedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
         return ResponseEntity.ok(new BookingResponse(booking));
     }
 
@@ -87,7 +84,8 @@ public class BookingController {
     public @ResponseBody
     ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
         bookingService.approveBooking(id);
-        mailService.sendUserApprovedBookingMail(userRepository.findById(id).get().getEmail() , bookingRepository.findById(id).get());
+        Booking booking = bookingService.getBooking(id);
+        mailService.sendUserApprovedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
         return ResponseEntity.ok("success");
     }
 
@@ -98,7 +96,8 @@ public class BookingController {
         User user = userService.getUserByMail(principal.getName());
         if (UserRole.ADMIN.equals(user.getRole())) {
             bookingService.cancelBooking(id);
-            mailService.sendUserCanceledBookingMail(userRepository.findById(id).get().getEmail() , bookingRepository.findById(id).get());
+            Booking booking = bookingService.getBooking(id);
+            mailService.sendUserCanceledBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
             return ResponseEntity.ok("success");
         }
         throw new AuthenticationException("user is not authorized to cancel this booking");

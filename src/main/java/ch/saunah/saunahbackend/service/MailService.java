@@ -168,9 +168,8 @@ public class MailService {
      *
      * @param adminEmailList The email list of the all admins
      * @param booking        The Booking info
-     * @param id             The Booking id
      */
-    public void sendAdminOpenedBookingMail(List<User> adminEmailList, Booking booking, int id) {
+    public void sendAdminOpenedBookingMail(List<User> adminEmailList, Booking booking) {
         for (User admin : adminEmailList) {
             try {
                 MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -185,8 +184,8 @@ public class MailService {
                     + "Sauna Strasse:" + booking.getSaunaStreet() + System.lineSeparator() + "Sauna PLZ:" + booking.getSaunaZip() + "\n"
                     + "Sauna Beschreibung:" + booking.getSaunaDescription() + System.lineSeparator() + "Sauna maximale Temperatur:" + booking.getSaunaMaxTemp() + "\n"
                     + "Erstellungsdatum der Buchung:" + booking.getCreation() + System.lineSeparator() + "Angegebener Ort des Kunden:" + booking.getLocation() + "\n"
-                    + "Totalpreis:" + booking.getEndPrice() +
-                    "<br><a href=\"" + frontendBaseUrl + "/bookings/" + id + "/" + "\">Hier drücken</a></p>", true);
+                    + "Totalpreis:" + booking.getEndPrice() + System.lineSeparator() + "UserId" + booking.getUserId() + "\n"
+                    + "<br><a href=\"" + frontendBaseUrl + "/bookings/" + booking.getId() + "/" + "\">Hier drücken</a></p>", true);
                 javaMailSender.send(mimeMessage);
             } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
                 System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
