@@ -34,7 +34,7 @@ public class SaunaResponse {
         this.street = sauna.getStreet();
         this.zip = sauna.getZip();
         this.type = sauna.getType();
-        this.googleCalendarId =sauna.getGoogleCalendarId();
+        this.googleCalendarId = sauna.getGoogleCalendarId();
     }
 
     public int getId() {
