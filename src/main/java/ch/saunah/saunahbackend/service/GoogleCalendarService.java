@@ -34,8 +34,8 @@ public class GoogleCalendarService {
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
     private static final String TIMEZONE = "Europe/Zurich";
-    private static final String TENTATIVE = "tentative";
-    private static final String CONFIRMED = "confirmed";
+    private static final String PROVISORISCH = "provisiorisch";
+    private static final String GEBUCHT = "gebucht";
 
     private final NetHttpTransport httpTransport;
 
@@ -137,9 +137,7 @@ public class GoogleCalendarService {
      */
     public String createEvent(String calenderID ,Booking booking) throws IOException{
         Event event = new Event()
-            .setSummary(booking.getSaunaName())
-            .setLocation(booking.getLocation())
-            .setDescription(booking.getSaunaDescription());
+            .setSummary(PROVISORISCH);
         DateTime startDateTime = new DateTime(booking.getStartBookingDate());
         EventDateTime start = new EventDateTime()
             .setDateTime(startDateTime)
@@ -151,7 +149,6 @@ public class GoogleCalendarService {
             .setDateTime(endDateTime)
             .setTimeZone(TIMEZONE);
         event.setEnd(end);
-        event.setStatus(TENTATIVE);
         return insertEvent(calenderID,event);
     }
     /**
@@ -195,7 +192,7 @@ public class GoogleCalendarService {
      */
     public void approveEvent(String calenderID ,String eventID) throws IOException{
         Event event =service.events().get(calenderID, eventID).execute();
-        event.setStatus(CONFIRMED);
+        event.setSummary(GEBUCHT);
         service.events().update(calenderID, event.getId(), event).execute();
     }
 }
