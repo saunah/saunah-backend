@@ -36,6 +36,7 @@ public class BookingResponse {
     private String saunaStreet;
     private int saunaZip;
     private String saunaType;
+    private String googleEventID;
 
     /**
      * This constructor sets all the fields of this object.
@@ -66,6 +67,7 @@ public class BookingResponse {
         this.saunaStreet = booking.getSaunaStreet();
         this.saunaZip = booking.getSaunaZip();
         this.saunaType = booking.getSaunaType();
+        this.googleEventID = booking.getGoogleEventID();
     }
 
     public int getId() {
@@ -163,4 +165,5 @@ public class BookingResponse {
     public String getSaunaType() {
         return saunaType;
     }
+    public String getGoogleEventID(){return googleEventID;}
 }

@@ -10,9 +10,21 @@ import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.UserBody;
 import org.apache.http.auth.AuthenticationException;
 import org.hibernate.annotations.NotFound;
+import java.security.SecureRandom;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Pattern;
+
+import javax.management.BadAttributeValueExpException;
+import javax.validation.ValidationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,14 +32,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-
-import javax.management.BadAttributeValueExpException;
-import javax.validation.ValidationException;
-import java.security.SecureRandom;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.regex.Pattern;
+import ch.saunah.saunahbackend.dto.ResetPasswordBody;
+import ch.saunah.saunahbackend.dto.SignInBody;
+import ch.saunah.saunahbackend.dto.UserBody;
+import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
+import ch.saunah.saunahbackend.repository.UserRepository;
+import ch.saunah.saunahbackend.security.JwtResponse;
+import ch.saunah.saunahbackend.security.JwtTokenUtil;
 
 /**
  * This class contains registration, verification and login methods.
@@ -81,7 +93,7 @@ public class UserService {
         user.setFirstName(userBody.getFirstName());
         user.setLastName(userBody.getLastName());
         user.setPhoneNumber(userBody.getPhoneNumber());
-        user.setPlz(userBody.getPlz());
+        user.setZip(userBody.getZip());
         user.setPlace(userBody.getPlace());
         user.setStreet(userBody.getStreet());
         user.setActivationId(UUID.randomUUID().toString());
@@ -245,7 +257,7 @@ public class UserService {
         user.setLastName(userBody.getLastName());
         user.setPhoneNumber(userBody.getPhoneNumber());
         user.setPlace(userBody.getPlace());
-        user.setPlz(userBody.getPlz());;
+        user.setZip(userBody.getZip());;
         user.setStreet(userBody.getStreet());
         if(user.getRole() != null) {
             user.setRole(userBody.getRole());

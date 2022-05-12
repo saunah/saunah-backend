@@ -1,5 +1,22 @@
 package ch.saunah.saunahbackend.controller;
 
+import java.io.IOException;
+import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.naming.AuthenticationException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.dto.BookingResponse;
 import ch.saunah.saunahbackend.model.Booking;
@@ -27,14 +44,17 @@ public class BookingController {
 
     @Autowired
     private BookingService bookingService;
+
     @Autowired
     private UserService userService;
 
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "bookings")
     public @ResponseBody
-    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody) throws IllegalArgumentException {
-        return ResponseEntity.ok(new BookingResponse(bookingService.addBooking(bookingBody)));
+    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws Exception {
+        User currentUser = userService.getUserByMail(principal.getName());
+        Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
+        return ResponseEntity.ok(new BookingResponse(booking));
     }
 
     @Operation(description = "Returns the list of the bookings of the current user.")
@@ -60,7 +80,7 @@ public class BookingController {
     @Operation(description = "Approves a existing booking structure with the ID specified.")
     @PostMapping(path = "bookings/{id}/approve")
     public @ResponseBody
-    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws NotFoundException {
+    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws NotFoundException,IOException {
         bookingService.approveBooking(id);
         return ResponseEntity.ok("success");
     }
@@ -68,7 +88,7 @@ public class BookingController {
     @Operation(description = "Cancels a existing booking structure with the ID specified.")
     @PostMapping(path = "bookings/{id}/cancel")
     public @ResponseBody
-    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
+    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException,IOException {
         Booking booking = bookingService.getBooking(id);
         User user = userService.getUserByMail(principal.getName());
         if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {

@@ -29,7 +29,7 @@ public class UserResponse {
         this.phoneNumber = user.getPhoneNumber();
         this.street = user.getStreet();
         this.place = user.getPlace();
-        this.zip = user.getPlz();
+        this.zip = user.getZip();
         this.activated = user.isActivated();
         this.role = user.getRole();
     }

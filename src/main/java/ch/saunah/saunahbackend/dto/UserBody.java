@@ -13,7 +13,7 @@ public class UserBody {
     private String phoneNumber;
     private String street;
     private String place;
-    private String plz;
+    private String zip;
     private UserRole role;
 
     public String getFirstName() {
@@ -72,12 +72,12 @@ public class UserBody {
         this.place = place;
     }
 
-    public String getPlz() {
-        return plz;
+    public String getZip() {
+        return zip;
     }
 
-    public void setPlz(String plz) {
-        this.plz = plz;
+    public void setZip(String zip) {
+        this.zip = zip;
     }
 
     public UserRole getRole() {
