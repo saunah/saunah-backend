@@ -143,13 +143,13 @@ public class GoogleCalendarService {
         DateTime startDateTime = new DateTime(booking.getStartBookingDate());
         EventDateTime start = new EventDateTime()
             .setDateTime(startDateTime)
-            .setTimeZone("Europe/Zurich");
+            .setTimeZone(TIMEZONE);
         event.setStart(start);
 
         DateTime endDateTime = new DateTime(booking.getEndBookingDate());
         EventDateTime end = new EventDateTime()
             .setDateTime(endDateTime)
-            .setTimeZone("Europe/Zurich");
+            .setTimeZone(TIMEZONE);
         event.setEnd(end);
         event.setStatus(TENTATIVE);
         return insertEvent(calenderID,event);
