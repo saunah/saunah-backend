@@ -20,12 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.dto.BookingResponse;
 import ch.saunah.saunahbackend.model.Booking;
-import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.service.BookingService;
-import ch.saunah.saunahbackend.service.GoogleCalendarService;
-import ch.saunah.saunahbackend.service.SaunaService;
 import ch.saunah.saunahbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -38,14 +35,9 @@ public class BookingController {
 
     @Autowired
     private BookingService bookingService;
+
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private GoogleCalendarService calendarService;
-
-    @Autowired
-    private SaunaService saunaService;
 
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "bookings")
@@ -53,8 +45,6 @@ public class BookingController {
     ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws Exception {
         User currentUser = userService.getUserByMail(principal.getName());
         Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
-        Sauna sauna = saunaService.getSauna(booking.getSaunaId());
-        booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalenderID(),booking));
         return ResponseEntity.ok(new BookingResponse(booking));
     }
 
@@ -83,9 +73,6 @@ public class BookingController {
     public @ResponseBody
     ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
         bookingService.approveBooking(id);
-        Booking booking =bookingService.getBooking(id);
-        Sauna sauna = saunaService.getSauna(booking.getSaunaId());
-        calendarService.approveEvent(sauna.getGoogleCalenderID(), booking.getGoogleEventID());
         return ResponseEntity.ok("success");
     }
 
@@ -97,8 +84,6 @@ public class BookingController {
         User user = userService.getUserByMail(principal.getName());
         if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
             bookingService.cancelBooking(id);
-            Sauna sauna = saunaService.getSauna(booking.getSaunaId());
-            calendarService.deleteEvent(sauna.getGoogleCalenderID(),booking.getGoogleEventID());
             return ResponseEntity.ok("success");
         }
         throw new AuthenticationException("user is not authorized to cancel this booking");

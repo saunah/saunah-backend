@@ -150,7 +150,7 @@ public class GoogleCalendarService {
             .setDateTime(endDateTime)
             .setTimeZone(TIMEZONE);
         event.setEnd(end);
-        return insertEvent(calenderID,event);
+        return insertEvent(calenderID, event);
     }
     /**
      * Delete an Event on the Google Api
@@ -192,7 +192,7 @@ public class GoogleCalendarService {
      * @throws IOException
      */
     public void approveEvent(String calenderID, String eventID) throws IOException{
-        Event event =service.events().get(calenderID, eventID).execute();
+        Event event = service.events().get(calenderID, eventID).execute();
         event.setSummary(TITLE_CONFIRMED);
         service.events().update(calenderID, event.getId(), event).execute();
     }

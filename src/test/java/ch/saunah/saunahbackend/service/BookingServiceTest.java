@@ -116,7 +116,7 @@ class BookingServiceTest {
         Booking booking = bookingService.addBooking(bookingBody, user.getId());
         Iterable<Booking> bookings = bookingRepository.findAll();
         assertTrue(bookings.iterator().hasNext());
-        assertThrows(NullPointerException.class, () -> bookingService.addBooking(null, 0));
+        assertThrows(NullPointerException.class, () -> bookingService.addBooking(null, user.getId()));
         assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, user.getId()));
         bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.MAY, 3).getTime());
         assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, user.getId()));

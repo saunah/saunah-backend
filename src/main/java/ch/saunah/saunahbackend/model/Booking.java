@@ -1,11 +1,12 @@
 package ch.saunah.saunahbackend.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Date;
 
 /**
  * Model of a booking structure
@@ -292,10 +293,11 @@ public class Booking {
         this.saunaType = saunaType;
     }
 
+    public void setGoogleEventID(String googleEventID) {
+        this.googleEventID = googleEventID;
+    }
+
     public String getGoogleEventID() {
         return googleEventID;
     }
-
-    public void setGoogleEventID(String googleEventID){this.googleEventID = googleEventID;}
-
 }
