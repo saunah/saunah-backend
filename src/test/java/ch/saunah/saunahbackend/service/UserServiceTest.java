@@ -112,10 +112,10 @@ class UserServiceTest {
         User user = userRepository.findByEmail(userBody.getEmail());
         assertNotNull(user);
         assertEquals(userBody.getEmail(), user.getEmail());
-        assertEquals(user.getRole(), UserRole.ADMIN);
+        assertEquals(UserRole.ADMIN, user.getRole());
         userBody.setEmail("lorem.ipsum@mustermail.ch");
         user = userService.signUp(userBody);
-        assertEquals(user.getRole(), UserRole.USER);
+        assertEquals(UserRole.USER, user.getRole());
     }
 
     /**
@@ -149,7 +149,7 @@ class UserServiceTest {
         signInBody.setEmail("hans.muster@mustermail.ch");
         signInBody.setPassword("ZH_a?!WD32");
         var response = userService.signIn(signInBody);
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
         signInBody.setEmail("notexisting mail");
         assertThrows(Exception.class, () -> userService.signIn(signInBody));
