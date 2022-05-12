@@ -1,15 +1,13 @@
 package ch.saunah.saunahbackend.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import ch.saunah.saunahbackend.dto.BookingBody;
-import ch.saunah.saunahbackend.model.*;
-import ch.saunah.saunahbackend.repository.PriceRepository;
-import ch.saunah.saunahbackend.repository.SaunaRepository;
-import ch.saunah.saunahbackend.repository.UserRepository;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -19,8 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ch.saunah.saunahbackend.SaunahBackendApplication;
-
-import static org.junit.jupiter.api.Assertions.*;
+import ch.saunah.saunahbackend.dto.BookingBody;
+import ch.saunah.saunahbackend.model.Booking;
+import ch.saunah.saunahbackend.model.Price;
+import ch.saunah.saunahbackend.model.Sauna;
+import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
+import ch.saunah.saunahbackend.repository.PriceRepository;
+import ch.saunah.saunahbackend.repository.SaunaRepository;
+import ch.saunah.saunahbackend.repository.UserRepository;
 
 /**
  * Google Calendar Service Integration Tests
@@ -103,7 +108,7 @@ class GoogleCalendarServiceTest {
         user.setPhoneNumber("0123");
         user.setStreet("Teststrasse 123");
         user.setPasswordHash("ZH_a?!WD32");
-        user.setPlz("1324");
+        user.setZip("1324");
         user.setActivationId("activated");
         user.setActivated(true);
         user.setRole(UserRole.USER);
