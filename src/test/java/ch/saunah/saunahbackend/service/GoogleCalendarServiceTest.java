@@ -15,6 +15,7 @@ import com.google.api.services.calendar.model.EventDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.dto.BookingBody;
@@ -66,7 +67,7 @@ class GoogleCalendarServiceTest {
      * @throws IOException
      */
     @Test
-    void CrudcalenderTest () throws IOException {
+    void crudCalenderTest () throws IOException {
         Event event = createEvent();
         String eventID = calendarService.insertEvent(TEST_CALENDAR_ID,event);
         assertNotNull(eventID);
@@ -76,6 +77,7 @@ class GoogleCalendarServiceTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void bookingCalenderTest () throws Exception {
         Sauna sauna = new Sauna();
         sauna.setName("Mobile Sauna 1");
@@ -88,7 +90,7 @@ class GoogleCalendarServiceTest {
         sauna.setStreet("Bahnhofstrasse 5");
         sauna.setZip(9000);
         sauna.setType("Tent");
-        sauna.setGoogleCalenderID(TEST_CALENDAR_ID);
+        sauna.setGoogleCalendarId(TEST_CALENDAR_ID);
         saunaRepository.save(sauna);
 
         Price price = new Price();
