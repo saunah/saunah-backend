@@ -1,5 +1,14 @@
 package ch.saunah.saunahbackend.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,17 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
+import org.webjars.NotFoundException;
 
 import ch.saunah.saunahbackend.SaunahBackendApplication;
+import ch.saunah.saunahbackend.dto.ResetPasswordBody;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.UserBody;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
-import ch.saunah.saunahbackend.dto.ResetPasswordBody;
-import org.webjars.NotFoundException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests all user service methods.
@@ -40,7 +47,7 @@ class UserServiceTest {
         userBody.setPhoneNumber("0123");
         userBody.setStreet("Teststrasse 123");
         userBody.setPassword("ZH_a?!WD32");
-        userBody.setPlz("1324");
+        userBody.setZip("1324");
     }
 
     @AfterEach
@@ -225,7 +232,7 @@ class UserServiceTest {
         userBodyChanged.setLastName("Meier");
         userBodyChanged.setStreet("Inkastrasse");
         userBodyChanged.setPlace("Azteken");
-        userBodyChanged.setPlz("666");
+        userBodyChanged.setZip("666");
         userBodyChanged.setPhoneNumber("077 777 66 77");
         userBodyChanged.setRole(UserRole.USER);
         userAdmin = userService.editUser(userAdmin.getId(), userBodyChanged);
@@ -245,7 +252,7 @@ class UserServiceTest {
         assertEquals(userBody.getLastName(), user.getLastName());
         assertEquals(userBody.getPhoneNumber(), user.getPhoneNumber());
         assertEquals(userBody.getPlace(), user.getPlace());
-        assertEquals(userBody.getPlz(), user.getPlz());
+        assertEquals(userBody.getZip(), user.getZip());
         assertEquals(userBody.getStreet(), user.getStreet());
         if (user.getRole().equals(UserRole.ADMIN)) {
             assertEquals(userBody.getRole(), user.getRole());
