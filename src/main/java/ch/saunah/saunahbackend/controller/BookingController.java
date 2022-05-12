@@ -1,5 +1,22 @@
 package ch.saunah.saunahbackend.controller;
 
+import java.io.IOException;
+import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.naming.AuthenticationException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.dto.BookingResponse;
 import ch.saunah.saunahbackend.model.Booking;
@@ -11,15 +28,6 @@ import ch.saunah.saunahbackend.service.GoogleCalendarService;
 import ch.saunah.saunahbackend.service.SaunaService;
 import ch.saunah.saunahbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.naming.AuthenticationException;
-import java.io.IOException;
-import java.security.Principal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controls the different operations that can be done with booking.
@@ -42,8 +50,9 @@ public class BookingController {
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "bookings")
     public @ResponseBody
-    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody) throws Exception {
-        Booking booking = bookingService.addBooking(bookingBody);
+    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws Exception {
+        User currentUser = userService.getUserByMail(principal.getName());
+        Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
         Sauna sauna = saunaService.getSauna(booking.getSaunaId());
         booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalenderID(),booking));
         return ResponseEntity.ok(new BookingResponse(booking));

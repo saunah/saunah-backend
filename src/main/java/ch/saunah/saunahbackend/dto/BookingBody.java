@@ -8,7 +8,6 @@ import java.util.Date;
 public class BookingBody {
     private Date startBookingDate;
     private Date endBookingDate;
-    private int userId;
     private int saunaId;
     private String location;
     private boolean transportService;
@@ -32,14 +31,6 @@ public class BookingBody {
 
     public void setEndBookingDate(Date endBookingDate) {
         this.endBookingDate = endBookingDate;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public int getSaunaId() {

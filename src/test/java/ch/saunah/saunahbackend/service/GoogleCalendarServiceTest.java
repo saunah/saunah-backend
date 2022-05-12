@@ -117,7 +117,6 @@ class GoogleCalendarServiceTest {
         bookingBody = new BookingBody();
         bookingBody.setStartBookingDate(new Date(System.currentTimeMillis() + 40000));
         bookingBody.setEndBookingDate(new Date(System.currentTimeMillis() + 50000));
-        bookingBody.setUserId(user.getId());
         bookingBody.setSaunaId(sauna.getId());
         bookingBody.setLocation("Zürich");
         bookingBody.setTransportService(true);
@@ -127,7 +126,7 @@ class GoogleCalendarServiceTest {
         bookingBody.setHandTowel(false);
         bookingBody.setWood(true);
 
-        Booking booking = bookingService.addBooking(bookingBody);
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
         String eventID = "";
 
         try {

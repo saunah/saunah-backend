@@ -7,7 +7,6 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
-import ch.saunah.saunahbackend.model.Booking;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -25,8 +24,10 @@ import com.google.auth.oauth2.ServiceAccountCredentials;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import ch.saunah.saunahbackend.model.Booking;
+
 /**
- * Provides access to Google Services, such as the Google Calendar API.
+ * Provides access the Google Calendar API.
  */
 @Service
 public class GoogleCalendarService {
@@ -34,8 +35,8 @@ public class GoogleCalendarService {
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
     private static final String TIMEZONE = "Europe/Zurich";
-    private static final String PROVISORISCH = "provisiorisch";
-    private static final String GEBUCHT = "gebucht";
+    private static final String TITLE_TENTATIVE = "Provisiorisch";
+    private static final String TITLE_CONFIRMED = "Gebucht";
 
     private final NetHttpTransport httpTransport;
 
@@ -82,8 +83,8 @@ public class GoogleCalendarService {
      * @return The next ten events
      * @throws IOException
      */
-    public List<Event> getNextEvents (String calenderID) throws IOException {
-        return getEvents(calenderID , new DateTime(System.currentTimeMillis()) , 10 );
+    public List<Event> getNextEvents(String calenderID) throws IOException {
+        return getEvents(calenderID, new DateTime(System.currentTimeMillis()), 10 );
     }
 
     /**
@@ -94,7 +95,7 @@ public class GoogleCalendarService {
      * @return List of events after the specific startTime
      * @throws IOException
      */
-    public List<Event> getEvents (String calenderID,DateTime startTime, int maxResults) throws IOException {
+    public List<Event> getEvents(String calenderID, DateTime startTime, int maxResults) throws IOException {
         Events events = service.events().list(calenderID)
             .setMaxResults(maxResults)
             .setTimeMin(startTime)
@@ -111,7 +112,7 @@ public class GoogleCalendarService {
      * @return Get the Event with the specified ID back
      * @throws IOException
      */
-    public Event getEvent (String calenderID , String eventID) throws IOException {
+    public Event getEvent(String calenderID, String eventID) throws IOException {
         return service.events().get(calenderID, eventID).execute();
     }
 
@@ -123,7 +124,7 @@ public class GoogleCalendarService {
      * @return The id of the event
      * @throws IOException
      */
-    public String insertEvent (String calenderID , Event event) throws IOException {
+    public String insertEvent(String calenderID, Event event) throws IOException {
         event = service.events().insert(calenderID, event).execute();
         return event.getId();
     }
@@ -135,9 +136,9 @@ public class GoogleCalendarService {
      * @return The Google calender event id
      * @throws IOException
      */
-    public String createEvent(String calenderID ,Booking booking) throws IOException{
+    public String createEvent(String calenderID, Booking booking) throws IOException{
         Event event = new Event()
-            .setSummary(PROVISORISCH);
+            .setSummary(TITLE_TENTATIVE);
         DateTime startDateTime = new DateTime(booking.getStartBookingDate());
         EventDateTime start = new EventDateTime()
             .setDateTime(startDateTime)
@@ -157,7 +158,7 @@ public class GoogleCalendarService {
      * @param eventID Id of the Event
      * @throws IOException
      */
-    public void deleteEvent (String calenderID , String eventID ) throws IOException {
+    public void deleteEvent (String calenderID, String eventID) throws IOException {
         service.events().delete(calenderID, eventID).execute();
     }
 
@@ -169,7 +170,7 @@ public class GoogleCalendarService {
      * @param endDate Endtime to what it will be changed
      * @throws IOException
      */
-    public void updateEvent  (String calenderID ,String eventID , DateTime startDate , DateTime endDate) throws IOException {
+    public void updateEvent(String calenderID, String eventID, DateTime startDate, DateTime endDate) throws IOException {
         Event event =service.events().get(calenderID, eventID).execute();
         EventDateTime start = new EventDateTime()
             .setDateTime(startDate)
@@ -190,9 +191,9 @@ public class GoogleCalendarService {
      * @param eventID id of the event
      * @throws IOException
      */
-    public void approveEvent(String calenderID ,String eventID) throws IOException{
+    public void approveEvent(String calenderID, String eventID) throws IOException{
         Event event =service.events().get(calenderID, eventID).execute();
-        event.setSummary(GEBUCHT);
+        event.setSummary(TITLE_CONFIRMED);
         service.events().update(calenderID, event.getId(), event).execute();
     }
 }
