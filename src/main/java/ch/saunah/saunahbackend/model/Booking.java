@@ -89,6 +89,9 @@ public class Booking {
     @Column(name = "sauna_type", nullable = false)
     private String saunaType;
 
+    @Column(name = "google_event_id", nullable = true)
+    private String googleEventID;
+
     public Booking() {
 
     }
@@ -288,5 +291,11 @@ public class Booking {
     public void setSaunaType(String saunaType) {
         this.saunaType = saunaType;
     }
+
+    public String getGoogleEventID() {
+        return googleEventID;
+    }
+
+    public void setGoogleEventID(String googleEventID){this.googleEventID = googleEventID;}
 
 }

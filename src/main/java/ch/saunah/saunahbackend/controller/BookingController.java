@@ -3,9 +3,12 @@ package ch.saunah.saunahbackend.controller;
 import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.dto.BookingResponse;
 import ch.saunah.saunahbackend.model.Booking;
+import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.service.BookingService;
+import ch.saunah.saunahbackend.service.GoogleCalendarService;
+import ch.saunah.saunahbackend.service.SaunaService;
 import ch.saunah.saunahbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,11 +33,20 @@ public class BookingController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private GoogleCalendarService calendarService;
+
+    @Autowired
+    private SaunaService saunaService;
+
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "bookings")
     public @ResponseBody
     ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody) throws Exception {
-        return ResponseEntity.ok(new BookingResponse(bookingService.addBooking(bookingBody)));
+        Booking booking = bookingService.addBooking(bookingBody);
+        Sauna sauna = saunaService.getSauna(booking.getSaunaId());
+        booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalenderID(),booking));
+        return ResponseEntity.ok(new BookingResponse(booking));
     }
 
     @Operation(description = "Returns the list of the bookings of the current user.")
@@ -59,19 +72,24 @@ public class BookingController {
     @Operation(description = "Approves a existing booking structure with the ID specified.")
     @PostMapping(path = "bookings/{id}/approve")
     public @ResponseBody
-    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) {
+    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
         bookingService.approveBooking(id);
+        Booking booking =bookingService.getBooking(id);
+        Sauna sauna = saunaService.getSauna(booking.getSaunaId());
+        calendarService.approveEvent(sauna.getGoogleCalenderID(), booking.getGoogleEventID());
         return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Cancels a existing booking structure with the ID specified.")
     @PostMapping(path = "bookings/{id}/cancel")
     public @ResponseBody
-    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
+    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException, IOException {
         Booking booking = bookingService.getBooking(id);
         User user = userService.getUserByMail(principal.getName());
         if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
             bookingService.cancelBooking(id);
+            Sauna sauna = saunaService.getSauna(booking.getSaunaId());
+            calendarService.deleteEvent(sauna.getGoogleCalenderID(),booking.getGoogleEventID());
             return ResponseEntity.ok("success");
         }
         throw new AuthenticationException("user is not authorized to cancel this booking");

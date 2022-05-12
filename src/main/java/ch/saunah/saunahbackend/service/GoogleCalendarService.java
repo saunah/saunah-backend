@@ -7,6 +7,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
+import ch.saunah.saunahbackend.model.Booking;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -33,6 +34,8 @@ public class GoogleCalendarService {
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
     private static final String TIMEZONE = "Europe/Zurich";
+    private static final String TENTATIVE = "tentative";
+    private static final String CONFIRMED = "confirmed";
 
     private final NetHttpTransport httpTransport;
 
@@ -124,6 +127,33 @@ public class GoogleCalendarService {
         event = service.events().insert(calenderID, event).execute();
         return event.getId();
     }
+
+    /**
+     * Add a google calender Event that is tentative with a Booking
+     * @param calenderID Id of the google Calender
+     * @param booking A booking from the sauna
+     * @return The Google calender event id
+     * @throws IOException
+     */
+    public String createEvent(String calenderID ,Booking booking) throws IOException{
+        Event event = new Event()
+            .setSummary(booking.getSaunaName())
+            .setLocation(booking.getLocation())
+            .setDescription(booking.getSaunaDescription());
+        DateTime startDateTime = new DateTime(booking.getStartBookingDate());
+        EventDateTime start = new EventDateTime()
+            .setDateTime(startDateTime)
+            .setTimeZone("Europe/Zurich");
+        event.setStart(start);
+
+        DateTime endDateTime = new DateTime(booking.getEndBookingDate());
+        EventDateTime end = new EventDateTime()
+            .setDateTime(endDateTime)
+            .setTimeZone("Europe/Zurich");
+        event.setEnd(end);
+        event.setStatus(TENTATIVE);
+        return insertEvent(calenderID,event);
+    }
     /**
      * Delete an Event on the Google Api
      * @param calenderID Id of the google Calendar
@@ -154,6 +184,18 @@ public class GoogleCalendarService {
             .setTimeZone(TIMEZONE);
         event.setEnd(end);
 
+        service.events().update(calenderID, event.getId(), event).execute();
+    }
+
+    /**
+     * Confirm a event on the google calender
+     * @param calenderID Id of the google Calendar
+     * @param eventID id of the event
+     * @throws IOException
+     */
+    public void approveEvent(String calenderID ,String eventID) throws IOException{
+        Event event =service.events().get(calenderID, eventID).execute();
+        event.setStatus(CONFIRMED);
         service.events().update(calenderID, event.getId(), event).execute();
     }
 }

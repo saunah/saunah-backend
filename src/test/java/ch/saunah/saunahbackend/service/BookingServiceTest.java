@@ -32,12 +32,12 @@ class BookingServiceTest {
     private PriceRepository priceRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private BookingService bookingService;
     @Autowired
     private BookingRepository bookingRepository;
     private BookingBody bookingBody = null;
+    private static final String TEST_CALENDAR_ID = "cs85d7fer742u5v5r4v6e7jink@group.calendar.google.com";
 
     @BeforeEach
     void setUp() {
@@ -52,6 +52,7 @@ class BookingServiceTest {
         sauna.setStreet("Bahnhofstrasse 5");
         sauna.setZip(9000);
         sauna.setType("Tent");
+        sauna.setGoogleCalenderID(TEST_CALENDAR_ID);
         saunaRepository.save(sauna);
 
         Price price = new Price();
