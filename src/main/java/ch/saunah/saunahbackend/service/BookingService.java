@@ -1,5 +1,14 @@
 package ch.saunah.saunahbackend.service;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
 import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.BookingState;
@@ -7,13 +16,6 @@ import ch.saunah.saunahbackend.model.Price;
 import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.BookingRepository;
 import ch.saunah.saunahbackend.repository.PriceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * This class contains the booking service methods
@@ -23,10 +25,15 @@ public class BookingService {
 
     @Autowired
     private BookingRepository bookingRepository;
+
     @Autowired
     private PriceRepository priceRepository;
+
     @Autowired
     private SaunaService saunaService;
+
+    @Autowired
+    private GoogleCalendarService calendarService;
 
     /**
      * Add a new booking to the database and assigns the end price to it.
@@ -35,7 +42,7 @@ public class BookingService {
      * @return the newly created booking object
      * @throws NullPointerException if the required object is null
      */
-    public Booking addBooking(BookingBody bookingBody) throws Exception {
+    public Booking addBooking(BookingBody bookingBody, int userId) throws Exception {
         Objects.requireNonNull(bookingBody, "BookingBody must not be null!");
         Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
@@ -61,7 +68,7 @@ public class BookingService {
         Booking booking = new Booking();
         booking.setStartBookingDate(bookingBody.getStartBookingDate());
         booking.setEndBookingDate(bookingBody.getEndBookingDate());
-        booking.setUserId(bookingBody.getUserId());
+        booking.setUserId(userId);
         booking.setLocation(bookingBody.getLocation());
         booking.setTransportService(bookingBody.isTransportService());
         booking.setWashService(bookingBody.isWashService());
@@ -83,6 +90,7 @@ public class BookingService {
         booking.setSaunaZip(sauna.getZip());
         booking.setSaunaType(sauna.getType());
         booking.setState(BookingState.OPENED);
+        booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalenderID(), booking));
 
         return bookingRepository.save(booking);
     }
@@ -98,13 +106,18 @@ public class BookingService {
      *
      * @param id the id of the booking structure that should be approved
      * @throws NotFoundException if no such booking structure exists
+     * @throws IOException if Google Calendar event could not be updated
      */
-    public void approveBooking(int id) throws NotFoundException {
+    public void approveBooking(int id) throws NotFoundException, IOException {
         Booking booking = bookingRepository.findById(id).orElse(null);
         if (booking == null) {
             throw new NotFoundException(String.format("Booking structure with id %d not found!", id));
         }
         booking.setState(BookingState.APPROVED);
+
+        Sauna sauna = saunaService.getSauna(booking.getSaunaId());
+        calendarService.approveEvent(sauna.getGoogleCalenderID(), booking.getGoogleEventID());
+
         bookingRepository.save(booking);
     }
 
@@ -113,13 +126,18 @@ public class BookingService {
      *
      * @param id the id of the booking structure that should be canceled
      * @throws NotFoundException if no such booking structure exists
+     * @throws IOException if Google Calendar event could not be updated
      */
-    public void cancelBooking(int id) throws NotFoundException {
+    public void cancelBooking(int id) throws NotFoundException, IOException {
         Booking booking = bookingRepository.findById(id).orElse(null);
         if (booking == null) {
             throw new NotFoundException(String.format("Booking structure with id %d not found!", id));
         }
         booking.setState(BookingState.CANCELED);
+
+        Sauna sauna = saunaService.getSauna(booking.getSaunaId());
+        calendarService.deleteEvent(sauna.getGoogleCalenderID(), booking.getGoogleEventID());
+
         bookingRepository.save(booking);
     }
 

@@ -1,24 +1,30 @@
 package ch.saunah.saunahbackend.controller;
 
+import java.io.IOException;
+import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.naming.AuthenticationException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.dto.BookingResponse;
 import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
-import ch.saunah.saunahbackend.repository.BookingRepository;
-import ch.saunah.saunahbackend.repository.UserRepository;
 import ch.saunah.saunahbackend.service.BookingService;
-import ch.saunah.saunahbackend.service.MailService;
 import ch.saunah.saunahbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.naming.AuthenticationException;
-import java.security.Principal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controls the different operations that can be done with booking.
@@ -31,25 +37,15 @@ public class BookingController {
     private BookingService bookingService;
 
     @Autowired
-    private BookingRepository bookingRepository;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private MailService mailService;
 
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "bookings")
     public @ResponseBody
-    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody) throws Exception {
-        BookingResponse bookingResponse = new BookingResponse(bookingService.addBooking(bookingBody));
-        mailService.sendAdminOpenedBookingMail(userRepository.findByUserRole(UserRole.ADMIN), bookingRepository.findById(bookingResponse.getId()).get(), bookingRepository.findById(bookingResponse.getId()).get().getId());
-        mailService.sendUserOpenedBookingMail(userService.getUser(bookingBody.getUserId()).getEmail(), bookingRepository.findById(bookingResponse.getId()).get());
-        return ResponseEntity.ok(bookingResponse);
+    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws Exception {
+        User currentUser = userService.getUserByMail(principal.getName());
+        Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
+        return ResponseEntity.ok(new BookingResponse(booking));
     }
 
     @Operation(description = "Returns the list of the bookings of the current user.")
@@ -75,20 +71,19 @@ public class BookingController {
     @Operation(description = "Approves a existing booking structure with the ID specified.")
     @PostMapping(path = "bookings/{id}/approve")
     public @ResponseBody
-    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) {
+    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
         bookingService.approveBooking(id);
-        mailService.sendUserApprovedBookingMail(userRepository.findById(id).get().getEmail() , bookingRepository.findById(id).get());
         return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Cancels a existing booking structure with the ID specified.")
     @PostMapping(path = "bookings/{id}/cancel")
     public @ResponseBody
-    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
+    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException, IOException {
+        Booking booking = bookingService.getBooking(id);
         User user = userService.getUserByMail(principal.getName());
-        if (UserRole.ADMIN.equals(user.getRole())) {
+        if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
             bookingService.cancelBooking(id);
-            mailService.sendUserCanceledBookingMail(userRepository.findById(id).get().getEmail() , bookingRepository.findById(id).get());
             return ResponseEntity.ok("success");
         }
         throw new AuthenticationException("user is not authorized to cancel this booking");

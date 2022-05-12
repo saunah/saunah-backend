@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,12 +42,13 @@ class BookingServiceTest {
     private PriceRepository priceRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private BookingService bookingService;
     @Autowired
     private BookingRepository bookingRepository;
+    private User user = null;
     private BookingBody bookingBody = null;
+    private static final String TEST_CALENDAR_ID = "cs85d7fer742u5v5r4v6e7jink@group.calendar.google.com";
 
     @BeforeEach
     void setUp() {
@@ -62,6 +63,7 @@ class BookingServiceTest {
         sauna.setStreet("Bahnhofstrasse 5");
         sauna.setZip(9000);
         sauna.setType("Tent");
+        sauna.setGoogleCalenderID(TEST_CALENDAR_ID);
         saunaRepository.save(sauna);
 
         Price price = new Price();
@@ -73,7 +75,7 @@ class BookingServiceTest {
         price.setWood(20.00F);
         priceRepository.save(price);
 
-        User user = new User();
+        user = new User();
         user.setFirstName("Hans");
         user.setLastName("Muster");
         user.setPlace("Winterthur");
@@ -88,9 +90,8 @@ class BookingServiceTest {
         userRepository.save(user);
 
         bookingBody = new BookingBody();
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 20));
-        bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 1));
-        bookingBody.setUserId(user.getId());
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.AUGUST, 20).getTime());
+        bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 1).getTime());
         bookingBody.setSaunaId(sauna.getId());
         bookingBody.setLocation("Zürich");
         bookingBody.setTransportService(true);
@@ -112,36 +113,36 @@ class BookingServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void addNewBooking() throws Exception {
-        Booking booking = bookingService.addBooking(bookingBody);
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
         Iterable<Booking> bookings = bookingRepository.findAll();
         assertTrue(bookings.iterator().hasNext());
-        assertThrows(NullPointerException.class, () -> bookingService.addBooking(null));
-        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.MAY, 3));
-        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.SEPTEMBER, 10));
-        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 10));
-        bookingBody.setEndBookingDate(new Date(2022, Calendar.AUGUST, 30));
-        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 25));
-        bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 30));
-        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 10));
-        bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 30));
-        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 20));
-        bookingBody.setEndBookingDate(new Date(2022, Calendar.AUGUST, 25));
-        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 15));
-        bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 1));
-        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.AUGUST, 20));
-        bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 1));
-        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody));
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.SEPTEMBER, 10));
-        bookingBody.setEndBookingDate(new Date(2022, Calendar.SEPTEMBER, 30));
-        Booking booking2 = bookingService.addBooking(bookingBody);
+        assertThrows(NullPointerException.class, () -> bookingService.addBooking(null, user.getId()));
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, user.getId()));
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.MAY, 3).getTime());
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, user.getId()));
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 10).getTime());
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, user.getId()));
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.AUGUST, 10).getTime());
+        bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.AUGUST, 30).getTime());
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, user.getId()));
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.AUGUST, 25).getTime());
+        bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 30).getTime());
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, user.getId()));
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.AUGUST, 10).getTime());
+        bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 30).getTime());
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, user.getId()));
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.AUGUST, 20).getTime());
+        bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.AUGUST, 25).getTime());
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, user.getId()));
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.AUGUST, 15).getTime());
+        bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 1).getTime());
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, user.getId()));
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.AUGUST, 20).getTime());
+        bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 1).getTime());
+        assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, user.getId()));
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 10).getTime());
+        bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 30).getTime());
+        Booking booking2 = bookingService.addBooking(bookingBody, user.getId());
         assertNotEquals(booking.getId(), booking2.getId());
     }
 
@@ -152,7 +153,7 @@ class BookingServiceTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void approveBooking() throws Exception {
         assertThrows(NotFoundException.class, () -> bookingService.approveBooking(1));
-        Booking booking = bookingService.addBooking(bookingBody);
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
         bookingService.approveBooking(booking.getId());
         assertEquals(BookingState.APPROVED, bookingService.getBooking(booking.getId()).getState());
     }
@@ -164,7 +165,7 @@ class BookingServiceTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void cancelBooking() throws Exception {
         assertThrows(NotFoundException.class, () -> bookingService.cancelBooking(1));
-        Booking booking = bookingService.addBooking(bookingBody);
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
         bookingService.cancelBooking(booking.getId());
         assertEquals(BookingState.CANCELED, bookingService.getBooking(booking.getId()).getState());
     }
@@ -176,7 +177,7 @@ class BookingServiceTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getBooking() throws Exception {
         assertThrows(NotFoundException.class, () -> bookingService.getBooking(1));
-        bookingService.addBooking(bookingBody);
+        bookingService.addBooking(bookingBody, user.getId());
         assertNotNull(bookingService.getBooking(1));
     }
 
@@ -186,13 +187,13 @@ class BookingServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getAllBooking() throws Exception {
-        bookingService.addBooking(bookingBody);
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.SEPTEMBER, 25));
-        bookingBody.setEndBookingDate(new Date(2022, Calendar.OCTOBER, 1));
-        bookingService.addBooking(bookingBody);
-        bookingBody.setStartBookingDate(new Date(2022, Calendar.OCTOBER, 25));
-        bookingBody.setEndBookingDate(new Date(2022, Calendar.NOVEMBER, 1));
-        bookingService.addBooking(bookingBody);
+        bookingService.addBooking(bookingBody, user.getId());
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 25).getTime());
+        bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.OCTOBER, 1).getTime());
+        bookingService.addBooking(bookingBody, user.getId());
+        bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.OCTOBER, 25).getTime());
+        bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.NOVEMBER, 1).getTime());
+        bookingService.addBooking(bookingBody, user.getId());
         assertEquals(3, bookingRepository.count());
     }
 }
