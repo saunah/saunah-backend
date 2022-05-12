@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 
 import javax.naming.AuthenticationException;
 
+import ch.saunah.saunahbackend.repository.BookingRepository;
+import ch.saunah.saunahbackend.repository.UserRepository;
+import ch.saunah.saunahbackend.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +40,16 @@ public class BookingController {
     private BookingService bookingService;
 
     @Autowired
+    private BookingRepository bookingRepository;
+
+    @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private MailService mailService;
 
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "bookings")
@@ -45,6 +57,8 @@ public class BookingController {
     ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws Exception {
         User currentUser = userService.getUserByMail(principal.getName());
         Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
+        mailService.sendAdminOpenedBookingMail(userRepository.findByRole(UserRole.ADMIN), bookingRepository.findById(booking.getId()).get(), bookingRepository.findById(booking.getId()).get().getId());
+        mailService.sendUserOpenedBookingMail(userService.getUser(booking.getUserId()).getEmail(), bookingRepository.findById(booking.getId()).get());
         return ResponseEntity.ok(new BookingResponse(booking));
     }
 
@@ -73,6 +87,7 @@ public class BookingController {
     public @ResponseBody
     ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
         bookingService.approveBooking(id);
+        mailService.sendUserApprovedBookingMail(userRepository.findById(id).get().getEmail() , bookingRepository.findById(id).get());
         return ResponseEntity.ok("success");
     }
 
@@ -80,10 +95,10 @@ public class BookingController {
     @PostMapping(path = "bookings/{id}/cancel")
     public @ResponseBody
     ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException, IOException {
-        Booking booking = bookingService.getBooking(id);
         User user = userService.getUserByMail(principal.getName());
-        if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
+        if (UserRole.ADMIN.equals(user.getRole())) {
             bookingService.cancelBooking(id);
+            mailService.sendUserCanceledBookingMail(userRepository.findById(id).get().getEmail() , bookingRepository.findById(id).get());
             return ResponseEntity.ok("success");
         }
         throw new AuthenticationException("user is not authorized to cancel this booking");

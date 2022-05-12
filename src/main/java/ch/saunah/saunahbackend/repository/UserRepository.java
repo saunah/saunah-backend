@@ -27,12 +27,11 @@ public interface UserRepository extends CrudRepository<User, Integer> {
      */
     User findByActivationId(String activationId);
 
-
     /**
      * This method searches the database for the requested user roles.
      *
      * @param role The requested user role.
      * @return role
      */
-    List<User> findByUserRole(UserRole role);
+    List<User> findByRole(UserRole role);
 }
