@@ -1,12 +1,14 @@
 package ch.saunah.saunahbackend.service;
 
-import ch.saunah.saunahbackend.SaunahBackendApplication;
-import ch.saunah.saunahbackend.dto.BookingBody;
-import ch.saunah.saunahbackend.model.*;
-import ch.saunah.saunahbackend.repository.BookingRepository;
-import ch.saunah.saunahbackend.repository.PriceRepository;
-import ch.saunah.saunahbackend.repository.SaunaRepository;
-import ch.saunah.saunahbackend.repository.UserRepository;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Calendar;
+import java.util.Date;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +17,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.webjars.NotFoundException;
 
-import java.util.Calendar;
-import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.*;
+import ch.saunah.saunahbackend.SaunahBackendApplication;
+import ch.saunah.saunahbackend.dto.BookingBody;
+import ch.saunah.saunahbackend.model.Booking;
+import ch.saunah.saunahbackend.model.BookingState;
+import ch.saunah.saunahbackend.model.Price;
+import ch.saunah.saunahbackend.model.Sauna;
+import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
+import ch.saunah.saunahbackend.repository.BookingRepository;
+import ch.saunah.saunahbackend.repository.PriceRepository;
+import ch.saunah.saunahbackend.repository.SaunaRepository;
+import ch.saunah.saunahbackend.repository.UserRepository;
 
 /**
  * This class tests the booking service methods
@@ -71,7 +81,7 @@ class BookingServiceTest {
         user.setPhoneNumber("0123");
         user.setStreet("Teststrasse 123");
         user.setPasswordHash("ZH_a?!WD32");
-        user.setPlz("1324");
+        user.setZip("1324");
         user.setActivationId("activated");
         user.setActivated(true);
         user.setRole(UserRole.USER);
