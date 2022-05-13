@@ -10,7 +10,6 @@ import java.util.Date;
  */
 public class BookingResponse {
 
-
     private int id;
     private Date startBookingDate;
     private Date endBookingDate;
@@ -20,12 +19,18 @@ public class BookingResponse {
     private int userId;
     private int saunaId;
     private String location;
-    private boolean transportService;
-    private boolean washService;
-    private boolean saunahImp;
+    private int transportServiceDistance;
+    private double transportServicePrice;
+    private int washServiceAmount;
+    private double washServicePrice;
+    private int saunahImpAmount;
+    private double saunahImpPrice;
     private boolean deposit;
-    private boolean handTowel;
-    private boolean wood;
+    private double depositPrice;
+    private int handTowelAmount;
+    private double handTowelPrice;
+    private int woodAmount;
+    private double woodPrice;
     private String saunaName;
     private String saunaDescription;
     private boolean saunaIsMobile;
@@ -50,12 +55,18 @@ public class BookingResponse {
         this.endPrice = booking.getEndPrice();
         this.userId = booking.getUserId();
         this.location = booking.getLocation();
-        this.transportService = booking.isTransportService();
-        this.washService = booking.isWashService();
-        this.saunahImp = booking.isSaunahImp();
+        this.transportServiceDistance = booking.getTransportServiceDistance();
+        this.transportServicePrice = booking.getTransportServicePrice();
+        this.washServiceAmount = booking.getWashServiceAmount();
+        this.washServicePrice = booking.getWashServicePrice();
+        this.saunahImpAmount = booking.getSaunahImpAmount();
+        this.saunahImpPrice = booking.getSaunahImpPrice();
         this.deposit = booking.isDeposit();
-        this.handTowel = booking.isHandTowel();
-        this.wood = booking.isWood();
+        this.depositPrice = booking.getDepositPrice();
+        this.handTowelAmount = booking.getHandTowelAmount();
+        this.handTowelPrice = booking.getHandTowelPrice();
+        this.woodAmount = booking.getWoodAmount();
+        this.woodPrice = booking.getWoodPrice();
         this.saunaId = booking.getSaunaId();
         this.saunaName = booking.getSaunaName();
         this.saunaDescription = booking.getSaunaDescription();
@@ -106,28 +117,56 @@ public class BookingResponse {
         return location;
     }
 
-    public boolean isTransportService() {
-        return transportService;
+    public int getTransportServiceDistance() {
+        return transportServiceDistance;
     }
 
-    public boolean isWashService() {
-        return washService;
+    public int getWashServiceAmount() {
+        return washServiceAmount;
     }
 
-    public boolean isSaunahImp() {
-        return saunahImp;
+    public int getSaunahImpAmount() {
+        return saunahImpAmount;
     }
 
     public boolean isDeposit() {
         return deposit;
     }
 
-    public boolean isHandTowel() {
-        return handTowel;
+    public double getDepositPrice() {
+        return depositPrice;
     }
 
-    public boolean isWood() {
-        return wood;
+    public int getHandTowelAmount() {
+        return handTowelAmount;
+    }
+
+    public int getWoodAmount() {
+        return woodAmount;
+    }
+
+    public String getSaunaName() {
+        return saunaName;
+    }
+
+    public double getTransportServicePrice() {
+        return transportServicePrice;
+    }
+
+    public double getWashServicePrice() {
+        return washServicePrice;
+    }
+
+    public double getSaunahImpPrice() {
+        return saunahImpPrice;
+    }
+
+    public double getHandTowelPrice() {
+        return handTowelPrice;
+    }
+
+    public double getWoodPrice() {
+        return woodPrice;
     }
 
     public String getSaunaDescription() {
@@ -165,5 +204,8 @@ public class BookingResponse {
     public String getSaunaType() {
         return saunaType;
     }
-    public String getGoogleEventID(){return googleEventID;}
+
+    public String getGoogleEventID() {
+        return googleEventID;
+    }
 }

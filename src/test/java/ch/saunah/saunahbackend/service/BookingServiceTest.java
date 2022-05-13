@@ -94,12 +94,11 @@ class BookingServiceTest {
         bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 1).getTime());
         bookingBody.setSaunaId(sauna.getId());
         bookingBody.setLocation("Zürich");
-        bookingBody.setTransportService(true);
-        bookingBody.setWashService(true);
-        bookingBody.setSaunahImp(false);
-        bookingBody.setDeposit(true);
-        bookingBody.setHandTowel(false);
-        bookingBody.setWood(true);
+        bookingBody.setTransportServiceDistance(20);
+        bookingBody.setWashServiceAmount(2);
+        bookingBody.setSaunahImpAmount(3);
+        bookingBody.setHandTowelAmount(2);
+        bookingBody.setWoodAmount(3);
     }
 
     @AfterEach
