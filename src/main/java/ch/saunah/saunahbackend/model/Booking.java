@@ -39,23 +39,41 @@ public class Booking {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @Column(name = "transportService", nullable = false)
-    private boolean transportService;
+    @Column(name = "transportServiceDistance", nullable = false)
+    private int transportServiceDistance;
 
-    @Column(name = "washService", nullable = false)
-    private boolean washService;
+    @Column(name = "transportServicePrice", nullable = false)
+    private double transportServicePrice;
 
-    @Column(name = "saunahImp", nullable = false)
-    private boolean saunahImp;
+    @Column(name = "washServiceAmount", nullable = false)
+    private int washServiceAmount;
+
+    @Column(name = "washServicePrice", nullable = false)
+    private double washServicePrice;
+
+    @Column(name = "saunahImpAmount", nullable = false)
+    private int saunahImpAmount;
+
+    @Column(name = "saunahImpPrice", nullable = false)
+    private double saunahImpPrice;
 
     @Column(name = "deposit", nullable = false)
     private boolean deposit;
 
-    @Column(name = "handTowel", nullable = false)
-    private boolean handTowel;
+    @Column(name = "depositPrice", nullable = false)
+    private double depositPrice;
 
-    @Column(name = "wood", nullable = false)
-    private boolean wood;
+    @Column(name = "handTowelAmount", nullable = false)
+    private int handTowelAmount;
+
+    @Column(name = "handTowelPrice", nullable = false)
+    private double handTowelPrice;
+
+    @Column(name = "woodAmount", nullable = false)
+    private int woodAmount;
+
+    @Column(name = "woodPrice", nullable = false)
+    private double woodPrice;
 
     @Column(name = "saunaId", nullable = false)
     private int saunaId;
@@ -173,28 +191,32 @@ public class Booking {
         this.location = location;
     }
 
-    public boolean isTransportService() {
-        return transportService;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setTransportService(boolean transportService) {
-        this.transportService = transportService;
+    public int getTransportServiceDistance() {
+        return transportServiceDistance;
     }
 
-    public boolean isWashService() {
-        return washService;
+    public void setTransportServiceDistance(int transportService) {
+        this.transportServiceDistance = transportService;
     }
 
-    public void setWashService(boolean washService) {
-        this.washService = washService;
+    public int getWashServiceAmount() {
+        return washServiceAmount;
     }
 
-    public boolean isSaunahImp() {
-        return saunahImp;
+    public void setWashServiceAmount(int washService) {
+        this.washServiceAmount = washService;
     }
 
-    public void setSaunahImp(boolean saunahImp) {
-        this.saunahImp = saunahImp;
+    public int getSaunahImpAmount() {
+        return saunahImpAmount;
+    }
+
+    public void setSaunahImpAmount(int saunahImp) {
+        this.saunahImpAmount = saunahImp;
     }
 
     public boolean isDeposit() {
@@ -205,20 +227,68 @@ public class Booking {
         this.deposit = deposit;
     }
 
-    public boolean isHandTowel() {
-        return handTowel;
+    public int getHandTowelAmount() {
+        return handTowelAmount;
     }
 
-    public void setHandTowel(boolean handTowel) {
-        this.handTowel = handTowel;
+    public void setHandTowelAmount(int handTowel) {
+        this.handTowelAmount = handTowel;
     }
 
-    public boolean isWood() {
-        return wood;
+    public int getWoodAmount() {
+        return woodAmount;
     }
 
-    public void setWood(boolean wood) {
-        this.wood = wood;
+    public void setWoodAmount(int wood) {
+        this.woodAmount = wood;
+    }
+
+    public double getTransportServicePrice() {
+        return transportServicePrice;
+    }
+
+    public void setTransportServicePrice(double transportServicePrice) {
+        this.transportServicePrice = transportServicePrice;
+    }
+
+    public double getWashServicePrice() {
+        return washServicePrice;
+    }
+
+    public double getDepositPrice() {
+        return depositPrice;
+    }
+
+    public void setDepositPrice(double depositPrice) {
+        this.depositPrice = depositPrice;
+    }
+
+    public void setWashServicePrice(double washServicePrice) {
+        this.washServicePrice = washServicePrice;
+    }
+
+    public double getSaunahImpPrice() {
+        return saunahImpPrice;
+    }
+
+    public void setSaunahImpPrice(double saunahImpPrice) {
+        this.saunahImpPrice = saunahImpPrice;
+    }
+
+    public double getHandTowelPrice() {
+        return handTowelPrice;
+    }
+
+    public void setHandTowelPrice(double handTowelPrice) {
+        this.handTowelPrice = handTowelPrice;
+    }
+
+    public double getWoodPrice() {
+        return woodPrice;
+    }
+
+    public void setWoodPrice(double woodPrice) {
+        this.woodPrice = woodPrice;
     }
 
     public String getSaunaDescription() {

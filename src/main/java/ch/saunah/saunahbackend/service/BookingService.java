@@ -70,14 +70,20 @@ public class BookingService {
         booking.setEndBookingDate(bookingBody.getEndBookingDate());
         booking.setUserId(userId);
         booking.setLocation(bookingBody.getLocation());
-        booking.setTransportService(bookingBody.isTransportService());
-        booking.setWashService(bookingBody.isWashService());
-        booking.setSaunahImp(bookingBody.isSaunahImp());
-        booking.setDeposit(bookingBody.isDeposit());
-        booking.setHandTowel(bookingBody.isHandTowel());
-        booking.setWood(bookingBody.isWood());
+        booking.setTransportServiceDistance(bookingBody.getTransportServiceDistance());
+        booking.setTransportServicePrice(bookingBody.getTransportServiceDistance() * price.getTransportService());
+        booking.setWashServiceAmount(bookingBody.getWashServiceAmount());
+        booking.setWashServicePrice(bookingBody.getWashServiceAmount() * price.getWashService());
+        booking.setSaunahImpAmount(bookingBody.getSaunahImpAmount());
+        booking.setSaunahImpPrice(bookingBody.getSaunahImpAmount() * price.getSaunahImp());
+        booking.setDeposit(true);
+        booking.setDepositPrice(price.getDeposit());
+        booking.setHandTowelAmount(bookingBody.getHandTowelAmount());
+        booking.setHandTowelPrice(bookingBody.getHandTowelAmount() * price.getHandTowel());
+        booking.setWoodAmount(bookingBody.getWoodAmount());
+        booking.setWoodPrice(bookingBody.getWoodAmount() * price.getWood());
         booking.setCreation(new Date(System.currentTimeMillis()));
-        booking.setEndPrice(calculatePrice(bookingBody, sauna, price));
+        booking.setEndPrice(calculatePrice(booking, sauna, price));
         booking.setSaunaId(bookingBody.getSaunaId());
         booking.setSaunaName(sauna.getName());
         booking.setSaunaDescription(sauna.getDescription());
@@ -106,7 +112,7 @@ public class BookingService {
      *
      * @param id the id of the booking structure that should be approved
      * @throws NotFoundException if no such booking structure exists
-     * @throws IOException if Google Calendar event could not be updated
+     * @throws IOException       if Google Calendar event could not be updated
      */
     public void approveBooking(int id) throws NotFoundException, IOException {
         Booking booking = bookingRepository.findById(id).orElse(null);
@@ -126,7 +132,7 @@ public class BookingService {
      *
      * @param id the id of the booking structure that should be canceled
      * @throws NotFoundException if no such booking structure exists
-     * @throws IOException if Google Calendar event could not be updated
+     * @throws IOException       if Google Calendar event could not be updated
      */
     public void cancelBooking(int id) throws NotFoundException, IOException {
         Booking booking = bookingRepository.findById(id).orElse(null);
@@ -165,26 +171,13 @@ public class BookingService {
         return (List<Booking>) bookingRepository.findAll();
     }
 
-    private double calculatePrice(BookingBody bookingBody, Sauna sauna, Price price) {
+    private double calculatePrice(Booking booking, Sauna sauna, Price price) {
         double endPrice = 0;
-        endPrice += sauna.getPrice();
-        if (bookingBody.isTransportService()) {
-            endPrice += price.getTransportService();
-        }
-        if (bookingBody.isWashService()) {
-            endPrice += price.getWashService();
-        }
-        if (bookingBody.isSaunahImp()) {
-            endPrice += price.getSaunahImp();
-        }
-        if (bookingBody.isDeposit()) {
+        endPrice += sauna.getPrice() + booking.getTransportServicePrice() + booking.getWashServicePrice() +
+            booking.getSaunahImpPrice() + booking.getHandTowelPrice() + booking.getWoodPrice();
+
+        if (booking.isDeposit()) {
             endPrice += price.getDeposit();
-        }
-        if (bookingBody.isHandTowel()) {
-            endPrice += price.getHandTowel();
-        }
-        if (bookingBody.isWood()) {
-            endPrice += price.getWood();
         }
 
         return endPrice;
