@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.naming.AuthenticationException;
 
-import ch.saunah.saunahbackend.repository.BookingRepository;
 import ch.saunah.saunahbackend.repository.UserRepository;
 import ch.saunah.saunahbackend.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
