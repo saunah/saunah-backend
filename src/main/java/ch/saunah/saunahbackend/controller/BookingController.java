@@ -25,15 +25,7 @@ import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.service.BookingService;
 import ch.saunah.saunahbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
-
-import javax.naming.AuthenticationException;
-import java.security.Principal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controls the different operations that can be done with booking.

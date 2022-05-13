@@ -14,7 +14,6 @@ import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.BookingState;
 import ch.saunah.saunahbackend.model.Price;
 import ch.saunah.saunahbackend.model.Sauna;
-import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.repository.BookingRepository;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 
@@ -45,7 +44,7 @@ public class BookingService {
      * @return the newly created booking object
      * @throws NullPointerException if the required object is null
      */
-    public Booking addBooking(BookingBody bookingBody) throws IllegalArgumentException {
+    public Booking addBooking(BookingBody bookingBody, int userId) throws IllegalArgumentException, IOException {
         Objects.requireNonNull(bookingBody, "BookingBody must not be null!");
         Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
@@ -68,11 +67,10 @@ public class BookingService {
         }
 
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
-        User user = userService.getUser(bookingBody.getUserId());
         Booking booking = new Booking();
         booking.setStartBookingDate(bookingBody.getStartBookingDate());
         booking.setEndBookingDate(bookingBody.getEndBookingDate());
-        booking.setUserId(user.getId());
+        booking.setUserId(userId);
         booking.setLocation(bookingBody.getLocation());
         booking.setTransportService(bookingBody.isTransportService());
         booking.setWashService(bookingBody.isWashService());
