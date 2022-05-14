@@ -3,12 +3,15 @@ package ch.saunah.saunahbackend.service;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 
+import ch.saunah.saunahbackend.model.Booking;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.model.User;
+
+import java.util.List;
 
 /**
  * This class tests the email method.
@@ -24,6 +27,7 @@ class MailServiceTest {
      */
     @Test
     void sendMail() {
+        Booking booking = new Booking();
         User user = new User();
         user.setEmail("test@mail.ch");
         String verificationId = "1";
@@ -33,6 +37,12 @@ class MailServiceTest {
         assertDoesNotThrow(() ->mailService.sendPasswordResetMail(user.getEmail(), userID ,resetToken));
         user.setEmail("bad email");
         assertDoesNotThrow(() -> mailService.sendUserActivationMail(user.getEmail(), verificationId));
+        assertDoesNotThrow(() -> mailService.sendUserOpenedBookingMail(user.getEmail(), booking));
+        assertDoesNotThrow(() -> mailService.sendUserApprovedBookingMail(user.getEmail(), booking));
+        assertDoesNotThrow(() -> mailService.sendUserCanceledBookingMail(user.getEmail(), booking));
+        assertDoesNotThrow(() -> mailService.sendAdminOpenedBookingMail(List.of(user), booking));
 
     }
+
+
 }
