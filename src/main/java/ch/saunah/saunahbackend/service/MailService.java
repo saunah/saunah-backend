@@ -153,7 +153,7 @@ public class MailService {
                 helper.setFrom(new InternetAddress(senderEmail, senderName));
                 helper.setTo(admin.getEmail());
                 helper.setSubject("Booking Info SauNah");
-                helper.setText("<p>Eine neue Buchung wurde erfolgreich eröffnet. Hier sehen sie die Buchung:<h1>" +
+                helper.setText("<p>Eine neue Buchung wurde eröffnet. Hier sehen sie die Buchung:<h1>" +
                 "<br><a href=\"" + frontendBaseUrl + "/bookings/" + booking.getId() + "/" + "\">zur Buchung</a></p>", true);
                 javaMailSender.send(mimeMessage);
             } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
