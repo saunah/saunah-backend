@@ -56,8 +56,8 @@ public class Sauna {
     @OneToMany(mappedBy="sauna", cascade = CascadeType.ALL)
     private Set<SaunaImage> saunaImages = new HashSet<>();
 
-    @Column(name = "google_calender_id", nullable = true)
-    private String googleCalenderID;
+    @Column(name = "google_calendar_id", nullable = true)
+    private String googleCalendarId;
 
     public Sauna(){
 
@@ -83,7 +83,9 @@ public class Sauna {
         return price;
     }
 
-    public int getMaxTemp() { return maxTemp; }
+    public int getMaxTemp() {
+        return maxTemp;
+    }
 
     public int getNumberOfPeople() {
         return numberOfPeople;
@@ -105,13 +107,17 @@ public class Sauna {
         return type;
     }
 
-    public String getGoogleCalenderID(){return  googleCalenderID;}
+    public String getGoogleCalendarId() {
+        return  googleCalendarId;
+    }
 
-    public List<SaunaImage> getSaunaImages(){
+    public List<SaunaImage> getSaunaImages() {
         return saunaImages.stream().collect(Collectors.toList());
     }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public void setDescription(String description) {
         this.description = description;
@@ -149,7 +155,9 @@ public class Sauna {
         this.type = type;
     }
 
-    public void setGoogleCalenderID(String googleCalenderID) {this.googleCalenderID = googleCalenderID;}
+    public void setGoogleCalendarId(String googleCalendarId) {
+        this.googleCalendarId = googleCalendarId;
+    }
 
     public void addSaunaImage(SaunaImage saunaImage){
         this.saunaImages.add(saunaImage);

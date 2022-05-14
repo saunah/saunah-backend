@@ -1,11 +1,10 @@
 package ch.saunah.saunahbackend.service;
 
-import ch.saunah.saunahbackend.dto.SaunaTypeBody;
-import ch.saunah.saunahbackend.model.Sauna;
-import ch.saunah.saunahbackend.model.SaunaImage;
-import ch.saunah.saunahbackend.repository.SaunaImageRepository;
-import ch.saunah.saunahbackend.repository.SaunaRepository;
-import ch.saunah.saunahbackend.util.ImageUploadUtil;
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import ch.saunah.saunahbackend.dto.SaunaTypeBody;
+import ch.saunah.saunahbackend.model.Sauna;
+import ch.saunah.saunahbackend.model.SaunaImage;
+import ch.saunah.saunahbackend.repository.SaunaImageRepository;
+import ch.saunah.saunahbackend.repository.SaunaRepository;
+import ch.saunah.saunahbackend.util.ImageUploadUtil;
 
 /**
  * This class contains creating, removing, editing and get methods for saunas
@@ -83,6 +84,7 @@ public class SaunaService {
         sauna.setLocation(saunaTypeBody.getLocation());
         sauna.setZip(saunaTypeBody.getZip());
         sauna.setType(saunaTypeBody.getType());
+        sauna.setGoogleCalendarId(saunaTypeBody.getGoogleCalendarId());
         return sauna;
     }
 
