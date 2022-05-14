@@ -114,6 +114,10 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
                 HttpMethod.PUT,
                 "/users/{id}"
             ).hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
+            .antMatchers(
+                HttpMethod.DELETE,
+                "/users/{id}"
+            ).hasAnyAuthority(UserRole.ADMIN.toString())
             .and()
             .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -15,6 +15,8 @@ public class UserBody {
     private String place;
     private String zip;
     private UserRole role;
+    private boolean initialAdmin;
+    private boolean isDeleted;
 
     public String getFirstName() {
         return firstName;
@@ -87,4 +89,12 @@ public class UserBody {
     public void setRole(UserRole role) {
         this.role = role;
     }
+
+    public boolean getInitialAdmin() {return initialAdmin; }
+
+    public  void setInitialAdmin(boolean initialAdmin) { this.initialAdmin = initialAdmin;}
+
+    public boolean getIsDeleted() {return isDeleted; }
+
+    public void setIsDeleted(boolean isDeleted) { this.isDeleted = isDeleted;}
 }

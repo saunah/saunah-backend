@@ -48,6 +48,8 @@ class UserServiceTest {
         userBody.setStreet("Teststrasse 123");
         userBody.setPassword("ZH_a?!WD32");
         userBody.setZip("1324");
+        userBody.setIsDeleted(false);
+        userBody.setInitialAdmin(true);
     }
 
     @AfterEach

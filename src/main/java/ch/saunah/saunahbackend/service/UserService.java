@@ -87,10 +87,16 @@ public class UserService {
         user.setPlace(userBody.getPlace());
         user.setStreet(userBody.getStreet());
         user.setActivationId(UUID.randomUUID().toString());
+        user.setIsDeleted(false);
         if (hasUsers()) {
             user.setRole(UserRole.USER);
         } else {
             user.setRole(UserRole.ADMIN);
+            if (userRepository.count() > 0) {
+                user.setInitialAdmin(false);
+            } else {
+                user.setInitialAdmin(true);
+            }
         }
         return userRepository.save(user);
     }
@@ -251,11 +257,26 @@ public class UserService {
         user.setLastName(userBody.getLastName());
         user.setPhoneNumber(userBody.getPhoneNumber());
         user.setPlace(userBody.getPlace());
-        user.setZip(userBody.getZip());;
+        user.setZip(userBody.getZip());
         user.setStreet(userBody.getStreet());
         if(user.getRole() != null) {
             user.setRole(userBody.getRole());
         }
         return user;
+    }
+
+    /**
+     * Delete a User
+     * @param id the id of the user that should be deleted
+     * @return true, if the user can be deleted
+     */
+    public boolean deleteUser(int id) {
+        User deleteUser = getUser(id);
+        if(deleteUser.getInitialAdmin()) {
+            return false;
+        } else {
+            deleteUser.setIsDeleted(true);
+        }
+        return true;
     }
 }
