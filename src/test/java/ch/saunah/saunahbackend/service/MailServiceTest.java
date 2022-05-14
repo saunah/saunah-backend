@@ -2,7 +2,6 @@ package ch.saunah.saunahbackend.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import javax.mail.MessagingException;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

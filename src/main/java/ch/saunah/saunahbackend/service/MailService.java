@@ -50,7 +50,7 @@ public class MailService {
             helper.setTo(email);
             helper.setSubject("Signup authentication SauNah");
             helper.setText("<p>Bitte klicken sie auf den Link, um ihren Account zu aktivieren: " +
-                "<br><a href=\"" + frontendBaseUrl + "/verify/" + verificationId + "\">Hier drücken</a></p>", true);
+            "<br><a href=\"" + frontendBaseUrl + "/verify/" + verificationId + "\">Hier klicken</a></p>", true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
@@ -72,7 +72,7 @@ public class MailService {
             helper.setTo(email);
             helper.setSubject("Password Reset SauNah");
             helper.setText("<p>Ihr Reset Token lautet: <h1>" + resetPasswordToken + "</h1></p><p>Bitte klicken sie auf den Link, falls Sie Ihren Passwort vergessen haben : " +
-                "<br><a href=\"" + frontendBaseUrl + "/resetPassword/" + userID + "\">Hier drücken</a></p>", true);
+            "<br><a href=\"" + frontendBaseUrl + "/resetPassword/" + userID + "\">Hier klicken</a></p>", true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
@@ -92,7 +92,7 @@ public class MailService {
             helper.setFrom(new InternetAddress(senderEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Booking Info SauNah");
-            helper.setText("<p>Ihre Buchung wurde erfolgreich eröffnet. Hier sehen sie ihre neue Buchung:<h1>" + bookingInfo(booking));
+            helper.setText("<p>Ihre Buchung wurde erfolgreich eröffnet. Hier sehen sie ihre neue Buchung:</p>" + bookingInfo(booking), true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
@@ -112,7 +112,7 @@ public class MailService {
             helper.setFrom(new InternetAddress(senderEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Booking Info SauNah");
-            helper.setText("<p>Ihre Buchung wurde genehmigt. Hier sehen sie die Buchung:<h1>" + bookingInfo(booking));
+            helper.setText("<p>Ihre Buchung wurde genehmigt. Hier sehen sie die Buchung:</p>" + bookingInfo(booking), true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
@@ -132,7 +132,7 @@ public class MailService {
             helper.setFrom(new InternetAddress(senderEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Booking Info SauNah");
-            helper.setText("<p>Ihr Buchung wurde storniert. Hier sehen sie die Buchung:<h1>" + bookingInfo(booking));
+            helper.setText("<p>Ihr Buchung wurde storniert. Hier sehen sie die Buchung:</p>" + bookingInfo(booking), true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
@@ -153,8 +153,8 @@ public class MailService {
                 helper.setFrom(new InternetAddress(senderEmail, senderName));
                 helper.setTo(admin.getEmail());
                 helper.setSubject("Booking Info SauNah");
-                helper.setText("<p>Eine neue Buchung wurde erfolgreich eröffnet. Hier sehen sie die Buchung:<h1>" + bookingInfo(booking) +
-                    "<br><a href=\"" + frontendBaseUrl + "/bookings/" + booking.getId() + "/" + "\">Hier drücken</a></p>", true);
+                helper.setText("<p>Eine neue Buchung wurde erfolgreich eröffnet. Hier sehen sie die Buchung:<h1>" +
+                "<br><a href=\"" + frontendBaseUrl + "/bookings/" + booking.getId() + "/" + "\">zur Buchung</a></p>", true);
                 javaMailSender.send(mimeMessage);
             } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
                 System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
@@ -163,12 +163,35 @@ public class MailService {
     }
 
     private String bookingInfo(Booking booking) {
-        return "Buchungsnummer: " + booking.getId() + System.lineSeparator() + "Sauna:" + booking.getSaunaName() + "\n"
-            + "Buchung start Datum:" + booking.getStartBookingDate() + "" + "Buchung end Datum:" + booking.getEndBookingDate() + "\n"
-            + "Sauna Typ" + booking.getSaunaType() + System.lineSeparator() + "Sauna Ort:" + booking.getSaunaLocation() + "\n"
-            + "Sauna Strasse:" + booking.getSaunaStreet() + System.lineSeparator() + "Sauna PLZ:" + booking.getSaunaZip() + "\n"
-            + "Sauna Beschreibung:" + booking.getSaunaDescription() + System.lineSeparator() + "Sauna maximale Temperatur:" + booking.getSaunaMaxTemp() + "\n"
-            + "Erstellungsdatum der Buchung:" + booking.getCreation() + System.lineSeparator() + "Angegebener Ort des Kunden:" + booking.getLocation() + "\n"
-            + "Totalpreis:" + booking.getEndPrice() + System.lineSeparator() + "UserId" + booking.getUserId() + "\n";
+        return
+            "<p>Buchungsnummer: " + booking.getId() + "</p>" +
+            "<p>UserId: " + booking.getUserId() + "</p>" +
+            "<p>Erstellungsdatum der Buchung:" + booking.getCreation() + "</p>" +
+            "<p>Buchung Start Datum: " + booking.getStartBookingDate() + "</p>" +
+            "<p>Buchung End Datum: " + booking.getEndBookingDate() + "</p>" +
+            "<p>SaunaId: " + booking.getSaunaId() + "</p>" +
+            "<p>Sauna: " + booking.getSaunaName() + "</p>" +
+            "<p>Sauna Typ: " + booking.getSaunaType() + "</p>" +
+            "<p>Sauna Ort: " + booking.getSaunaLocation() + "</p>" +
+            "<p>Sauna Strasse: " + booking.getSaunaStreet() + "</p>" +
+            "<p>Sauna PLZ: " + booking.getSaunaZip() + "</p>" +
+            "<p>Sauna Beschreibung: " + booking.getSaunaDescription() + "</p>" +
+            "<p>Sauna maximale Temperatur: " + booking.getSaunaMaxTemp() + "</p>" +
+            "<p>Sauna Personen Kapazität: " + booking.getSaunaNumberOfPeople() + "</p>" +
+            "<p>Ihr angegebener Ort: " + booking.getLocation() + "</p>" +
+            "<p>Transport Service Distanz in km: " + booking.getTransportServiceDistance() + "</p>" +
+            "<p>Transport Service Preis: " + booking.getTransportServicePrice() + "</p>" +
+            "<p>Wasch Service Anzahl: " + booking.getWashServiceAmount() + "</p>" +
+            "<p>Wasch Service Preis: " + booking.getWashServicePrice() + "</p>" +
+            "<p>Wasch Service Preis: " + booking.getWashServicePrice() + "</p>" +
+            "<p>Imp Anzahl: " + booking.getSaunahImpAmount() + "</p>" +
+            "<p>Imp Preis: " + booking.getSaunahImpPrice() + "</p>" +
+            "<p>Deposit Preis: " + booking.getDepositPrice() + "</p>" +
+            "<p>Handtuch Anzahl: " + booking.getHandTowelAmount() + "</p>" +
+            "<p>Handtuch Preis: " + booking.getHandTowelPrice() + "</p>" +
+            "<p>Brennholz Anzahl: " + booking.getWoodAmount() + "</p>" +
+            "<p>Brennholz Preis: " + booking.getWoodPrice() + "</p>" +
+            "<p>Sauna Preis: " + booking.getSaunaPrice() + "</p>" +
+            "<p>Totalpreis: " + booking.getEndPrice() + "</p>";
     }
 }
