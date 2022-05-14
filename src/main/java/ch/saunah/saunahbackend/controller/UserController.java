@@ -88,6 +88,13 @@ public class UserController {
         return userService.getAllUser().stream().map(x -> new UserResponse(x)).collect(Collectors.toList());
     }
 
+    @Operation(description = "Returns a list of all Users that have not been soft deleted.")
+    @GetMapping(path = "users/visible")
+    public @ResponseBody
+    List<UserResponse> getAllVisibleUsers() {
+        return userService.getAllVisibleUser().stream().map(x -> new UserResponse(x)).collect(Collectors.toList());
+    }
+
     @Operation(description = "Returns the user with the ID specified.")
     @GetMapping(path = "users/{id}")
     public @ResponseBody
@@ -127,8 +134,7 @@ public class UserController {
     @Operation(description = "Soft deletes a User.")
     @DeleteMapping(path = "users/{id}")
     public @ResponseBody
-    ResponseEntity<String> deleteUser(int id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok("User deleted");
+    ResponseEntity<UserResponse> deleteUser(int id) {
+        return ResponseEntity.ok(new UserResponse(userService.deleteUser(id)));
     }
 }

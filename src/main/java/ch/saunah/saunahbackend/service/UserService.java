@@ -88,15 +88,12 @@ public class UserService {
         user.setStreet(userBody.getStreet());
         user.setActivationId(UUID.randomUUID().toString());
         user.setIsDeleted(false);
+        user.setInitialAdmin(false);
         if (hasUsers()) {
             user.setRole(UserRole.USER);
         } else {
             user.setRole(UserRole.ADMIN);
-            if (userRepository.count() > 0) {
-                user.setInitialAdmin(false);
-            } else {
-                user.setInitialAdmin(true);
-            }
+            user.setInitialAdmin(true);
         }
         return userRepository.save(user);
     }
@@ -241,6 +238,16 @@ public class UserService {
     }
 
     /**
+     * Return a list of user that have not been "deleted"
+     *
+     * @return list of users
+     */
+    public List<User> getAllVisibleUser() {
+        return (List<User>) userRepository.findByIsDeleted(false);
+    }
+
+
+    /**
      * Edit an already existing User
      * @param id the id of the user to be edited
      * @param userBody the parameters to be changed
@@ -270,13 +277,11 @@ public class UserService {
      * @param id the id of the user that should be deleted
      * @return true, if the user can be deleted
      */
-    public boolean deleteUser(int id) {
+    public User deleteUser(int id) {
         User deleteUser = getUser(id);
-        if(deleteUser.getInitialAdmin()) {
-            return false;
-        } else {
+        if(!deleteUser.getInitialAdmin()) {
             deleteUser.setIsDeleted(true);
         }
-        return true;
+        return userRepository.save(deleteUser);
     }
 }
