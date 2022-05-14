@@ -35,14 +35,18 @@ class MailServiceTest {
         int resetToken = 12345;
         assertDoesNotThrow(() -> mailService.sendUserActivationMail(user.getEmail(), verificationId));
         assertDoesNotThrow(() ->mailService.sendPasswordResetMail(user.getEmail(), userID ,resetToken));
+        assertDoesNotThrow(() ->mailService.sendPasswordResetMail(user.getEmail(), userID ,resetToken));
+        assertDoesNotThrow(() -> mailService.sendUserOpenedBookingMail(user.getEmail(), booking));
+        assertDoesNotThrow(() -> mailService.sendUserApprovedBookingMail(user.getEmail(), booking));
+        assertDoesNotThrow(() -> mailService.sendUserCanceledBookingMail(user.getEmail(), booking));
+        assertDoesNotThrow(() -> mailService.sendAdminOpenedBookingMail(List.of(user), booking));
         user.setEmail("bad email");
         assertDoesNotThrow(() -> mailService.sendUserActivationMail(user.getEmail(), verificationId));
+        assertDoesNotThrow(() ->mailService.sendPasswordResetMail(user.getEmail(), userID ,resetToken));
         assertDoesNotThrow(() -> mailService.sendUserOpenedBookingMail(user.getEmail(), booking));
         assertDoesNotThrow(() -> mailService.sendUserApprovedBookingMail(user.getEmail(), booking));
         assertDoesNotThrow(() -> mailService.sendUserCanceledBookingMail(user.getEmail(), booking));
         assertDoesNotThrow(() -> mailService.sendAdminOpenedBookingMail(List.of(user), booking));
 
     }
-
-
 }
