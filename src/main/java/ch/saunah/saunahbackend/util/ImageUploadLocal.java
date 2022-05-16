@@ -16,12 +16,6 @@ import java.nio.file.StandardCopyOption;
  */
 public class ImageUploadLocal implements ImageUpload {
 
-    private String getObjectPath(String directory, String fileName){
-        Path uploadPath = Paths.get(directory);
-        Path filePath = uploadPath.resolve(fileName);
-        return filePath.toString();
-    }
-
     /**
      * Saves the image to the specified directory.
      *
@@ -81,7 +75,6 @@ public class ImageUploadLocal implements ImageUpload {
             Path uploadPath = Paths.get(directory);
             Path filePath = uploadPath.resolve(fileName);
             File file = filePath.toFile();
-            file.delete();
             if (file.delete()){
                 System.err.printf("File %s successfully deleted.", fileName);
             }
