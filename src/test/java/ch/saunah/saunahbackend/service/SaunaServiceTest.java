@@ -12,11 +12,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.saunah.saunahbackend.configuration.SaunahTestConfig;
+import ch.saunah.saunahbackend.util.ImageUpload;
+import ch.saunah.saunahbackend.util.ImageUploadLocal;
+import ch.saunah.saunahbackend.util.ImageUploadUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +39,7 @@ import ch.saunah.saunahbackend.repository.SaunaRepository;
 /**
  * This class tests all sauna service methods
  */
-@SpringBootTest(classes = SaunahBackendApplication.class)
+@SpringBootTest(classes = {SaunahBackendApplication.class, SaunahTestConfig.class} )
 class SaunaServiceTest {
 
     @Autowired
@@ -170,7 +178,7 @@ class SaunaServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void addSaunaImage() {
+    void addSaunaImage() throws IOException{
         assertThrows(NotFoundException.class, ()-> saunaService.addSaunaImages(0, null));
         saunaService.addSauna(saunaTypeBody);
         Sauna sauna = saunaService.getAllSauna().get(0);
@@ -197,7 +205,7 @@ class SaunaServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void removeSaunaImage() {
+    void removeSaunaImage()throws IOException {
         assertThrows(NotFoundException.class, () -> saunaService.removeSaunaImage(1));
         saunaService.addSauna(saunaTypeBody);
         Sauna sauna = saunaService.getAllSauna().get(0);
@@ -217,7 +225,7 @@ class SaunaServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getSaunaImage() {
+    void getSaunaImage() throws IOException {
         assertThrows(IOException.class, () -> saunaService.getImage("not existing file"));
         assertThrows(NotFoundException.class, () -> saunaService.getSaunaImages(1));
         saunaService.addSauna(saunaTypeBody);

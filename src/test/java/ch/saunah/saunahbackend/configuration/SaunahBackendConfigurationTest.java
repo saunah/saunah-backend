@@ -5,10 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import ch.saunah.saunahbackend.SaunahBackendApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = {SaunahBackendApplication.class, SaunahTestConfig.class} )
 class SaunahBackendConfigurationTest {
 
     private static final String FRONTEND_URL = "https://booking.saunah.ch";

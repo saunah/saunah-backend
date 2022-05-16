@@ -5,6 +5,7 @@ import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.SaunaImage;
 import ch.saunah.saunahbackend.repository.SaunaImageRepository;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
+import ch.saunah.saunahbackend.util.ImageUpload;
 import ch.saunah.saunahbackend.util.ImageUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -29,9 +30,10 @@ public class SaunaService {
     @Autowired
     private SaunaImageRepository saunaImageRepository;
     @Autowired
-    private ImageUploadUtil imageUploadUtil;
+    private ImageUpload imageUploadUtil;
 
     private final String SAUNA_IMAGES_DIR = "sauna-images/";
+    private final int MAX_IMAGE_SIZE = 1024 * 1024 * 5;
 
     /**
      * Add a new Sauna to the database
@@ -140,8 +142,9 @@ public class SaunaService {
      *
      * @param id the id of the saunaImage
      * @throws NotFoundException throws when no sauna was found with the specified id.
+     * @throws IOException throws when the image can not be removed.
      */
-    public void removeSaunaImage(int id) throws NotFoundException {
+    public void removeSaunaImage(int id) throws NotFoundException, IOException {
         SaunaImage image = saunaImageRepository.findById(id).orElse(null);
         if (image == null){
             throw new NotFoundException(String.format("Image with id %d not found!", id));
@@ -157,8 +160,9 @@ public class SaunaService {
      * @param images the images
      * @throws NotFoundException throws when no sauna was found with the specified id.
      * @throws NullPointerException throw when the images object is null.
+     * @throws IOException throws when Image could not be safed.
      */
-    public void addSaunaImages(int saunaId, List<MultipartFile> images) throws NotFoundException, NullPointerException {
+    public void addSaunaImages(int saunaId, List<MultipartFile> images) throws NotFoundException, NullPointerException, IOException {
         Sauna sauna = getSauna(saunaId);
         if (images == null){
             throw new NullPointerException("No images were sent to add!");
@@ -168,18 +172,17 @@ public class SaunaService {
         }
     }
 
-    private void addImageSauna(Sauna sauna, MultipartFile image) throws NullPointerException{
+    private void addImageSauna(Sauna sauna, MultipartFile image) throws NullPointerException, IOException {
         Objects.requireNonNull(sauna, "Sauna must not be null!");
-        String fileName = String.format("image_file_%d_%s.png", sauna.getId(), UUID.randomUUID());
-        try {
-            imageUploadUtil.saveImage(SAUNA_IMAGES_DIR, fileName, image);
-            SaunaImage saunaImage = new SaunaImage();
-            saunaImage.setFileName(fileName);
-            saunaImage.setSauna(sauna);
-            saunaImageRepository.save(saunaImage);
-        } catch (Exception e) {
-            System.err.printf("Error while saving file %s in %s: %s", fileName, SAUNA_IMAGES_DIR, e.getMessage());
+        if (image.getSize() > MAX_IMAGE_SIZE){
+            throw new IOException("The image is too large to be saved!");
         }
+        String fileName = String.format("image_file_%d_%s.png", sauna.getId(), UUID.randomUUID());
+        imageUploadUtil.saveImage(SAUNA_IMAGES_DIR, fileName, image);
+        SaunaImage saunaImage = new SaunaImage();
+        saunaImage.setFileName(fileName);
+        saunaImage.setSauna(sauna);
+        saunaImageRepository.save(saunaImage);
     }
 
 }

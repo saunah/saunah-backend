@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import javax.mail.MessagingException;
 
+import ch.saunah.saunahbackend.configuration.SaunahTestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +15,7 @@ import ch.saunah.saunahbackend.model.User;
 /**
  * This class tests the email method.
  */
-@SpringBootTest(classes = SaunahBackendApplication.class)
+@SpringBootTest(classes = {SaunahBackendApplication.class, SaunahTestConfig.class} )
 class MailServiceTest {
 
     @Autowired

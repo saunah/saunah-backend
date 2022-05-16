@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import ch.saunah.saunahbackend.configuration.SaunahTestConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ import ch.saunah.saunahbackend.repository.UserRepository;
 /**
  * This class tests the booking service methods
  */
-@SpringBootTest(classes = SaunahBackendApplication.class)
+@SpringBootTest(classes = {SaunahBackendApplication.class, SaunahTestConfig.class} )
 class BookingServiceTest {
 
     @Autowired

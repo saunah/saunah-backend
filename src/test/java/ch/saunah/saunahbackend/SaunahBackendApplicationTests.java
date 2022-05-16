@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.util.UUID;
 import java.util.stream.StreamSupport;
 
+import ch.saunah.saunahbackend.configuration.SaunahTestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +15,7 @@ import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
 
-@SpringBootTest
+@SpringBootTest(classes = {SaunahBackendApplication.class, SaunahTestConfig.class} )
 class SaunahBackendApplicationTests {
 
     @Autowired

@@ -3,6 +3,8 @@ package ch.saunah.saunahbackend;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.security.JwtAuthenticationEntryPoint;
 import ch.saunah.saunahbackend.security.JwtRequestFilter;
+import ch.saunah.saunahbackend.util.ImageUpload;
+import ch.saunah.saunahbackend.util.ImageUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

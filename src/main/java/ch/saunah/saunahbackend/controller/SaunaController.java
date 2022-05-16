@@ -66,7 +66,7 @@ public class SaunaController {
     @Operation(description = "Adds new images to the corresponding sauna.")
     @PostMapping(value = "/saunas/{id}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> saveImages(@PathVariable("id") int saunaId, @RequestBody List<MultipartFile> images)  {
+    public ResponseEntity<String> saveImages(@PathVariable("id") int saunaId, @RequestBody List<MultipartFile> images) throws IOException {
         saunaService.addSaunaImages(saunaId, images);
         return ResponseEntity.ok("success");
     }
@@ -75,7 +75,7 @@ public class SaunaController {
     @Operation(description = "Removes the image of the specified Id.")
     @DeleteMapping(path = "saunas/images/{id}")
     @ResponseBody
-    public ResponseEntity<String> removeImage(@PathVariable("id") int imageId) {
+    public ResponseEntity<String> removeImage(@PathVariable("id") int imageId) throws IOException {
         saunaService.removeSaunaImage(imageId);
         return ResponseEntity.ok("success");
     }
@@ -93,7 +93,7 @@ public class SaunaController {
     public ResponseEntity<List<SaunaImageResponse>> getSaunaImages(@PathVariable("id") int saunaId) {
         List<SaunaImageResponse> saunaImages = saunaService.getSaunaImages(saunaId)
             .stream().map(x -> new SaunaImageResponse(x.getId(), saunaId, x.getFileName())).collect(Collectors.toList());
-        return ResponseEntity.ok().body(saunaImages);
+        return ResponseEntity.ok(saunaImages);
     }
 
 }

@@ -3,6 +3,8 @@ package ch.saunah.saunahbackend.configuration;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import ch.saunah.saunahbackend.util.ImageUpload;
+import ch.saunah.saunahbackend.util.ImageUploadUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +48,17 @@ public class SaunahBackendConfiguration {
                     .description("Documentation of API Routes for the SauNah backend.")
                     .version(version)
             );
+    }
+
+
+    /**
+     * This method returns the ImageUpload.
+     *
+     * @return ImageUpload
+     */
+    @Bean
+    public ImageUpload image() {
+        return new ImageUploadUtil();
     }
 
     /**
