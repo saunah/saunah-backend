@@ -84,57 +84,50 @@ public class MailService {
     /**
      * This method sends a mail which informs the user that his booking has been opened.
      *
-     * @param email   The email of the user
-     * @param booking The Booking info
+     * @param email        The email of the user
+     * @param booking      The Booking info
+     * @param bookingPrice The bookingPrice info
+     * @param bookingSauna The bookingSauna info
      */
     public void sendUserOpenedBookingMail(String email, Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
-        try {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-            helper.setFrom(new InternetAddress(senderEmail, senderName));
-            helper.setTo(email);
-            helper.setSubject("Booking Info SauNah");
-            helper.setText("<p>Ihre Buchung wurde erfolgreich eröffnet. Hier sehen sie ihre neue Buchung:</p>" + bookingInfo(booking, bookingPrice, bookingSauna), true);
-            javaMailSender.send(mimeMessage);
-        } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
-            System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
-        }
+        String mailText = "<p>Ihre Buchung wurde erfolgreich eröffnet. Hier sehen sie ihre neue Buchung:</p>";
+        messageUserSetup(email, mailText, booking, bookingPrice, bookingSauna);
     }
 
     /**
      * This method sends a mail which informs the user that his booking has been approved.
      *
-     * @param email   The email of the user
-     * @param booking The Booking info
+     * @param email        The email of the user
+     * @param booking      The Booking info
+     * @param bookingPrice The bookingPrice info
+     * @param bookingSauna The bookingSauna info
      */
     public void sendUserApprovedBookingMail(String email, Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
-        try {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-            helper.setFrom(new InternetAddress(senderEmail, senderName));
-            helper.setTo(email);
-            helper.setSubject("Booking Info SauNah");
-            helper.setText("<p>Ihre Buchung wurde genehmigt. Hier sehen sie die Buchung:</p>" + bookingInfo(booking, bookingPrice, bookingSauna), true);
-            javaMailSender.send(mimeMessage);
-        } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
-            System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
-        }
+        String mailText = "<p>Ihre Buchung wurde genehmigt. Hier sehen sie die Buchung:</p>";
+        messageUserSetup(email, mailText, booking, bookingPrice, bookingSauna);
     }
 
     /**
      * This method sends a mail which informs the user that his booking has been canceled.
      *
-     * @param email   The email of the user
-     * @param booking The Booking info
+     * @param email        The email of the user
+     * @param booking      The Booking info
+     * @param bookingPrice The bookingPrice info
+     * @param bookingSauna The bookingSauna info
      */
     public void sendUserCanceledBookingMail(String email, Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
+        String mailText = "<p>Ihr Buchung wurde storniert. Hier sehen sie die Buchung:</p>";
+        messageUserSetup(email, mailText, booking, bookingPrice, bookingSauna);
+    }
+
+    private void messageUserSetup(String email, String mailText, Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setFrom(new InternetAddress(senderEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Booking Info SauNah");
-            helper.setText("<p>Ihr Buchung wurde storniert. Hier sehen sie die Buchung:</p>" + bookingInfo(booking, bookingPrice, bookingSauna), true);
+            helper.setText(mailText + bookingInfo(booking, bookingPrice, bookingSauna), true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
