@@ -198,4 +198,30 @@ class BookingServiceTest {
         bookingService.addBooking(bookingBody, user.getId());
         assertEquals(3, bookingRepository.count());
     }
+
+    /**
+     * This test checks if a bookingPrice can be found via it's id
+     *
+     * @throws Exception is thrown if no such bookingPrice is found
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void getBookingPrice() throws Exception {
+        assertThrows(NotFoundException.class, () -> bookingService.getBookingPrice(1));
+        bookingService.addBooking(bookingBody, user.getId());
+        assertNotNull(bookingService.getBookingPrice(1));
+    }
+
+    /**
+     * This test checks if a bookingSauna can be found via it's id
+     *
+     * @throws Exception is thrown if no such bookingSauna is found
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void getBookingSauna() throws Exception {
+        assertThrows(NotFoundException.class, () -> bookingService.getBookingSauna(1));
+        bookingService.addBooking(bookingBody, user.getId());
+        assertNotNull(bookingService.getBookingSauna(1));
+    }
 }
