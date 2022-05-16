@@ -182,7 +182,11 @@ class SaunaServiceTest {
         images = saunaService.getSaunaImages(sauna.getId());
         assertTrue(images.isEmpty());
         List<MultipartFile> testfiles = new ArrayList<>();
-        testfiles.add(new MockMultipartFile("test", new byte[0]));
+        MockMultipartFile tooLargeFile = new MockMultipartFile("test", new byte[saunaService.MAX_IMAGE_SIZE + 1]);
+        testfiles.add(tooLargeFile);
+        assertThrows(IOException.class, ()-> saunaService.addSaunaImages(sauna.getId(), testfiles));
+        testfiles.remove(tooLargeFile);
+        testfiles.add(new MockMultipartFile("test", new byte[saunaService.MAX_IMAGE_SIZE]));
         saunaService.addSaunaImages(sauna.getId(), testfiles);
         assertEquals(testfiles.size(), saunaService.getSaunaImages(sauna.getId()).size());
         testfiles.clear();

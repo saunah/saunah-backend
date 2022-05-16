@@ -31,8 +31,8 @@ public class SaunaService {
     @Autowired
     private ImageUpload imageUploadUtil;
 
-    private final String SAUNA_IMAGES_DIR = "sauna-images/";
-    private final int MAX_IMAGE_SIZE = 1024 * 1024 * 5;
+    private static final String SAUNA_IMAGES_DIR = "sauna-images/";
+    public static final int MAX_IMAGE_SIZE = 1024 * 1024 * 5;
 
     /**
      * Add a new Sauna to the database
