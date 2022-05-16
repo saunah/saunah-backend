@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import ch.saunah.saunahbackend.util.ImageUpload;
-import ch.saunah.saunahbackend.util.ImageUploadUtil;
+import ch.saunah.saunahbackend.util.ImageUploadScaleway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,7 +58,7 @@ public class SaunahBackendConfiguration {
      */
     @Bean
     public ImageUpload image() {
-        return new ImageUploadUtil();
+        return new ImageUploadScaleway();
     }
 
     /**

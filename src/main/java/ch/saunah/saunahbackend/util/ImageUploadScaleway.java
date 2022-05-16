@@ -1,8 +1,6 @@
 package ch.saunah.saunahbackend.util;
 
 import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -20,9 +18,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * This class is used as a helper class to save and read images from a directory.
+ * This class is used as a helper class to save and read images from scaleway.
  */
-public class ImageUploadUtil implements ImageUpload {
+public class ImageUploadScaleway implements ImageUpload {
 
     @Value("${saunah.object.storage.bucket.id}")
     private String bucket;
@@ -31,13 +29,13 @@ public class ImageUploadUtil implements ImageUpload {
     @Value("${saunah.object.storage.bucket.key}")
     private String key;
     @Value("${saunah.object.storage.bucket.secret.key}")
-    private String secret_key;
+    private String secretKey;
 
     @Value("${saunah.object.storage.bucket.region}")
     private String region;
 
     private AmazonS3 getObjectStorageClient(){
-        AWSCredentials credentials = new BasicAWSCredentials(key, secret_key);
+        AWSCredentials credentials = new BasicAWSCredentials(key, secretKey);
         AmazonS3 s3client = AmazonS3ClientBuilder
             .standard()
             .withCredentials(new AWSStaticCredentialsProvider(credentials))
@@ -53,9 +51,9 @@ public class ImageUploadUtil implements ImageUpload {
     }
 
     /**
-     * Saves the image to the specified directory.
+     * Saves the image to the specified scaleway bucket.
      *
-     * @param directory directory where image will be safed
+     * @param directory directory where image will be saved
      * @param fileName the fileName of the image
      * @param multipartFile the image object
      * @throws IOException throws when Path is not valid
@@ -99,7 +97,7 @@ public class ImageUploadUtil implements ImageUpload {
     }
 
     /**
-     * Deletes the image file on the specified directory.
+     * Deletes the image file on the specified scaleway path.
      *
      * @param directory the directory where the file is stored
      * @param fileName the filename of the image

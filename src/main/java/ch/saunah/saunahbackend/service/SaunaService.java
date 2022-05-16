@@ -6,7 +6,6 @@ import ch.saunah.saunahbackend.model.SaunaImage;
 import ch.saunah.saunahbackend.repository.SaunaImageRepository;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
 import ch.saunah.saunahbackend.util.ImageUpload;
-import ch.saunah.saunahbackend.util.ImageUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
