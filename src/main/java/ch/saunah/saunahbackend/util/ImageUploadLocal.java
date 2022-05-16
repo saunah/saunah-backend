@@ -75,15 +75,12 @@ public class ImageUploadLocal implements ImageUpload {
             Path uploadPath = Paths.get(directory);
             Path filePath = uploadPath.resolve(fileName);
             File file = filePath.toFile();
-            if (file.delete()){
-                System.err.printf("File %s successfully deleted.", fileName);
-            }
-            else{
-                System.err.printf("File %s not successfully deleted.", fileName);
+            if (!file.delete()){
+                throw new IOException("File was not successfully deleted");
             }
         }
         catch (Exception e){
-            System.err.printf("Error while removing image: %s", e.getMessage());
+            throw new IOException("File was not successfully deleted");
         }
     }
 }
