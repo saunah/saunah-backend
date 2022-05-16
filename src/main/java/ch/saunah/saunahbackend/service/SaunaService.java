@@ -28,6 +28,8 @@ public class SaunaService {
     private SaunaRepository saunaRepository;
     @Autowired
     private SaunaImageRepository saunaImageRepository;
+    @Autowired
+    private ImageUploadUtil imageUploadUtil;
 
     private final String SAUNA_IMAGES_DIR = "sauna-images/";
 
@@ -118,7 +120,7 @@ public class SaunaService {
      * @throws IOException throws when the image cant be converted to a byte array.
      */
     public ResponseEntity<byte[]> getImage(String fileName) throws IOException {
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(ImageUploadUtil.getImage(SAUNA_IMAGES_DIR, fileName));
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageUploadUtil.getImage(SAUNA_IMAGES_DIR, fileName));
     }
 
     /**
@@ -144,7 +146,7 @@ public class SaunaService {
         if (image == null){
             throw new NotFoundException(String.format("Image with id %d not found!", id));
         }
-        ImageUploadUtil.removeImage(SAUNA_IMAGES_DIR, image.getFileName());
+        imageUploadUtil.removeImage(SAUNA_IMAGES_DIR, image.getFileName());
         saunaImageRepository.deleteById(id);
     }
 
@@ -170,12 +172,12 @@ public class SaunaService {
         Objects.requireNonNull(sauna, "Sauna must not be null!");
         String fileName = String.format("image_file_%d_%s.png", sauna.getId(), UUID.randomUUID());
         try {
-            ImageUploadUtil.saveImage(SAUNA_IMAGES_DIR, fileName, image);
+            imageUploadUtil.saveImage(SAUNA_IMAGES_DIR, fileName, image);
             SaunaImage saunaImage = new SaunaImage();
             saunaImage.setFileName(fileName);
             saunaImage.setSauna(sauna);
             saunaImageRepository.save(saunaImage);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.printf("Error while saving file %s in %s: %s", fileName, SAUNA_IMAGES_DIR, e.getMessage());
         }
     }

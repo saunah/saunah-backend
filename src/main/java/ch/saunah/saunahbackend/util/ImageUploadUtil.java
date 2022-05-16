@@ -1,40 +1,67 @@
 package ch.saunah.saunahbackend.util;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 /**
  * This class is used as a helper class to save and read images from a directory.
  */
+@Component
 public class ImageUploadUtil {
+
+    @Value("${saunah.object.storage.bucket.id}")
+    private String bucket;
+    @Value("${saunah.object.storage.bucket.endpoint}")
+    private String endpoint;
+    @Value("${saunah.object.storage.bucket.key}")
+    private String key;
+    @Value("${saunah.object.storage.bucket.secret.key}")
+    private String secret_key;
+
+    @Value("${saunah.object.storage.bucket.region}")
+    private String region;
+
+    private AmazonS3 getObjectStorageClient(){
+        AWSCredentials credentials = new BasicAWSCredentials(key, secret_key);
+        AmazonS3 s3client = AmazonS3ClientBuilder
+            .standard()
+            .withCredentials(new AWSStaticCredentialsProvider(credentials))
+            .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
+            .build();
+        return s3client;
+    }
 
     /**
      * Saves the image to the specified directory.
      *
-     * @param uploadDir directory where image will be safed
+     * @param directory directory where image will be safed
      * @param fileName the fileName of the image
      * @param multipartFile the image object
      * @throws IOException throws when Path is not valid
      */
-    public static void saveImage(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+    public void saveImage(String directory, String fileName, MultipartFile multipartFile) {
+        AmazonS3 client = getObjectStorageClient();
+        if (!client.doesBucketExist(bucket)) {
+            client.createBucket(bucket);
         }
-        try (InputStream inputStream = multipartFile.getInputStream()) {
-            Path filePath = uploadPath.resolve(fileName);
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new IOException("Could not save image file: " + fileName, e);
-        }
+        ObjectMetadata data = new ObjectMetadata();
+        data.setContentType(multipartFile.getContentType());
+        data.setContentLength(multipartFile.getSize());
+        client.putObject(bucket, getObjectPath(directory, fileName), multipartFile.getInputStream(), data);
     }
 
     /**
@@ -45,23 +72,11 @@ public class ImageUploadUtil {
      * @return image byte array
      * @throws IOException throws when the path is not valid
      */
-    public static byte[] getImage(String directory, String fileName) throws IOException {
-        Path uploadPath = Paths.get(directory);
-        Path filePath = uploadPath.resolve(fileName);
-        File file = filePath.toFile();
-        byte[] arr = new byte[(int) file.length()];
-        FileInputStream fl = new FileInputStream(file);
-        try {
-            int bytesRead = fl.read(arr);
-            if (bytesRead != file.length()){
-                throw new IOException("Error while reading file! The bytes read are not equal to the file size!");
-            }
-            fl.close();
-        }
-        catch (Exception e){
-            fl.close();
-        }
-        return arr;
+    public byte[] getImage(String directory, String fileName) throws IOException {
+        AmazonS3 client = getObjectStorageClient();
+        S3Object s3object = client.getObject(bucket, getObjectPath(directory, fileName));
+        S3ObjectInputStream inputStream = s3object.getObjectContent();
+        return inputStream.readAllBytes();
     }
 
     /**
@@ -70,20 +85,14 @@ public class ImageUploadUtil {
      * @param directory the directory where the file is stored
      * @param fileName the filename of the image
      */
-    public static void removeImage(String directory, String fileName){
-        try {
-            Path uploadPath = Paths.get(directory);
-            Path filePath = uploadPath.resolve(fileName);
-            File file = filePath.toFile();
-            if (file.delete()){
-                System.err.printf("File %s successfully deleted.", fileName);
-            }
-            else{
-                System.err.printf("File %s not successfully deleted.", fileName);
-            }
-        }
-        catch (Exception e){
-            System.err.printf("Error while removing image: %s", e.getMessage());
-        }
+    public void removeImage(String directory, String fileName){
+        AmazonS3 client = getObjectStorageClient();
+        client.deleteObject(bucket, getObjectPath(directory, fileName));
+    }
+
+    private String getObjectPath(String directory, String fileName){
+        Path uploadPath = Paths.get(directory);
+        Path filePath = uploadPath.resolve(fileName);
+        return filePath.toString();
     }
 }
