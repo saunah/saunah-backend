@@ -44,11 +44,11 @@ public class BookingController {
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "bookings")
     public @ResponseBody
-    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, BookingPrice bookingPrice, BookingSauna bookingSauna, Principal principal) throws Exception {
+    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws Exception {
         User currentUser = userService.getUserByMail(principal.getName());
         Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
         mailService.sendAdminOpenedBookingMail(userRepository.findByRole(UserRole.ADMIN), booking);
-        mailService.sendUserOpenedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking, bookingPrice, bookingSauna);
+        mailService.sendUserOpenedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking, booking.getBookingPrice(), booking.getBookingSauna());
         return ResponseEntity.ok(new BookingResponse(booking));
     }
 
@@ -109,20 +109,20 @@ public class BookingController {
     @Operation(description = "Approves a existing booking structure with the ID specified.")
     @PutMapping(path = "bookings/{id}/approve")
     public @ResponseBody
-    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id, BookingPrice bookingPrice, BookingSauna bookingSauna) throws AuthenticationException, IOException {
+    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
         bookingService.approveBooking(id);
         Booking booking = bookingService.getBooking(id);
-        mailService.sendUserApprovedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking, bookingPrice, bookingSauna);
+        mailService.sendUserApprovedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking, booking.getBookingPrice(), booking.getBookingSauna());
         return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Cancels a existing booking structure with the ID specified.")
     @PutMapping(path = "bookings/{id}/cancel")
     public @ResponseBody
-    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id, BookingPrice bookingPrice, BookingSauna bookingSauna) throws IOException {
+    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
         bookingService.cancelBooking(id);
         Booking booking = bookingService.getBooking(id);
-        mailService.sendUserCanceledBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking, bookingPrice, bookingSauna);
+        mailService.sendUserCanceledBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking, booking.getBookingPrice(), booking.getBookingSauna());
         return ResponseEntity.ok("success");
     }
 
