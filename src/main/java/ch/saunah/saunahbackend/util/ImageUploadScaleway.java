@@ -36,12 +36,11 @@ public class ImageUploadScaleway implements ImageUpload {
 
     private AmazonS3 getObjectStorageClient(){
         AWSCredentials credentials = new BasicAWSCredentials(key, secretKey);
-        AmazonS3 s3client = AmazonS3ClientBuilder
+        return AmazonS3ClientBuilder
             .standard()
             .withCredentials(new AWSStaticCredentialsProvider(credentials))
             .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
             .build();
-        return s3client;
     }
 
     private String getObjectPath(String directory, String fileName){
