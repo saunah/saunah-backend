@@ -11,11 +11,10 @@ public class BookingBody {
     private int saunaId;
     private String location;
     private int transportServiceDistance;
-    private int washServiceAmount;
+    private boolean washService;
     private int saunahImpAmount;
     private int handTowelAmount;
     private int woodAmount;
-    private String discountDescription;
     private String comment;
 
     public Date getStartBookingDate() {
@@ -58,12 +57,12 @@ public class BookingBody {
         this.transportServiceDistance = transportServiceDistance;
     }
 
-    public int getWashServiceAmount() {
-        return washServiceAmount;
+    public boolean isWashService() {
+        return washService;
     }
 
-    public void setWashServiceAmount(int washServiceAmount) {
-        this.washServiceAmount = washServiceAmount;
+    public void setWashService(boolean washService) {
+        this.washService = washService;
     }
 
     public int getSaunahImpAmount() {
@@ -90,17 +89,10 @@ public class BookingBody {
         this.woodAmount = woodAmount;
     }
 
-    public String getDiscountDescription() {
-        return discountDescription;
-    }
-
-    public void setDiscountDescription(String discountDescription) {
-        this.discountDescription = discountDescription;
-    }
-
     public String getComment() {
         return comment;
     }
+
     public void setComment(String comment) {
         this.comment = comment;
     }

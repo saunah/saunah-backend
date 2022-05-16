@@ -1,19 +1,21 @@
 package ch.saunah.saunahbackend.model;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
- *
+ * Model of a bookingSauna structure
  */
-public class BookingSauna {
+@Entity(name = "bookingSauna")
+public class BookingSauna implements Serializable {
 
-    @OneToOne
     @Id
-    @JoinColumn(name ="bookingId", nullable = false)
-    private int bookingId;
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @OneToOne(mappedBy = "bookingSauna")
+    private Booking booking;
 
     @Column(name = "saunaId", nullable = false)
     private int saunaId;
@@ -48,12 +50,20 @@ public class BookingSauna {
     @Column(name = "sauna_type", nullable = false)
     private String saunaType;
 
-    public int getBookingId() {
-        return bookingId;
+    public BookingSauna() {
+
     }
 
-    public void setBookingId(int bookingId) {
-        this.bookingId = bookingId;
+    public int getId() {
+        return id;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
 
     public String getSaunaName() {

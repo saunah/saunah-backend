@@ -1,5 +1,6 @@
 package ch.saunah.saunahbackend.dto;
 
+import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.BookingPrice;
 
 /**
@@ -7,7 +8,7 @@ import ch.saunah.saunahbackend.model.BookingPrice;
  */
 public class BookingPriceResponse {
 
-    private int bookingId;
+    private Booking booking;
     private double transportServicePrice;
     private double washServicePrice;
     private double saunahImpPrice;
@@ -20,7 +21,7 @@ public class BookingPriceResponse {
      * This constructor sets all the fields of this object.
      */
     public BookingPriceResponse(BookingPrice bookingPrice) {
-        this.bookingId = bookingPrice.getBookingId();
+        this.booking = bookingPrice.getBooking();
         this.transportServicePrice = bookingPrice.getTransportServicePrice();
         this.washServicePrice = bookingPrice.getWashServicePrice();
         this.saunahImpPrice = bookingPrice.getSaunahImpPrice();
@@ -30,8 +31,9 @@ public class BookingPriceResponse {
         this.discount = bookingPrice.getDiscount();
     }
 
-    public int getBookingId() {
-        return bookingId;
+
+    public Booking getBooking() {
+        return booking;
     }
 
     public double getTransportServicePrice() {

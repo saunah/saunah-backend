@@ -1,5 +1,7 @@
 package ch.saunah.saunahbackend.dto;
 
+import ch.saunah.saunahbackend.model.BookingPrice;
+import ch.saunah.saunahbackend.model.BookingSauna;
 import ch.saunah.saunahbackend.model.BookingState;
 import ch.saunah.saunahbackend.model.Booking;
 
@@ -11,6 +13,8 @@ import java.util.Date;
 public class BookingResponse {
 
     private int id;
+    private BookingPrice bookingPrice;
+    private BookingSauna bookingSauna;
     private Date startBookingDate;
     private Date endBookingDate;
     private Date creation;
@@ -18,7 +22,7 @@ public class BookingResponse {
     private int userId;
     private String location;
     private int transportServiceDistance;
-    private int washServiceAmount;
+    private boolean washService;
     private int saunahImpAmount;
     private boolean deposit;
     private int handTowelAmount;
@@ -33,6 +37,8 @@ public class BookingResponse {
      */
     public BookingResponse(Booking booking) {
         this.id = booking.getId();
+        this.bookingPrice = booking.getBookingPrice();
+        this.bookingSauna = booking.getBookingSauna();
         this.startBookingDate = booking.getStartBookingDate();
         this.endBookingDate = booking.getEndBookingDate();
         this.creation = booking.getCreation();
@@ -40,7 +46,7 @@ public class BookingResponse {
         this.userId = booking.getUserId();
         this.location = booking.getLocation();
         this.transportServiceDistance = booking.getTransportServiceDistance();
-        this.washServiceAmount = booking.getWashServiceAmount();
+        this.washService = booking.isWashService();
         this.saunahImpAmount = booking.getSaunahImpAmount();
         this.deposit = booking.isDeposit();
         this.handTowelAmount = booking.getHandTowelAmount();
@@ -53,6 +59,14 @@ public class BookingResponse {
 
     public int getId() {
         return id;
+    }
+
+    public BookingPrice getBookingPrice() {
+        return bookingPrice;
+    }
+
+    public BookingSauna getBookingSauna() {
+        return bookingSauna;
     }
 
     public Date getStartBookingDate() {
@@ -83,8 +97,8 @@ public class BookingResponse {
         return transportServiceDistance;
     }
 
-    public int getWashServiceAmount() {
-        return washServiceAmount;
+    public boolean isWashService() {
+        return washService;
     }
 
     public int getSaunahImpAmount() {

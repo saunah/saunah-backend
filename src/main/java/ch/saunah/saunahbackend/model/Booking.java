@@ -2,11 +2,7 @@ package ch.saunah.saunahbackend.model;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Model of a booking structure
@@ -14,9 +10,17 @@ import javax.persistence.Id;
 @Entity(name = "booking")
 public class Booking {
     @Id
-    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private int id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bookingPriceId", referencedColumnName = "id")
+    private BookingPrice bookingPrice;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bookingSaunaId", referencedColumnName = "id")
+    private BookingSauna bookingSauna;
 
     @Column(name = "start_booking_date", nullable = false)
     private Date startBookingDate;
@@ -39,8 +43,8 @@ public class Booking {
     @Column(name = "transportServiceDistance", nullable = false)
     private int transportServiceDistance;
 
-    @Column(name = "washServiceAmount", nullable = false)
-    private int washServiceAmount;
+    @Column(name = "washService", nullable = false)
+    private boolean washService;
 
     @Column(name = "saunahImpAmount", nullable = false)
     private int saunahImpAmount;
@@ -72,6 +76,22 @@ public class Booking {
 
     public int getId() {
         return id;
+    }
+
+    public BookingPrice getBookingPrice() {
+        return bookingPrice;
+    }
+
+    public void setBookingPrice(BookingPrice bookingPrice) {
+        this.bookingPrice = bookingPrice;
+    }
+
+    public BookingSauna getBookingSauna() {
+        return bookingSauna;
+    }
+
+    public void setBookingSauna(BookingSauna bookingSauna) {
+        this.bookingSauna = bookingSauna;
     }
 
     public Date getStartBookingDate() {
@@ -122,10 +142,6 @@ public class Booking {
         this.location = location;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getTransportServiceDistance() {
         return transportServiceDistance;
     }
@@ -134,12 +150,12 @@ public class Booking {
         this.transportServiceDistance = transportService;
     }
 
-    public int getWashServiceAmount() {
-        return washServiceAmount;
+    public boolean isWashService() {
+        return washService;
     }
 
-    public void setWashServiceAmount(int washService) {
-        this.washServiceAmount = washService;
+    public void setWashService(boolean washService) {
+        this.washService = washService;
     }
 
     public int getSaunahImpAmount() {

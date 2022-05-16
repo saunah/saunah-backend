@@ -13,6 +13,7 @@ public class PriceResponse {
     private float deposit;
     private float handTowel;
     private float wood;
+    private float discount;
 
     /**
      * This constructor sets all the fields of this object.
@@ -25,6 +26,7 @@ public class PriceResponse {
         this.deposit = price.getDeposit();
         this.handTowel = price.getHandTowel();
         this.wood = price.getWood();
+        this.discount = price.getDiscount();
      }
 
     public int getId() {
@@ -43,4 +45,5 @@ public class PriceResponse {
 
     public float getWood() { return wood; }
 
+    public float getDiscount() { return discount; }
 }

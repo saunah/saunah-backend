@@ -10,6 +10,7 @@ public class PriceBody {
     private float deposit;
     private float handTowel;
     private float wood;
+    private float discount;
 
     public float getTransportService() { return  transportService; }
 
@@ -23,6 +24,8 @@ public class PriceBody {
 
     public float getWood() { return wood; }
 
+    public float getDiscount() { return discount; }
+
     public void setTransportService(float transportService) { this.transportService = transportService; }
 
     public void setWashService(float washService) { this.washService = washService; }
@@ -35,5 +38,6 @@ public class PriceBody {
 
     public void setWood(float wood) { this.wood = wood; }
 
+    public void setDiscount(float discount) { this.discount = discount; }
 
 }

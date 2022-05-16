@@ -1,16 +1,21 @@
 package ch.saunah.saunahbackend.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
- *
+ * Model of a bookingPrice structure
  */
-public class BookingPrice {
+@Entity(name = "bookingPrice")
+public class BookingPrice implements Serializable {
 
-    @OneToOne
     @Id
-    @JoinColumn(name ="bookingId", nullable = false)
-    private int bookingId;
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @OneToOne(mappedBy = "bookingPrice")
+    private Booking booking;
 
     @Column(name = "transportServicePrice", nullable = false)
     private double transportServicePrice;
@@ -33,12 +38,20 @@ public class BookingPrice {
     @Column(name = "discount", nullable = false)
     private double discount;
 
-    public int getBookingId() {
-        return bookingId;
+    public BookingPrice() {
+
     }
 
-    public void setBookingId(int bookingId) {
-        this.bookingId = bookingId;
+    public int getId() {
+        return id;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
 
     public double getTransportServicePrice() {

@@ -4,8 +4,14 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-import ch.saunah.saunahbackend.model.*;
+import ch.saunah.saunahbackend.model.Booking;
+import ch.saunah.saunahbackend.model.BookingPrice;
+import ch.saunah.saunahbackend.model.BookingSauna;
+import ch.saunah.saunahbackend.model.BookingState;
+import ch.saunah.saunahbackend.model.Price;
+import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.BookingPriceRepository;
 import ch.saunah.saunahbackend.repository.BookingSaunaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +32,13 @@ public class BookingService {
     private BookingRepository bookingRepository;
 
     @Autowired
-    private PriceRepository priceRepository;
-
-    @Autowired
     private BookingSaunaRepository bookingSaunaRepository;
 
     @Autowired
     private BookingPriceRepository bookingPriceRepository;
+
+    @Autowired
+    private PriceRepository priceRepository;
 
     @Autowired
     private SaunaService saunaService;
@@ -41,7 +47,7 @@ public class BookingService {
     private GoogleCalendarService calendarService;
 
     /**
-     * Add a new booking to the database and assigns the end price to it.
+     * Adds a new booking to the database and assigns the end price to it.
      *
      * @param bookingBody the required parameters for creating a booking
      * @return the newly created booking object
@@ -59,17 +65,18 @@ public class BookingService {
         if (bookingBody.getStartBookingDate().after(bookingBody.getEndBookingDate())) {
             throw new IllegalArgumentException("Invalid start date");
         }
-        //List<BookingSauna> allSaunaBookings = bookingSaunaRepository.findAllBySaunaId(bookingBody.getSaunaId());
-        //if (allSaunaBookings.stream().anyMatch(x -> dateRangeCollide(bookingBody.getStartBookingDate(),
-        //    bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate()))) {
-        //    throw new IllegalArgumentException("Sauna is not available during this date range");
-        //}
+        List<BookingSauna> allSaunaBookings = bookingSaunaRepository.findAllBySaunaId(bookingBody.getSaunaId());
+        List<Booking> allBookings = getAllBooking().stream().filter(x -> allSaunaBookings.stream().anyMatch(y -> y.getId() == x.getId())).collect(Collectors.toList());
+        if (allBookings.stream().anyMatch(x -> dateRangeCollide(bookingBody.getStartBookingDate(),
+            bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate()))) {
+            throw new IllegalArgumentException("Sauna is not available during this date range");
+        }
         Booking booking = new Booking();
         setBookingFields(booking, bookingBody, userId);
         bookingRepository.save(booking);
-        BookingPrice bookingPrice = createBookingPrice(bookingBody, booking.getId());
+        BookingPrice bookingPrice = createBookingPrice(bookingBody, booking);
         bookingPriceRepository.save(bookingPrice);
-        BookingSauna bookingSauna = createBookingSauna(bookingBody, booking.getId());
+        BookingSauna bookingSauna = createBookingSauna(bookingBody, booking);
         bookingSaunaRepository.save(bookingSauna);
         booking.setEndPrice(calculatePrice(booking, bookingSauna, bookingPrice));
         return bookingRepository.save(booking);
@@ -88,38 +95,39 @@ public class BookingService {
         booking.setUserId(userId);
         booking.setLocation(bookingBody.getLocation());
         booking.setTransportServiceDistance(bookingBody.getTransportServiceDistance());
-        booking.setWashServiceAmount(bookingBody.getWashServiceAmount());
+        booking.setWashService(bookingBody.isWashService());
         booking.setSaunahImpAmount(bookingBody.getSaunahImpAmount());
         booking.setDeposit(true);
         booking.setHandTowelAmount(bookingBody.getHandTowelAmount());
         booking.setWoodAmount(bookingBody.getWoodAmount());
         booking.setCreation(new Date(System.currentTimeMillis()));
         booking.setState(BookingState.OPENED);
-        booking.setDiscountDescription(bookingBody.getDiscountDescription());
+        booking.setDiscountDescription("test");
         booking.setComment(bookingBody.getComment());
         booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalendarId(), booking));
     }
 
-    private BookingPrice createBookingPrice(BookingBody bookingBody, int id) {
+    private BookingPrice createBookingPrice(BookingBody bookingBody, Booking id) {
         Price price = priceRepository.findAll().iterator().next();
         if (price == null) {
             throw new NotFoundException("No Price available in the database!");
         }
         BookingPrice bookingPrice = new BookingPrice();
-        bookingPrice.setBookingId(id);
+        bookingPrice.setBooking(id);
         bookingPrice.setTransportServicePrice(bookingBody.getTransportServiceDistance() * price.getTransportService());
-        bookingPrice.setWashServicePrice(bookingBody.getWashServiceAmount() * price.getWashService());
+        bookingPrice.setWashServicePrice(price.getWashService());
         bookingPrice.setSaunahImpPrice(bookingBody.getSaunahImpAmount() * price.getSaunahImp());
         bookingPrice.setDepositPrice(price.getDeposit());
         bookingPrice.setHandTowelPrice(bookingBody.getHandTowelAmount() * price.getHandTowel());
         bookingPrice.setWoodPrice(bookingBody.getWoodAmount() * price.getWood());
+        bookingPrice.setDiscount(price.getDiscount());
         return bookingPrice;
     }
 
-    private BookingSauna createBookingSauna(BookingBody bookingBody , int id) {
+    private BookingSauna createBookingSauna(BookingBody bookingBody, Booking id) {
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
         BookingSauna bookingSauna = new BookingSauna();
-        bookingSauna.setBookingId(id);
+        bookingSauna.setBooking(id);
         bookingSauna.setSaunaId(bookingBody.getSaunaId());
         bookingSauna.setSaunaName(sauna.getName());
         bookingSauna.setSaunaDescription(sauna.getDescription());
@@ -137,9 +145,9 @@ public class BookingService {
     /**
      * Edit an already existing booking
      *
-     * @param bookingId          the id of the booking to be edited
+     * @param bookingId   the id of the booking to be edited
      * @param bookingBody the parameter that shall be changed
-     * @param userId the parameter that indicates the userId
+     * @param userId      the parameter that indicates the userId
      * @return the booking that has been edited
      */
     public Booking editBooking(int bookingId, BookingBody bookingBody, int userId) throws IOException {

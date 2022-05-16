@@ -73,6 +73,7 @@ class BookingServiceTest {
         price.setDeposit(100F);
         price.setHandTowel(5.00F);
         price.setWood(20.00F);
+        price.setDiscount(-20.00F);
         priceRepository.save(price);
 
         user = new User();
@@ -95,10 +96,11 @@ class BookingServiceTest {
         bookingBody.setSaunaId(sauna.getId());
         bookingBody.setLocation("Zürich");
         bookingBody.setTransportServiceDistance(20);
-        bookingBody.setWashServiceAmount(2);
+        bookingBody.setWashService(true);
         bookingBody.setSaunahImpAmount(3);
         bookingBody.setHandTowelAmount(2);
         bookingBody.setWoodAmount(3);
+        bookingBody.setComment("very nice");
     }
 
     @AfterEach

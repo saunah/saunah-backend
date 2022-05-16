@@ -183,7 +183,6 @@ public class MailService {
                 "<p>Ihr angegebener Ort: " + booking.getLocation() + "</p>" +
                 "<p>Transport Service Distanz in km: " + booking.getTransportServiceDistance() + "</p>" +
                 "<p>Transport Service Preis: " + bookingPrice.getTransportServicePrice() + "</p>" +
-                "<p>Wasch Service Anzahl: " + booking.getWashServiceAmount() + "</p>" +
                 "<p>Wasch Service Preis: " + bookingPrice.getWashServicePrice() + "</p>" +
                 "<p>Imp Anzahl: " + booking.getSaunahImpAmount() + "</p>" +
                 "<p>Imp Preis: " + bookingPrice.getSaunahImpPrice() + "</p>" +
