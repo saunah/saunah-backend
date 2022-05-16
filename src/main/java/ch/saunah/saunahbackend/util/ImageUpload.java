@@ -4,8 +4,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+/**
+ * This class is used as a helper class to save and read images.
+ */
 public interface ImageUpload {
 
+    /**
+     * Saves the image to the specified path.
+     *
+     * @param directory directory where image will be saved
+     * @param fileName the fileName of the image
+     * @param multipartFile the image object
+     * @throws IOException throws when Path is not valid
+     */
     void saveImage(String directory, String fileName, MultipartFile multipartFile) throws IOException;
 
     /**
