@@ -15,32 +15,17 @@ public class BookingResponse {
     private Date endBookingDate;
     private Date creation;
     private BookingState state;
-    private double endPrice;
     private int userId;
-    private int saunaId;
     private String location;
     private int transportServiceDistance;
-    private double transportServicePrice;
     private int washServiceAmount;
-    private double washServicePrice;
     private int saunahImpAmount;
-    private double saunahImpPrice;
     private boolean deposit;
-    private double depositPrice;
     private int handTowelAmount;
-    private double handTowelPrice;
     private int woodAmount;
-    private double woodPrice;
-    private String saunaName;
-    private String saunaDescription;
-    private boolean saunaIsMobile;
-    private int saunaPrice;
-    private int saunaMaxTemp;
-    private int saunaNumberOfPeople;
-    private String saunaLocation;
-    private String saunaStreet;
-    private int saunaZip;
-    private String saunaType;
+    private String discountDescription;
+    private String comment;
+    private double endPrice;
     private String googleEventID;
 
     /**
@@ -52,32 +37,17 @@ public class BookingResponse {
         this.endBookingDate = booking.getEndBookingDate();
         this.creation = booking.getCreation();
         this.state = booking.getState();
-        this.endPrice = booking.getEndPrice();
         this.userId = booking.getUserId();
         this.location = booking.getLocation();
         this.transportServiceDistance = booking.getTransportServiceDistance();
-        this.transportServicePrice = booking.getTransportServicePrice();
         this.washServiceAmount = booking.getWashServiceAmount();
-        this.washServicePrice = booking.getWashServicePrice();
         this.saunahImpAmount = booking.getSaunahImpAmount();
-        this.saunahImpPrice = booking.getSaunahImpPrice();
         this.deposit = booking.isDeposit();
-        this.depositPrice = booking.getDepositPrice();
         this.handTowelAmount = booking.getHandTowelAmount();
-        this.handTowelPrice = booking.getHandTowelPrice();
         this.woodAmount = booking.getWoodAmount();
-        this.woodPrice = booking.getWoodPrice();
-        this.saunaId = booking.getSaunaId();
-        this.saunaName = booking.getSaunaName();
-        this.saunaDescription = booking.getSaunaDescription();
-        this.saunaIsMobile = booking.isSaunaIsMobile();
-        this.saunaPrice = booking.getSaunaId();
-        this.saunaMaxTemp = booking.getSaunaId();
-        this.saunaNumberOfPeople = booking.getSaunaId();
-        this.saunaLocation = booking.getSaunaLocation();
-        this.saunaStreet = booking.getSaunaStreet();
-        this.saunaZip = booking.getSaunaZip();
-        this.saunaType = booking.getSaunaType();
+        this.discountDescription = booking.getDiscountDescription();
+        this.comment = booking.getComment();
+        this.endPrice = booking.getEndPrice();
         this.googleEventID = booking.getGoogleEventID();
     }
 
@@ -101,16 +71,8 @@ public class BookingResponse {
         return state;
     }
 
-    public double getEndPrice() {
-        return endPrice;
-    }
-
     public int getUserId() {
         return userId;
-    }
-
-    public int getSaunaId() {
-        return saunaId;
     }
 
     public String getLocation() {
@@ -133,10 +95,6 @@ public class BookingResponse {
         return deposit;
     }
 
-    public double getDepositPrice() {
-        return depositPrice;
-    }
-
     public int getHandTowelAmount() {
         return handTowelAmount;
     }
@@ -145,64 +103,16 @@ public class BookingResponse {
         return woodAmount;
     }
 
-    public String getSaunaName() {
-        return saunaName;
+    public String getDiscountDescription() {
+        return discountDescription;
     }
 
-    public double getTransportServicePrice() {
-        return transportServicePrice;
+    public String getComment() {
+        return comment;
     }
 
-    public double getWashServicePrice() {
-        return washServicePrice;
-    }
-
-    public double getSaunahImpPrice() {
-        return saunahImpPrice;
-    }
-
-    public double getHandTowelPrice() {
-        return handTowelPrice;
-    }
-
-    public double getWoodPrice() {
-        return woodPrice;
-    }
-
-    public String getSaunaDescription() {
-        return saunaDescription;
-    }
-
-    public boolean isSaunaIsMobile() {
-        return saunaIsMobile;
-    }
-
-    public int getSaunaPrice() {
-        return saunaPrice;
-    }
-
-    public int getSaunaMaxTemp() {
-        return saunaMaxTemp;
-    }
-
-    public int getSaunaNumberOfPeople() {
-        return saunaNumberOfPeople;
-    }
-
-    public String getSaunaLocation() {
-        return saunaLocation;
-    }
-
-    public String getSaunaStreet() {
-        return saunaStreet;
-    }
-
-    public int getSaunaZip() {
-        return saunaZip;
-    }
-
-    public String getSaunaType() {
-        return saunaType;
+    public double getEndPrice() {
+        return endPrice;
     }
 
     public String getGoogleEventID() {

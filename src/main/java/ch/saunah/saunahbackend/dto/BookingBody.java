@@ -15,6 +15,8 @@ public class BookingBody {
     private int saunahImpAmount;
     private int handTowelAmount;
     private int woodAmount;
+    private String discountDescription;
+    private String comment;
 
     public Date getStartBookingDate() {
         return startBookingDate;
@@ -86,5 +88,20 @@ public class BookingBody {
 
     public void setWoodAmount(int woodAmount) {
         this.woodAmount = woodAmount;
+    }
+
+    public String getDiscountDescription() {
+        return discountDescription;
+    }
+
+    public void setDiscountDescription(String discountDescription) {
+        this.discountDescription = discountDescription;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

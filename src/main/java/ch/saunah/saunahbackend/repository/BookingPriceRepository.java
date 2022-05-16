@@ -1,12 +1,11 @@
 package ch.saunah.saunahbackend.repository;
 
-import ch.saunah.saunahbackend.model.Booking;
+import ch.saunah.saunahbackend.model.BookingPrice;
 import org.springframework.data.repository.CrudRepository;
-
-import java.util.List;
 
 /**
  * This Interface accesses the CrudRepository.
  */
-public interface BookingRepository extends CrudRepository<Booking, Integer> {
+public interface BookingPriceRepository extends CrudRepository<BookingPrice, Integer> {
+
 }
