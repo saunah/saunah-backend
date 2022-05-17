@@ -4,7 +4,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ch.saunah.saunahbackend.dto.SaunahApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +39,15 @@ public class SaunaController {
 
     @Operation(description = "Allows adding a new Sauna type.")
     @PostMapping(path = "saunas")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Sauna created"),
+        @ApiResponse(responseCode = "400", description = "Bad request, set fields do not match with the conditions", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
+    })
     public @ResponseBody
     ResponseEntity<SaunaResponse> createSauna(@RequestBody SaunaTypeBody saunaTypeBody) throws NullPointerException{
-        return ResponseEntity.ok(new SaunaResponse(saunaService.addSauna(saunaTypeBody)));
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(new SaunaResponse(saunaService.addSauna(saunaTypeBody)));
     }
 
     @Operation(description = "Returns a list of saunas.")
@@ -52,6 +64,10 @@ public class SaunaController {
 
     @Operation(description = "Allows removing a existing Sauna with the ID specified.")
     @DeleteMapping(path = "saunas/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sauna deleted"),
+        @ApiResponse(responseCode = "400", description = "Sauna does not exist", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
+    })
     public @ResponseBody ResponseEntity<String> removeSauna(@PathVariable("id") int id) throws IllegalArgumentException {
         saunaService.removeSauna(id);
         return ResponseEntity.ok("success");
@@ -59,6 +75,10 @@ public class SaunaController {
 
     @Operation(description = "Allows editing an existing Sauna type.")
     @PutMapping(path = "saunas/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sauna edited"),
+        @ApiResponse(responseCode = "400", description = "Bad request, set fields do not match with the conditions", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
+    })
     public @ResponseBody
     ResponseEntity<SaunaResponse> editSauna(@PathVariable("id") int id, @RequestBody SaunaTypeBody saunaTypeBody) throws NotFoundException {
         return ResponseEntity.ok(new SaunaResponse(saunaService.editSauna(id, saunaTypeBody)));
@@ -66,6 +86,10 @@ public class SaunaController {
 
     @Operation(description = "Adds new images to the corresponding sauna.")
     @PostMapping(value = "/saunas/{id}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Image saved"),
+        @ApiResponse(responseCode = "400", description = "Sauna does not exist", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
+    })
     @ResponseBody
     public ResponseEntity<String> saveImages(@PathVariable("id") int saunaId, @RequestBody List<MultipartFile> images) throws NotFoundException, NullPointerException {
         saunaService.addSaunaImages(saunaId, images);
@@ -75,6 +99,10 @@ public class SaunaController {
 
     @Operation(description = "Removes the image of the specified Id.")
     @DeleteMapping(path = "saunas/images/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Image deleted"),
+        @ApiResponse(responseCode = "400", description = "Image does not exist", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
+    })
     @ResponseBody
     public ResponseEntity<String> removeImage(@PathVariable("id") int imageId) throws NotFoundException{
         saunaService.removeSaunaImage(imageId);
