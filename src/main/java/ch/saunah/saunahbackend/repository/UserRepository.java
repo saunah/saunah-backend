@@ -7,6 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 
+import java.util.List;
+
 /**
  * This Interface accesses the CrudRepository.
  */
@@ -34,4 +36,12 @@ public interface UserRepository extends CrudRepository<User, Integer> {
      * @return role
      */
     List<User> findByRole(UserRole role);
+
+    /**
+     * This methode searches the database for users who are not deleted
+     * @param isDeleted Whatever a user shall be found who has been deleted or not
+     * @return A list of users according to search requirement
+     */
+    List<User> findByIsDeleted(boolean isDeleted);
+
 }
