@@ -120,6 +120,19 @@ public class MailService {
         messageUserSetup(email, mailText, booking, bookingPrice, bookingSauna);
     }
 
+    /**
+     * This method sends a mail which informs the user that his booking has been edited.
+     *
+     * @param email        The email of the user
+     * @param booking      The Booking info
+     * @param bookingPrice The bookingPrice info
+     * @param bookingSauna The bookingSauna info
+     */
+    public void sendUserEditedBookingMail(String email, Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
+        String mailText = "<p>Ihr Buchung wurde verändert. Hier sehen sie die Buchung:</p>";
+        messageUserSetup(email, mailText, booking, bookingPrice, bookingSauna);
+    }
+
     private void messageUserSetup(String email, String mailText, Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();

@@ -103,6 +103,7 @@ public class BookingController {
     public @ResponseBody
     ResponseEntity<BookingResponse> editBooking(@PathVariable(value = "id", required = true) Integer id, @RequestBody BookingBody bookingBody) throws IOException {
         Booking booking = bookingService.editBooking(id, bookingBody);
+        mailService.sendUserEditedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking, booking.getBookingPrice(), booking.getBookingSauna());
         return ResponseEntity.ok(new BookingResponse(booking));
     }
 
