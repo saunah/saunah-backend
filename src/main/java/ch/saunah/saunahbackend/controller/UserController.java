@@ -1,26 +1,36 @@
 package ch.saunah.saunahbackend.controller;
 
-import ch.saunah.saunahbackend.dto.*;
+import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.naming.AuthenticationException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import ch.saunah.saunahbackend.dto.ResetPasswordBody;
 import ch.saunah.saunahbackend.dto.ResetPasswordRequestBody;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.UserBody;
+import ch.saunah.saunahbackend.dto.UserResponse;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.security.JwtResponse;
 import ch.saunah.saunahbackend.service.MailService;
 import ch.saunah.saunahbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.naming.AuthenticationException;
-import java.security.Principal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controls the different operations of a user account.
@@ -134,7 +144,7 @@ public class UserController {
     @Operation(description = "Soft deletes a User.")
     @DeleteMapping(path = "users/{id}")
     public @ResponseBody
-    ResponseEntity<UserResponse> deleteUser(int id) {
+    ResponseEntity<UserResponse> deleteUser(@PathVariable(value = "id", required = true) Integer id) {
         return ResponseEntity.ok(new UserResponse(userService.deleteUser(id)));
     }
 }
