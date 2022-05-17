@@ -11,8 +11,6 @@ import java.util.Date;
 public class BookingResponse {
 
     private int id;
-    private int bookingPriceId;
-    private int bookingSaunaId;
     private Date startBookingDate;
     private Date endBookingDate;
     private Date creation;
@@ -33,8 +31,6 @@ public class BookingResponse {
      */
     public BookingResponse(Booking booking) {
         this.id = booking.getId();
-        this.bookingPriceId = booking.getBookingPrice().getId();
-        this.bookingSaunaId = booking.getBookingSauna().getId();
         this.startBookingDate = booking.getStartBookingDate();
         this.endBookingDate = booking.getEndBookingDate();
         this.creation = booking.getCreation();
@@ -53,14 +49,6 @@ public class BookingResponse {
 
     public int getId() {
         return id;
-    }
-
-    public int getBookingPriceId() {
-        return bookingPriceId;
-    }
-
-    public int getBookingSaunaId() {
-        return bookingSaunaId;
     }
 
     public Date getStartBookingDate() {

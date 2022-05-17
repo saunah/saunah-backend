@@ -59,10 +59,9 @@ public class BookingController {
     public @ResponseBody
     ResponseEntity<BookingPriceResponse> getBookingPrice(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
         Booking booking = bookingService.getBooking(id);
-        BookingPrice bookingPrice = booking.getBookingPrice();
         User user = userService.getUserByMail(principal.getName());
         if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
-            return ResponseEntity.ok(new BookingPriceResponse(bookingPrice));
+            return ResponseEntity.ok(new BookingPriceResponse(booking.getBookingPrice()));
         }
         throw new AuthenticationException("user is not authenticated to view this booking");
     }
@@ -72,10 +71,9 @@ public class BookingController {
     public @ResponseBody
     ResponseEntity<BookingSaunaResponse> getBookingSauna(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
         Booking booking = bookingService.getBooking(id);
-        BookingSauna bookingSauna = booking.getBookingSauna();
         User user = userService.getUserByMail(principal.getName());
         if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
-            return ResponseEntity.ok(new BookingSaunaResponse(bookingSauna));
+            return ResponseEntity.ok(new BookingSaunaResponse(booking.getBookingSauna()));
         }
         throw new AuthenticationException("user is not authenticated to view this booking");
     }
