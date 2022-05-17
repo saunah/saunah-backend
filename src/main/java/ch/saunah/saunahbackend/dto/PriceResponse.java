@@ -13,6 +13,8 @@ public class PriceResponse {
     private float deposit;
     private float handTowel;
     private float wood;
+    private float discount;
+    private String discountDescription;
 
     /**
      * This constructor sets all the fields of this object.
@@ -25,22 +27,43 @@ public class PriceResponse {
         this.deposit = price.getDeposit();
         this.handTowel = price.getHandTowel();
         this.wood = price.getWood();
-     }
+        this.discount = price.getDiscount();
+        this.discountDescription = price.getDiscountDescription();
+    }
 
     public int getId() {
         return id;
     }
 
-    public float getTransportService() { return  transportService; }
+    public float getTransportService() {
+        return transportService;
+    }
 
-    public float getWashService() { return  washService; }
+    public float getWashService() {
+        return washService;
+    }
 
-    public float getSaunahImp() { return saunahImp; }
+    public float getSaunahImp() {
+        return saunahImp;
+    }
 
-    public float getDeposit() { return deposit; }
+    public float getDeposit() {
+        return deposit;
+    }
 
-    public float getHandTowel() { return handTowel; }
+    public float getHandTowel() {
+        return handTowel;
+    }
 
-    public float getWood() { return wood; }
+    public float getWood() {
+        return wood;
+    }
 
+    public float getDiscount() {
+        return discount;
+    }
+
+    public String getDiscountDescription() {
+        return discountDescription;
+    }
 }

@@ -97,6 +97,7 @@ public class SaunaService {
         sauna.setLocation(saunaTypeBody.getLocation());
         sauna.setZip(saunaTypeBody.getZip());
         sauna.setType(saunaTypeBody.getType());
+        sauna.setGoogleCalendarId(saunaTypeBody.getGoogleCalendarId());
         return sauna;
     }
 

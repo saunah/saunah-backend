@@ -7,21 +7,17 @@ import java.util.stream.Collectors;
 
 import javax.naming.AuthenticationException;
 
+import ch.saunah.saunahbackend.dto.BookingPriceResponse;
+import ch.saunah.saunahbackend.dto.BookingSaunaResponse;
+import ch.saunah.saunahbackend.model.*;
+import ch.saunah.saunahbackend.repository.UserRepository;
+import ch.saunah.saunahbackend.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.dto.BookingResponse;
-import ch.saunah.saunahbackend.model.Booking;
-import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.service.BookingService;
 import ch.saunah.saunahbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,13 +35,47 @@ public class BookingController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private MailService mailService;
+
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "bookings")
     public @ResponseBody
     ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws Exception {
         User currentUser = userService.getUserByMail(principal.getName());
         Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
+        for (User admin : userRepository.findByRole(UserRole.ADMIN)) {
+            mailService.sendAdminOpenedBookingMail(admin, booking);
+        }
+        mailService.sendUserOpenedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
         return ResponseEntity.ok(new BookingResponse(booking));
+    }
+
+    @Operation(description = "Returns the bookingPrice with the ID specified.")
+    @GetMapping(path = "bookings/{id}/price")
+    public @ResponseBody
+    ResponseEntity<BookingPriceResponse> getBookingPrice(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
+        Booking booking = bookingService.getBooking(id);
+        User user = userService.getUserByMail(principal.getName());
+        if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
+            return ResponseEntity.ok(new BookingPriceResponse(booking.getBookingPrice()));
+        }
+        throw new AuthenticationException("user is not authenticated to view this booking");
+    }
+
+    @Operation(description = "Returns the bookingPrice with the ID specified.")
+    @GetMapping(path = "bookings/{id}/sauna")
+    public @ResponseBody
+    ResponseEntity<BookingSaunaResponse> getBookingSauna(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
+        Booking booking = bookingService.getBooking(id);
+        User user = userService.getUserByMail(principal.getName());
+        if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
+            return ResponseEntity.ok(new BookingSaunaResponse(booking.getBookingSauna()));
+        }
+        throw new AuthenticationException("user is not authenticated to view this booking");
     }
 
     @Operation(description = "Returns the list of the bookings of the current user.")
@@ -68,29 +98,37 @@ public class BookingController {
         throw new AuthenticationException("user is not authenticated to view this booking");
     }
 
+    @Operation(description = "Allows editing an existing Booking structure.")
+    @PutMapping(path = "bookings/{id}")
+    public @ResponseBody
+    ResponseEntity<BookingResponse> editBooking(@PathVariable(value = "id", required = true) Integer id, @RequestBody BookingBody bookingBody) throws IOException {
+        Booking booking = bookingService.editBooking(id, bookingBody);
+        mailService.sendUserEditedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
+        return ResponseEntity.ok(new BookingResponse(booking));
+    }
+
     @Operation(description = "Approves a existing booking structure with the ID specified.")
-    @PostMapping(path = "bookings/{id}/approve")
+    @PutMapping(path = "bookings/{id}/approve")
     public @ResponseBody
     ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
         bookingService.approveBooking(id);
+        Booking booking = bookingService.getBooking(id);
+        mailService.sendUserApprovedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
         return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Cancels a existing booking structure with the ID specified.")
-    @PostMapping(path = "bookings/{id}/cancel")
+    @PutMapping(path = "bookings/{id}/cancel")
     public @ResponseBody
-    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException, IOException {
+    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
+        bookingService.cancelBooking(id);
         Booking booking = bookingService.getBooking(id);
-        User user = userService.getUserByMail(principal.getName());
-        if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
-            bookingService.cancelBooking(id);
-            return ResponseEntity.ok("success");
-        }
-        throw new AuthenticationException("user is not authorized to cancel this booking");
+        mailService.sendUserCanceledBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
+        return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Returns the list of all bookings.")
-    @GetMapping(path = "allBookings")
+    @GetMapping(path = "bookings/all")
     public @ResponseBody
     List<BookingResponse> getAllBooking() {
         return bookingService.getAllBooking().stream().map(x -> new BookingResponse(x)).collect(Collectors.toList());
