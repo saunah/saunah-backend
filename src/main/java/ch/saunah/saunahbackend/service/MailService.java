@@ -2,20 +2,20 @@ package ch.saunah.saunahbackend.service;
 
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import ch.saunah.saunahbackend.model.Booking;
-import ch.saunah.saunahbackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import ch.saunah.saunahbackend.model.Booking;
+import ch.saunah.saunahbackend.model.User;
 
 /**
  * This class contains the mail service.
@@ -193,6 +193,8 @@ public class MailService {
                 "<p>Brennholz Preis: " + booking.getBookingPrice().getWoodPrice() + "</p>" +
                 "<p>Sauna Preis: " + booking.getBookingSauna().getSaunaPrice() + "</p>" +
                 "<p>Totalpreis: " + booking.getEndPrice() + "</p>";
+
+    }
 
     /**
      * Get the default reply to email. In case of the replyTo value being

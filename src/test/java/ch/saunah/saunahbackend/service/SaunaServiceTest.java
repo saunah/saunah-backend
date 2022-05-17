@@ -238,13 +238,4 @@ class SaunaServiceTest {
         }
     }
 
-    private MockMultipartFile mockImageFile(String name, int size) {
-        String filename = (name != null) ? name : "file";
-        return new MockMultipartFile(
-            filename,
-            null,
-            MediaType.IMAGE_JPEG_VALUE,
-            new byte[size]
-        );
-    }
 }
