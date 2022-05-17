@@ -7,7 +7,13 @@ import java.util.stream.Collectors;
 
 import javax.naming.AuthenticationException;
 
+import ch.saunah.saunahbackend.dto.SaunahApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,11 +48,16 @@ public class BookingController {
 
     @Operation(description = "Creates a new booking.")
     @PostMapping(path = "bookings")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Booking created", content = @Content(schema = @Schema(implementation = BookingResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Bad request, set fields do not match with the conditions", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
+        @ApiResponse(responseCode = "500", description = "Unable to send Mail", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class)))
+    })
     public @ResponseBody
     ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws Exception {
         User currentUser = userService.getUserByMail(principal.getName());
         Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
-        return ResponseEntity.ok(new BookingResponse(booking));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BookingResponse(booking));
     }
 
     @Operation(description = "Returns the list of the bookings of the current user.")
@@ -71,6 +82,10 @@ public class BookingController {
 
     @Operation(description = "Approves a existing booking structure with the ID specified.")
     @PostMapping(path = "bookings/{id}/approve")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Booking approved"),
+        @ApiResponse(responseCode = "400", description = "Booking does not exist", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
+    })
     public @ResponseBody
     ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws NotFoundException,IOException {
         bookingService.approveBooking(id);
@@ -79,6 +94,11 @@ public class BookingController {
 
     @Operation(description = "Cancels a existing booking structure with the ID specified.")
     @PostMapping(path = "bookings/{id}/cancel")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Booking canceled"),
+        @ApiResponse(responseCode = "400", description = "Booking does not exist", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
+        @ApiResponse(responseCode = "401", description = "Not authorized", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
+    })
     public @ResponseBody
     ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException,IOException {
         Booking booking = bookingService.getBooking(id);

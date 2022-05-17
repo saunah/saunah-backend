@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ch.saunah.saunahbackend.dto.BookingResponse;
 import ch.saunah.saunahbackend.dto.SaunahApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,7 +41,7 @@ public class SaunaController {
     @Operation(description = "Allows adding a new Sauna type.")
     @PostMapping(path = "saunas")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Sauna created"),
+        @ApiResponse(responseCode = "201", description = "Sauna created", content = @Content(schema = @Schema(implementation = SaunaResponse.class))),
         @ApiResponse(responseCode = "400", description = "Bad request, set fields do not match with the conditions", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
     public @ResponseBody
@@ -76,7 +77,7 @@ public class SaunaController {
     @Operation(description = "Allows editing an existing Sauna type.")
     @PutMapping(path = "saunas/{id}")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Sauna edited"),
+        @ApiResponse(responseCode = "200", description = "Sauna edited", content = @Content(schema = @Schema(implementation = SaunaResponse.class))),
         @ApiResponse(responseCode = "400", description = "Bad request, set fields do not match with the conditions", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
     public @ResponseBody

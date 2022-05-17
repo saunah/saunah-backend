@@ -114,7 +114,7 @@ public class UserController {
     @Operation(description = "Returns the user with the ID specified.")
     @GetMapping(path="users/{id}")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Returns the user"),
+        @ApiResponse(responseCode = "200", description = "Returns the user", content = @Content(schema = @Schema(implementation = UserResponse.class))),
         @ApiResponse(responseCode = "400", description = "User not found", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
         @ApiResponse(responseCode = "401", description = "Not authorized", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
@@ -129,7 +129,7 @@ public class UserController {
     @Operation(description = "update the user information.")
     @PutMapping(path="users/{id}")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "User edited"),
+        @ApiResponse(responseCode = "200", description = "User edited", content = @Content(schema = @Schema(implementation = UserResponse.class))),
         @ApiResponse(responseCode = "400", description = "Bad request, set fields do not match with the conditions", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
         @ApiResponse(responseCode = "401", description = "Not authorized", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
