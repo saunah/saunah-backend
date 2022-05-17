@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
+import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.BookingPrice;
 import ch.saunah.saunahbackend.model.BookingSauna;
@@ -13,13 +18,8 @@ import ch.saunah.saunahbackend.model.BookingState;
 import ch.saunah.saunahbackend.model.Price;
 import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.BookingPriceRepository;
-import ch.saunah.saunahbackend.repository.BookingSaunaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
-
-import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.repository.BookingRepository;
+import ch.saunah.saunahbackend.repository.BookingSaunaRepository;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 
 /**
@@ -109,12 +109,11 @@ public class BookingService {
         booking.setCreation(new Date(System.currentTimeMillis()));
         booking.setState(BookingState.OPENED);
         booking.setComment(bookingBody.getComment());
-        booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalendarId(), booking));
-    }
 
         if (isValidId(sauna.getGoogleCalendarId())) {
             booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalendarId(), booking));
         }
+    }
 
     private BookingPrice createBookingPrice(BookingBody bookingBody) {
         Price price = priceRepository.findAll().iterator().next();
@@ -123,7 +122,7 @@ public class BookingService {
         }
         BookingPrice bookingPrice = new BookingPrice();
         bookingPrice.setTransportServicePrice(bookingBody.getTransportServiceDistance() * price.getTransportService());
-        bookingPrice.setWashServicePrice(price.getWashService());
+        bookingPrice.setWashServicePrice(bookingBody.isWashService() ? price.getWashService() : 0);
         bookingPrice.setSaunahImpPrice(bookingBody.getSaunahImpAmount() * price.getSaunahImp());
         bookingPrice.setDepositPrice(price.getDeposit());
         bookingPrice.setHandTowelPrice(bookingBody.getHandTowelAmount() * price.getHandTowel());
@@ -183,8 +182,6 @@ public class BookingService {
         booking.setState(BookingState.APPROVED);
 
         Sauna sauna = saunaService.getSauna(id);
-        calendarService.approveEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
-        Sauna sauna = saunaService.getSauna(booking.getSaunaId());
 
         if (isValidId(sauna.getGoogleCalendarId()) && isValidId(booking.getGoogleEventID())) {
             calendarService.approveEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
@@ -208,7 +205,6 @@ public class BookingService {
         booking.setState(BookingState.CANCELED);
 
         Sauna sauna = saunaService.getSauna(id);
-        Sauna sauna = saunaService.getSauna(booking.getSaunaId());
 
         if (isValidId(sauna.getGoogleCalendarId()) && isValidId(booking.getGoogleEventID())) {
             calendarService.deleteEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());

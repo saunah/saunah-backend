@@ -268,7 +268,8 @@ class BookingServiceTest {
         setAllBookingBodyOptions(bookingBody, false);
         bookingService.addBooking(bookingBody, user.getId());
         Booking noOptionsBooking = bookingService.getAllBooking().get(0);
-        assertEquals(500, noOptionsBooking.getEndPrice());
+        // 500 (base price) + 100 (deposit) - 20 (discount) = 580
+        assertEquals(580, noOptionsBooking.getEndPrice());
 
         bookingBody.setStartBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 24 * 3600));
         bookingBody.setEndBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 48 * 3600));
@@ -276,7 +277,9 @@ class BookingServiceTest {
         setAllBookingBodyOptions(bookingBody, true);
         bookingService.addBooking(bookingBody, user.getId());
         Booking allOptionsBooking = bookingService.getAllBooking().get(1);
-        assertEquals(701.50, allOptionsBooking.getEndPrice());
+        // 500 (base price) + 100 (deposit) - 20 (discount) + 1.5 (transport service) + 50 (wash service)
+        // + 25 (sauna imp) + 5 (hand towel) + 20 (wood) = 681.5
+        assertEquals(681.5, allOptionsBooking.getEndPrice());
     }
 
     /**
@@ -285,12 +288,12 @@ class BookingServiceTest {
      * @param enabled whether options should be enabled or not
      */
     private void setAllBookingBodyOptions(BookingBody body, boolean enabled) {
-        body.setTransportService(enabled);
+        int amount = enabled ? 1 : 0;
+        body.setTransportServiceDistance(amount);
         body.setWashService(enabled);
-        body.setSaunahImp(enabled);
-        body.setDeposit(enabled);
-        body.setHandTowel(enabled);
-        body.setWood(enabled);
+        body.setSaunahImpAmount(amount);
+        body.setHandTowelAmount(amount);
+        body.setWoodAmount(amount);
     }
 
     /**
