@@ -15,6 +15,7 @@ import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.BookingPriceRepository;
 import ch.saunah.saunahbackend.repository.BookingSaunaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.SpringVersion;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -58,6 +59,22 @@ public class BookingService {
         Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getLocation(), "Location must not be null!");
+        dateRangeCheck(bookingBody);
+        Booking booking = new Booking();
+        setBookingFields(booking, bookingBody);
+        booking.setUserId(userId);
+        bookingRepository.save(booking);
+        BookingPrice bookingPrice = createBookingPrice(bookingBody);
+        bookingPriceRepository.save(bookingPrice);
+        BookingSauna bookingSauna = createBookingSauna(bookingBody);
+        bookingSaunaRepository.save(bookingSauna);
+        booking.setBookingPrice(bookingPrice);
+        booking.setBookingSauna(bookingSauna);
+        booking.setEndPrice(calculatePrice(booking, bookingSauna, bookingPrice));
+        return bookingRepository.save(booking);
+    }
+
+    private void dateRangeCheck(BookingBody bookingBody) {
         Date now = new Date(System.currentTimeMillis());
         if (now.after(bookingBody.getStartBookingDate())) {
             throw new IllegalArgumentException("Booking date is in the past");
@@ -71,18 +88,6 @@ public class BookingService {
             bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate()))) {
             throw new IllegalArgumentException("Sauna is not available during this date range");
         }
-        Booking booking = new Booking();
-        setBookingFields(booking, bookingBody);
-        booking.setUserId(userId);
-        bookingRepository.save(booking);
-        BookingPrice bookingPrice = createBookingPrice(bookingBody);
-        bookingPriceRepository.save(bookingPrice);
-        BookingSauna bookingSauna = createBookingSauna(bookingBody);
-        bookingSaunaRepository.save(bookingSauna);
-        booking.setBookingPrice(bookingPrice);
-        booking.setBookingSauna(bookingSauna);
-        booking.setEndPrice(calculatePrice(booking, bookingSauna, bookingPrice));
-        return bookingRepository.save(booking);
     }
 
     private boolean dateRangeCollide(Date start, Date end, Date startExisting, Date endExisting) {
@@ -154,19 +159,7 @@ public class BookingService {
         Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getLocation(), "Location must not be null!");
-        Date now = new Date(System.currentTimeMillis());
-        if (now.after(bookingBody.getStartBookingDate())) {
-            throw new IllegalArgumentException("Booking date is in the past");
-        }
-        if (bookingBody.getStartBookingDate().after(bookingBody.getEndBookingDate())) {
-            throw new IllegalArgumentException("Invalid start date");
-        }
-        List<BookingSauna> allSaunaBookings = bookingSaunaRepository.findAllBySaunaId(bookingBody.getSaunaId());
-        List<Booking> allBookings = getAllBooking().stream().filter(x -> allSaunaBookings.stream().anyMatch(y -> y.getId() == x.getId())).collect(Collectors.toList());
-        if (allBookings.stream().anyMatch(x -> dateRangeCollide(bookingBody.getStartBookingDate(),
-            bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate()))) {
-            throw new IllegalArgumentException("Sauna is not available during this date range");
-        }
+        dateRangeCheck(bookingBody);
         Booking editBooking = getBooking(bookingId);
         setBookingFields(editBooking, bookingBody);
         return bookingRepository.save(editBooking);
