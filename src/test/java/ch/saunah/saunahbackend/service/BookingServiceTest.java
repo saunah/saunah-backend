@@ -196,5 +196,6 @@ class BookingServiceTest {
         bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.NOVEMBER, 1).getTime());
         bookingService.addBooking(bookingBody, user.getId());
         assertEquals(3, bookingRepository.count());
+        assertEquals(3, bookingService.getAllBooking().size());
     }
 }
