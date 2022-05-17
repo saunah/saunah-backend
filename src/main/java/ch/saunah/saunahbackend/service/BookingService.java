@@ -72,12 +72,15 @@ public class BookingService {
             throw new IllegalArgumentException("Sauna is not available during this date range");
         }
         Booking booking = new Booking();
-        setBookingFields(booking, bookingBody, userId);
+        setBookingFields(booking, bookingBody);
+        booking.setUserId(userId);
         bookingRepository.save(booking);
         BookingPrice bookingPrice = createBookingPrice(bookingBody, booking);
         bookingPriceRepository.save(bookingPrice);
         BookingSauna bookingSauna = createBookingSauna(bookingBody, booking);
         bookingSaunaRepository.save(bookingSauna);
+        booking.setBookingPrice(bookingPrice);
+        booking.setBookingSauna(bookingSauna);
         booking.setEndPrice(calculatePrice(booking, bookingSauna, bookingPrice));
         return bookingRepository.save(booking);
     }
@@ -88,11 +91,10 @@ public class BookingService {
             start.getTime() < startExisting.getTime() && end.getTime() > endExisting.getTime();
     }
 
-    private void setBookingFields(Booking booking, BookingBody bookingBody, int userId) throws IOException {
+    private void setBookingFields(Booking booking, BookingBody bookingBody) throws IOException {
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
         booking.setStartBookingDate(bookingBody.getStartBookingDate());
         booking.setEndBookingDate(bookingBody.getEndBookingDate());
-        booking.setUserId(userId);
         booking.setLocation(bookingBody.getLocation());
         booking.setTransportServiceDistance(bookingBody.getTransportServiceDistance());
         booking.setWashService(bookingBody.isWashService());
@@ -113,7 +115,6 @@ public class BookingService {
             throw new NotFoundException("No Price available in the database!");
         }
         BookingPrice bookingPrice = new BookingPrice();
-        bookingPrice.setBooking(id);
         bookingPrice.setTransportServicePrice(bookingBody.getTransportServiceDistance() * price.getTransportService());
         bookingPrice.setWashServicePrice(price.getWashService());
         bookingPrice.setSaunahImpPrice(bookingBody.getSaunahImpAmount() * price.getSaunahImp());
@@ -127,7 +128,6 @@ public class BookingService {
     private BookingSauna createBookingSauna(BookingBody bookingBody, Booking id) {
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
         BookingSauna bookingSauna = new BookingSauna();
-        bookingSauna.setBooking(id);
         bookingSauna.setSaunaId(bookingBody.getSaunaId());
         bookingSauna.setSaunaName(sauna.getName());
         bookingSauna.setSaunaDescription(sauna.getDescription());
@@ -147,12 +147,11 @@ public class BookingService {
      *
      * @param bookingId   the id of the booking to be edited
      * @param bookingBody the parameter that shall be changed
-     * @param userId      the parameter that indicates the userId
      * @return the booking that has been edited
      */
-    public Booking editBooking(int bookingId, BookingBody bookingBody, int userId) throws IOException {
+    public Booking editBooking(int bookingId, BookingBody bookingBody) throws IOException {
         Booking editBooking = getBooking(bookingId);
-        setBookingFields(editBooking, bookingBody, userId);
+        setBookingFields(editBooking, bookingBody);
         return bookingRepository.save(editBooking);
     }
 

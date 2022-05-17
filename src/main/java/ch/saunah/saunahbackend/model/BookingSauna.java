@@ -58,14 +58,6 @@ public class BookingSauna implements Serializable {
         return id;
     }
 
-    public Booking getBooking() {
-        return booking;
-    }
-
-    public void setBooking(Booking booking) {
-        this.booking = booking;
-    }
-
     public String getSaunaName() {
         return saunaName;
     }
