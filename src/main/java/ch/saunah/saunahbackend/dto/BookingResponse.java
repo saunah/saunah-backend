@@ -25,6 +25,10 @@ public class BookingResponse {
     private int woodAmount;
     private String comment;
     private double endPrice;
+    private double discount;
+    private String discountDescription;
+    private BookingPriceResponse price;
+    private BookingSaunaResponse sauna;
 
     /**
      * This constructor sets all the fields of this object.
@@ -45,6 +49,10 @@ public class BookingResponse {
         this.woodAmount = booking.getWoodAmount();
         this.comment = booking.getComment();
         this.endPrice = booking.getEndPrice();
+        this.discount = booking.getDiscount();
+        this.discountDescription = booking.getDiscountDescription();
+        this.price = new BookingPriceResponse(booking.getBookingPrice());
+        this.sauna = new BookingSaunaResponse(booking.getBookingSauna());
     }
 
     public int getId() {
@@ -107,4 +115,19 @@ public class BookingResponse {
         return endPrice;
     }
 
+    public double getDiscount() {
+        return discount;
+    }
+
+    public String getDiscountDescription() {
+        return discountDescription;
+    }
+
+    public BookingPriceResponse getPrice() {
+        return price;
+    }
+
+    public BookingSaunaResponse getSauna() {
+        return sauna;
+    }
 }

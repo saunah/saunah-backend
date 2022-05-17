@@ -16,6 +16,9 @@ public class BookingBody {
     private int handTowelAmount;
     private int woodAmount;
     private String comment;
+    private double discount;
+    private String discountDescription;
+    private boolean deposit;
 
     public Date getStartBookingDate() {
         return startBookingDate;
@@ -96,4 +99,29 @@ public class BookingBody {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public String getDiscountDescription() {
+        return discountDescription;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public void setDiscountDescription(String discountDescription) {
+        this.discountDescription = discountDescription;
+    }
+
+    public boolean isDeposit() {
+        return deposit;
+    }
+
+    public void setDeposit(boolean deposit) {
+        this.deposit = deposit;
+    }
+
 }

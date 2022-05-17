@@ -101,8 +101,6 @@ public class PriceService {
         price.setHandTowel(priceBody.getHandTowel());
         price.setWood(priceBody.getWood());
         price.setSaunahImp(priceBody.getSaunahImp());
-        price.setDiscount(priceBody.getDiscount());
-        price.setDiscountDescription(priceBody.getDiscountDescription());
         return price;
     }
 

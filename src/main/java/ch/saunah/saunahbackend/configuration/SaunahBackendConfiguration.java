@@ -39,7 +39,7 @@ public class SaunahBackendConfiguration {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                 .allowedMethods("*")
-                .allowedOrigins(getAllowedCors(frontendBaseUrl, extraAllowedCors));
+                .allowedOrigins("http://localhost:3000");
             }
         };
     }

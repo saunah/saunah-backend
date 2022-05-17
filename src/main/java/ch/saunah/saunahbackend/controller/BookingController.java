@@ -54,30 +54,6 @@ public class BookingController {
         return ResponseEntity.ok(new BookingResponse(booking));
     }
 
-    @Operation(description = "Returns the bookingPrice with the ID specified.")
-    @GetMapping(path = "bookings/{id}/price")
-    public @ResponseBody
-    ResponseEntity<BookingPriceResponse> getBookingPrice(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
-        Booking booking = bookingService.getBooking(id);
-        User user = userService.getUserByMail(principal.getName());
-        if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
-            return ResponseEntity.ok(new BookingPriceResponse(booking.getBookingPrice()));
-        }
-        throw new AuthenticationException("user is not authenticated to view this booking");
-    }
-
-    @Operation(description = "Returns the bookingPrice with the ID specified.")
-    @GetMapping(path = "bookings/{id}/sauna")
-    public @ResponseBody
-    ResponseEntity<BookingSaunaResponse> getBookingSauna(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
-        Booking booking = bookingService.getBooking(id);
-        User user = userService.getUserByMail(principal.getName());
-        if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
-            return ResponseEntity.ok(new BookingSaunaResponse(booking.getBookingSauna()));
-        }
-        throw new AuthenticationException("user is not authenticated to view this booking");
-    }
-
     @Operation(description = "Returns the list of the bookings of the current user.")
     @GetMapping(path = "bookings")
     public @ResponseBody
@@ -103,7 +79,9 @@ public class BookingController {
     public @ResponseBody
     ResponseEntity<BookingResponse> editBooking(@PathVariable(value = "id", required = true) Integer id, @RequestBody BookingBody bookingBody) throws IOException {
         Booking booking = bookingService.editBooking(id, bookingBody);
-        mailService.sendUserEditedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
+        if (booking.getState() == BookingState.APPROVED) {
+            mailService.sendUserEditedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
+        }
         return ResponseEntity.ok(new BookingResponse(booking));
     }
 
