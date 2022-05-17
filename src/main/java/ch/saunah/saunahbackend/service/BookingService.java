@@ -90,7 +90,10 @@ public class BookingService {
         booking.setSaunaZip(sauna.getZip());
         booking.setSaunaType(sauna.getType());
         booking.setState(BookingState.OPENED);
-        booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalendarId(), booking));
+
+        if (sauna.getGoogleCalendarId() != null && !sauna.getGoogleCalendarId().isBlank()) {
+            booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalendarId(), booking));
+        }
 
         return bookingRepository.save(booking);
     }
@@ -116,7 +119,14 @@ public class BookingService {
         booking.setState(BookingState.APPROVED);
 
         Sauna sauna = saunaService.getSauna(booking.getSaunaId());
-        calendarService.approveEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
+
+        if (sauna.getGoogleCalendarId() != null
+            && !sauna.getGoogleCalendarId().isBlank()
+            && booking.getGoogleEventID() != null
+            && !booking.getGoogleEventID().isBlank()
+        ) {
+            calendarService.approveEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
+        }
 
         bookingRepository.save(booking);
     }
@@ -136,7 +146,14 @@ public class BookingService {
         booking.setState(BookingState.CANCELED);
 
         Sauna sauna = saunaService.getSauna(booking.getSaunaId());
-        calendarService.deleteEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
+
+        if (sauna.getGoogleCalendarId() != null
+            && !sauna.getGoogleCalendarId().isBlank()
+            && booking.getGoogleEventID() != null
+            && !booking.getGoogleEventID().isBlank()
+        ) {
+            calendarService.deleteEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
+        }
 
         bookingRepository.save(booking);
     }
