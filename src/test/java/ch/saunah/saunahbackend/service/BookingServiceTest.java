@@ -47,13 +47,14 @@ class BookingServiceTest {
     private BookingService bookingService;
     @Autowired
     private BookingRepository bookingRepository;
+    private Sauna sauna = null;
     private User user = null;
     private BookingBody bookingBody = null;
     private static final String TEST_CALENDAR_ID = "cs85d7fer742u5v5r4v6e7jink@group.calendar.google.com";
 
     @BeforeEach
     void setUp() {
-        Sauna sauna = new Sauna();
+        sauna = new Sauna();
         sauna.setName("Mobile Sauna 1");
         sauna.setDescription("Eine Mobile Sauna");
         sauna.setIsMobile(true);
@@ -144,6 +145,7 @@ class BookingServiceTest {
         assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, userId));
         bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 10).getTime());
         bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 30).getTime());
+        sauna.setGoogleCalendarId(null);
         Booking booking2 = bookingService.addBooking(bookingBody, userId);
         assertNotEquals(booking.getId(), booking2.getId());
     }
