@@ -12,12 +12,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.saunah.saunahbackend.configuration.SaunahTestConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +32,7 @@ import ch.saunah.saunahbackend.repository.SaunaRepository;
 /**
  * This class tests all sauna service methods
  */
-@SpringBootTest(classes = {SaunahBackendApplication.class, SaunahTestConfig.class} )
+@SpringBootTest(classes = SaunahBackendApplication.class)
 class SaunaServiceTest {
 
     @Autowired
@@ -182,16 +182,16 @@ class SaunaServiceTest {
         images = saunaService.getSaunaImages(sauna.getId());
         assertTrue(images.isEmpty());
         List<MultipartFile> testfiles = new ArrayList<>();
-        MockMultipartFile tooLargeFile = new MockMultipartFile("test", new byte[saunaService.MAX_IMAGE_SIZE + 1]);
+        MockMultipartFile tooLargeFile = new MockMultipartFile("test",null, MediaType.IMAGE_JPEG_VALUE, new byte[SaunaService.MAX_IMAGE_SIZE + 1]);
         testfiles.add(tooLargeFile);
         assertThrows(IOException.class, ()-> saunaService.addSaunaImages(sauna.getId(), testfiles));
         testfiles.remove(tooLargeFile);
-        testfiles.add(new MockMultipartFile("test", new byte[saunaService.MAX_IMAGE_SIZE]));
+        testfiles.add(new MockMultipartFile("test", null, MediaType.IMAGE_JPEG_VALUE, new byte[SaunaService.MAX_IMAGE_SIZE]));
         saunaService.addSaunaImages(sauna.getId(), testfiles);
         assertEquals(testfiles.size(), saunaService.getSaunaImages(sauna.getId()).size());
         testfiles.clear();
-        testfiles.add(new MockMultipartFile("test", new byte[0]));
-        testfiles.add(new MockMultipartFile("test", new byte[0]));
+        testfiles.add(new MockMultipartFile("test", null, MediaType.IMAGE_JPEG_VALUE, new byte[0]));
+        testfiles.add(new MockMultipartFile("test", null, MediaType.IMAGE_JPEG_VALUE, new byte[0]));
         saunaService.addSaunaImages(sauna.getId(), testfiles);
         int savedImagesCount = saunaService.getSaunaImages(sauna.getId()).size();
         assertEquals(3, savedImagesCount);
@@ -207,8 +207,8 @@ class SaunaServiceTest {
         saunaService.addSauna(saunaTypeBody);
         Sauna sauna = saunaService.getAllSauna().get(0);
         List<MultipartFile> testfiles = new ArrayList<>();
-        testfiles.add(new MockMultipartFile("test", new byte[0]));
-        testfiles.add(new MockMultipartFile("test", new byte[0]));
+        testfiles.add(new MockMultipartFile("test", null, MediaType.IMAGE_JPEG_VALUE, new byte[0]));
+        testfiles.add(new MockMultipartFile("test", null, MediaType.IMAGE_PNG_VALUE, new byte[0]));
         saunaService.addSaunaImages(sauna.getId(), testfiles);
         assertEquals(testfiles.size(), saunaService.getSaunaImages(sauna.getId()).size());
         List<SaunaImage> images = saunaService.getSaunaImages(sauna.getId());
@@ -229,8 +229,8 @@ class SaunaServiceTest {
         Sauna sauna = saunaService.getAllSauna().get(0);
         assertTrue(saunaService.getSaunaImages(sauna.getId()).isEmpty());
         List<MultipartFile> testfiles = new ArrayList<>();
-        testfiles.add(new MockMultipartFile("test1.txt", new byte[0]));
-        testfiles.add(new MockMultipartFile("test2.txt", new byte[0]));
+        testfiles.add(new MockMultipartFile("test1.txt", null, MediaType.IMAGE_JPEG_VALUE, new byte[0]));
+        testfiles.add(new MockMultipartFile("test2.txt", null, MediaType.IMAGE_PNG_VALUE, new byte[0]));
         saunaService.addSaunaImages(sauna.getId(), testfiles);
         List<SaunaImage> images = saunaService.getSaunaImages(sauna.getId());
         for (SaunaImage image : images) {

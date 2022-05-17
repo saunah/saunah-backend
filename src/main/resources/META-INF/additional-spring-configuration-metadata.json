@@ -33,5 +33,35 @@
     "name": "saunah.extra-allowed-cors",
     "type": "java.lang.String",
     "description": "Comma separated list of additional allowed CORS urls.'"
+  },
+  {
+    "name": "saunah.object-storage.enable",
+    "type": "java.lang.String",
+    "description": "Enable the use of object storage for images. If disabled, uses local storage."
+  },
+  {
+    "name": "saunah.object-storage.bucket.secret-key",
+    "type": "java.lang.String",
+    "description": "Seret key for authenticating access to object storage."
+  },
+  {
+    "name": "saunah.object-storage.bucket.access-key",
+    "type": "java.lang.String",
+    "description": "Access key for authenticating to object storage."
+  },
+  {
+    "name": "saunah.object-storage.bucket.endpoint",
+    "type": "java.lang.String",
+    "description": "Endpoint of the object storage bucket to use."
+  },
+  {
+    "name": "saunah.object-storage.bucket.id",
+    "type": "java.lang.String",
+    "description": "ID of the object storage bucket to use."
+  },
+  {
+    "name": "saunah.object-storage.bucket.region",
+    "type": "java.lang.String",
+    "description": "Region of the object storage bucket to use."
   }
 ]}

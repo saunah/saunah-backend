@@ -1,8 +1,9 @@
 package ch.saunah.saunahbackend.util;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
+import java.net.URL;
+
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * This class is used as a helper class to save and read images.
@@ -20,14 +21,13 @@ public interface ImageUpload {
     void saveImage(String directory, String fileName, MultipartFile multipartFile) throws IOException;
 
     /**
-     * Reads the file and returns the image as byte array.
-     *
+     * Returns a HTTP URL of the image.
      * @param directory the directory where the file is stored
-     * @param fileName the filename of the image
-     * @return image byte array
-     * @throws IOException throws when the path is not valid
+     * @param filename the filename of the image
+     * @return URL of the image
+     * @throws IOException if the path is not valid
      */
-    byte[] getImage(String directory, String fileName) throws IOException;
+    URL getImageURL(String directory, String filename) throws IOException;
 
     /**
      * Deletes the image file on the specified directory.

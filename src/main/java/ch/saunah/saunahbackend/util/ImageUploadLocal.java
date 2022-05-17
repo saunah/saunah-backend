@@ -1,15 +1,18 @@
 package ch.saunah.saunahbackend.util;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * This class is used as a helper class to save and read images from a directory.
@@ -45,23 +48,26 @@ public class ImageUploadLocal implements ImageUpload {
      * @return image byte array
      * @throws IOException throws when the path is not valid
      */
-    public byte[] getImage(String directory, String fileName) throws IOException {
+    public byte[] getImageData(String directory, String fileName) throws IOException {
         Path uploadPath = Paths.get(directory);
         Path filePath = uploadPath.resolve(fileName);
         File file = filePath.toFile();
         byte[] arr = new byte[(int) file.length()];
-        FileInputStream fl = new FileInputStream(file);
-        try {
+        try (FileInputStream fl = new FileInputStream(file);) {
             int bytesRead = fl.read(arr);
             if (bytesRead != file.length()){
                 throw new IOException("Error while reading file! The bytes read are not equal to the file size!");
             }
-            fl.close();
-        }
-        catch (Exception e){
-            fl.close();
         }
         return arr;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public URL getImageURL(String directory, String filename) throws IOException {
+        return getBaseURI().pathSegment(directory, filename).build().toUri().toURL();
     }
 
     /**
@@ -83,4 +89,9 @@ public class ImageUploadLocal implements ImageUpload {
             throw new IOException("File was not successfully deleted");
         }
     }
+
+    private UriComponentsBuilder getBaseURI() {
+        return ServletUriComponentsBuilder.fromCurrentContextPath();
+    }
+
 }

@@ -1,20 +1,20 @@
 package ch.saunah.saunahbackend.configuration;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import ch.saunah.saunahbackend.SaunahBackendApplication;
-import ch.saunah.saunahbackend.util.ImageUpload;
-import ch.saunah.saunahbackend.util.ImageUploadLocal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(classes = {SaunahBackendApplication.class, SaunahTestConfig.class} )
+import ch.saunah.saunahbackend.SaunahBackendApplication;
+import ch.saunah.saunahbackend.util.ImageUpload;
+import ch.saunah.saunahbackend.util.ImageUploadLocal;
+
+@SpringBootTest(classes = SaunahBackendApplication.class)
 class SaunahBackendConfigurationTest {
 
     private static final String FRONTEND_URL = "https://booking.saunah.ch";

@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ch.saunah.saunahbackend.configuration.SaunahTestConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,7 @@ import ch.saunah.saunahbackend.repository.PriceRepository;
 /**
  * This class tests all Price service methods
  */
-@SpringBootTest(classes = {SaunahBackendApplication.class, SaunahTestConfig.class} )
+@SpringBootTest(classes = SaunahBackendApplication.class)
 class PriceServiceTest {
 
     @Autowired

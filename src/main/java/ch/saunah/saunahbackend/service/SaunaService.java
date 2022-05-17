@@ -1,22 +1,34 @@
 package ch.saunah.saunahbackend.service;
 
-import ch.saunah.saunahbackend.dto.SaunaTypeBody;
-import ch.saunah.saunahbackend.model.Sauna;
-import ch.saunah.saunahbackend.model.SaunaImage;
-import ch.saunah.saunahbackend.repository.SaunaImageRepository;
-import ch.saunah.saunahbackend.repository.SaunaRepository;
-import ch.saunah.saunahbackend.util.ImageUpload;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.server.MimeMappings;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.webjars.NotFoundException;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import ch.saunah.saunahbackend.dto.SaunaTypeBody;
+import ch.saunah.saunahbackend.model.Sauna;
+import ch.saunah.saunahbackend.model.SaunaImage;
+import ch.saunah.saunahbackend.model.SaunaImageUrl;
+import ch.saunah.saunahbackend.repository.SaunaImageRepository;
+import ch.saunah.saunahbackend.repository.SaunaRepository;
+import ch.saunah.saunahbackend.util.ImageUpload;
+import ch.saunah.saunahbackend.util.ImageUploadLocal;
 
 /**
  * This class contains creating, removing, editing and get methods for saunas
@@ -31,8 +43,11 @@ public class SaunaService {
     @Autowired
     private ImageUpload imageUploadUtil;
 
-    private static final String SAUNA_IMAGES_DIR = "sauna-images/";
+    private static final String SAUNA_IMAGES_DIR = "sauna-images";
+    private static final String LOCAL_IMAGES_URL_PREFIX = "saunas/images";
     public static final int MAX_IMAGE_SIZE = 1024 * 1024 * 5;
+
+    protected final Log logger = LogFactory.getLog(getClass());
 
     /**
      * Add a new Sauna to the database
@@ -121,7 +136,26 @@ public class SaunaService {
      * @throws IOException throws when the image cant be converted to a byte array.
      */
     public ResponseEntity<byte[]> getImage(String fileName) throws IOException {
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageUploadUtil.getImage(SAUNA_IMAGES_DIR, fileName));
+        String[] extensionComponents = fileName.split("\\.");
+        if (extensionComponents.length < 1) {
+            throw new IOException("MimeType of file could not be determined from extension.");
+        }
+
+        MediaType mediaType;
+        try {
+            String extension = extensionComponents[extensionComponents.length-1];
+            String mimeType = MimeMappings.DEFAULT.get(extension);
+            mediaType = MediaType.valueOf(mimeType);
+        } catch (InvalidMediaTypeException e) {
+            throw new IOException("MimeType of file could not be found.");
+        }
+
+        if (imageUploadUtil instanceof ImageUploadLocal) {
+            ImageUploadLocal imageUploadLocal = (ImageUploadLocal) imageUploadUtil;
+            return ResponseEntity.ok().contentType(mediaType).body(imageUploadLocal.getImageData(SAUNA_IMAGES_DIR, fileName));
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found");
     }
 
     /**
@@ -134,6 +168,40 @@ public class SaunaService {
     public List<SaunaImage> getSaunaImages(int saunaId) throws NotFoundException {
         Sauna sauna = getSauna(saunaId);
         return saunaImageRepository.findBySaunaId(sauna.getId());
+    }
+
+    /**
+     * Get a list of all SaunaImages belongin to this object, wrapped into a SaunaImageUrl,
+     * which contains both image information, as well as the URL.
+     * @param saunaId the sauna id to fetch images for.
+     * @return the image information and url. In case of an error to determine
+     * the URL, it will be null.
+     */
+    public List<SaunaImageUrl> getSaunaImageUrls(int saunaId) {
+        List<SaunaImage> saunaImages = getSaunaImages(saunaId);
+        return saunaImages.stream().map(this::mapToSaunaImageUrl).collect(Collectors.toList());
+    }
+
+    /**
+     * Constructs a SaunaImageUrl object by retrieving the URL to the image
+     * passed and returning it as an object.
+     * @param saunaImage the image to get the URL for.
+     * @return the object containing both the image information as well as the URL.
+     * @throws IOException
+     */
+    private SaunaImageUrl mapToSaunaImageUrl(SaunaImage saunaImage) {
+        String imageDir = (imageUploadUtil instanceof ImageUploadLocal)
+            ? LOCAL_IMAGES_URL_PREFIX
+            : SAUNA_IMAGES_DIR;
+        URL url = null;
+        try {
+            logger.error("Before Getting URL");
+            url = imageUploadUtil.getImageURL(imageDir, saunaImage.getFileName());
+            logger.error("After Getting URL");
+        } catch (IOException e) {
+            logger.error("Image URL could not be retrieved for SaunaImage", e);
+        }
+        return new SaunaImageUrl(saunaImage, url);
     }
 
     /**
@@ -176,7 +244,21 @@ public class SaunaService {
         if (image.getSize() > MAX_IMAGE_SIZE){
             throw new IOException("The image is too large to be saved!");
         }
-        String fileName = String.format("image_file_%d_%s.png", sauna.getId(), UUID.randomUUID());
+
+        String mimeType = image.getContentType();
+        Optional<MimeMappings.Mapping> mimeMaping = MimeMappings.DEFAULT.getAll().stream().filter(m -> m.getMimeType().equals(mimeType)).findFirst();
+        if (!mimeMaping.isPresent()) {
+            throw new IOException(String.format("No matching extension found for the mime type %s", mimeType));
+        }
+
+        String extension = mimeMaping.get().getExtension();
+        String fileName = String.format(
+            "image_file_%d_%s.%s",
+            sauna.getId(),
+            UUID.randomUUID(),
+            extension
+        );
+
         imageUploadUtil.saveImage(SAUNA_IMAGES_DIR, fileName, image);
         SaunaImage saunaImage = new SaunaImage();
         saunaImage.setFileName(fileName);

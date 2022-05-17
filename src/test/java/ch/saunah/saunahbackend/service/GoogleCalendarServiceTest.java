@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import ch.saunah.saunahbackend.configuration.SaunahTestConfig;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -31,7 +30,7 @@ import ch.saunah.saunahbackend.repository.UserRepository;
 /**
  * Google Calendar Service Integration Tests
  */
-@SpringBootTest(classes = {SaunahBackendApplication.class, SaunahTestConfig.class} )
+@SpringBootTest(classes = SaunahBackendApplication.class)
 class GoogleCalendarServiceTest {
 
     @Autowired

@@ -3,8 +3,6 @@ package ch.saunah.saunahbackend.configuration;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import ch.saunah.saunahbackend.util.ImageUpload;
-import ch.saunah.saunahbackend.util.ImageUploadScaleway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +10,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import ch.saunah.saunahbackend.util.ImageUpload;
+import ch.saunah.saunahbackend.util.ImageUploadLocal;
+import ch.saunah.saunahbackend.util.ImageUploadS3;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 
@@ -26,6 +27,10 @@ public class SaunahBackendConfiguration {
     @Nullable
     @Value("${saunah.extra-allowed-cors}")
     private String extraAllowedCors;
+
+    @Value("${saunah.object-storage.enable:false}")
+    private boolean enableObjectStorage;
+
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -58,7 +63,10 @@ public class SaunahBackendConfiguration {
      */
     @Bean
     public ImageUpload image() {
-        return new ImageUploadScaleway();
+        if (enableObjectStorage) {
+            return new ImageUploadS3();
+        }
+        return new ImageUploadLocal();
     }
 
     /**

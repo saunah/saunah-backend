@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ch.saunah.saunahbackend.configuration.SaunahTestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +19,7 @@ import ch.saunah.saunahbackend.security.JwtTokenUtil;
 /**
  * This class tests the JWT Token creation and their corresponding methods.
  */
-@SpringBootTest(classes = {SaunahBackendApplication.class, SaunahTestConfig.class} )
+@SpringBootTest(classes = SaunahBackendApplication.class)
 class JwtTokenUtilTest {
 
     @Autowired
