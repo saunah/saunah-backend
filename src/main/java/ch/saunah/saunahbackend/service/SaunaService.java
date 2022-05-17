@@ -3,13 +3,20 @@ package ch.saunah.saunahbackend.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.server.MimeMappings;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.webjars.NotFoundException;
 
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
@@ -17,7 +24,8 @@ import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.SaunaImage;
 import ch.saunah.saunahbackend.repository.SaunaImageRepository;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
-import ch.saunah.saunahbackend.util.ImageUploadUtil;
+import ch.saunah.saunahbackend.util.ImageUpload;
+import ch.saunah.saunahbackend.util.ImageUploadLocal;
 
 /**
  * This class contains creating, removing, editing and get methods for saunas
@@ -29,8 +37,13 @@ public class SaunaService {
     private SaunaRepository saunaRepository;
     @Autowired
     private SaunaImageRepository saunaImageRepository;
+    @Autowired
+    private ImageUpload imageUploadUtil;
 
-    private final String SAUNA_IMAGES_DIR = "sauna-images/";
+    public static final String SAUNA_IMAGES_DIR = "sauna-images";
+    public static final int MAX_IMAGE_SIZE = 1024 * 1024 * 5;
+
+    protected final Log logger = LogFactory.getLog(getClass());
 
     /**
      * Add a new Sauna to the database
@@ -120,7 +133,26 @@ public class SaunaService {
      * @throws IOException throws when the image cant be converted to a byte array.
      */
     public ResponseEntity<byte[]> getImage(String fileName) throws IOException {
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(ImageUploadUtil.getImage(SAUNA_IMAGES_DIR, fileName));
+        String[] extensionComponents = fileName.split("\\.");
+        if (extensionComponents.length < 1) {
+            throw new IOException("MimeType of file could not be determined from extension.");
+        }
+
+        MediaType mediaType;
+        try {
+            String extension = extensionComponents[extensionComponents.length-1];
+            String mimeType = MimeMappings.DEFAULT.get(extension);
+            mediaType = MediaType.valueOf(mimeType);
+        } catch (InvalidMediaTypeException e) {
+            throw new IOException("MimeType of file could not be found.");
+        }
+
+        if (imageUploadUtil instanceof ImageUploadLocal) {
+            ImageUploadLocal imageUploadLocal = (ImageUploadLocal) imageUploadUtil;
+            return ResponseEntity.ok().contentType(mediaType).body(imageUploadLocal.getImageData(SAUNA_IMAGES_DIR, fileName));
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found");
     }
 
     /**
@@ -140,13 +172,14 @@ public class SaunaService {
      *
      * @param id the id of the saunaImage
      * @throws NotFoundException throws when no sauna was found with the specified id.
+     * @throws IOException throws when the image can not be removed.
      */
-    public void removeSaunaImage(int id) throws NotFoundException {
+    public void removeSaunaImage(int id) throws NotFoundException, IOException {
         SaunaImage image = saunaImageRepository.findById(id).orElse(null);
         if (image == null){
             throw new NotFoundException(String.format("Image with id %d not found!", id));
         }
-        ImageUploadUtil.removeImage(SAUNA_IMAGES_DIR, image.getFileName());
+        imageUploadUtil.removeImage(SAUNA_IMAGES_DIR, image.getFileName());
         saunaImageRepository.deleteById(id);
     }
 
@@ -157,8 +190,9 @@ public class SaunaService {
      * @param images the images
      * @throws NotFoundException throws when no sauna was found with the specified id.
      * @throws NullPointerException throw when the images object is null.
+     * @throws IOException throws when Image could not be safed.
      */
-    public void addSaunaImages(int saunaId, List<MultipartFile> images) throws NotFoundException, NullPointerException {
+    public void addSaunaImages(int saunaId, List<MultipartFile> images) throws NotFoundException, NullPointerException, IOException {
         Sauna sauna = getSauna(saunaId);
         if (images == null){
             throw new NullPointerException("No images were sent to add!");
@@ -168,18 +202,31 @@ public class SaunaService {
         }
     }
 
-    private void addImageSauna(Sauna sauna, MultipartFile image) throws NullPointerException{
+    private void addImageSauna(Sauna sauna, MultipartFile image) throws NullPointerException, IOException {
         Objects.requireNonNull(sauna, "Sauna must not be null!");
-        String fileName = String.format("image_file_%d_%s.png", sauna.getId(), UUID.randomUUID());
-        try {
-            ImageUploadUtil.saveImage(SAUNA_IMAGES_DIR, fileName, image);
-            SaunaImage saunaImage = new SaunaImage();
-            saunaImage.setFileName(fileName);
-            saunaImage.setSauna(sauna);
-            saunaImageRepository.save(saunaImage);
-        } catch (IOException e) {
-            System.err.printf("Error while saving file %s in %s: %s", fileName, SAUNA_IMAGES_DIR, e.getMessage());
+        if (image.getSize() > MAX_IMAGE_SIZE){
+            throw new IOException("The image is too large to be saved!");
         }
+
+        String mimeType = image.getContentType();
+        Optional<MimeMappings.Mapping> mimeMaping = MimeMappings.DEFAULT.getAll().stream().filter(m -> m.getMimeType().equals(mimeType)).findFirst();
+        if (!mimeMaping.isPresent()) {
+            throw new IOException(String.format("No matching extension found for the mime type %s", mimeType));
+        }
+
+        String extension = mimeMaping.get().getExtension();
+        String fileName = String.format(
+            "image_file_%d_%s.%s",
+            sauna.getId(),
+            UUID.randomUUID(),
+            extension
+        );
+
+        imageUploadUtil.saveImage(SAUNA_IMAGES_DIR, fileName, image);
+        SaunaImage saunaImage = new SaunaImage();
+        saunaImage.setFileName(fileName);
+        saunaImage.setSauna(sauna);
+        saunaImageRepository.save(saunaImage);
     }
 
 }

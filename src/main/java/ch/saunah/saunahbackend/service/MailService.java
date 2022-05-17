@@ -2,20 +2,20 @@ package ch.saunah.saunahbackend.service;
 
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import ch.saunah.saunahbackend.model.Booking;
-import ch.saunah.saunahbackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import ch.saunah.saunahbackend.model.Booking;
+import ch.saunah.saunahbackend.model.User;
 
 /**
  * This class contains the mail service.
@@ -30,8 +30,13 @@ public class MailService {
 
     @Value("${saunah.frontend.baseurl}")
     private String frontendBaseUrl;
+
     @Value("${saunah.email.from.email}")
     private String senderEmail;
+
+    @Value("${saunah.email.from.reply-to}")
+    private String replyToEmail;
+
     @Value("${saunah.email.from.name}")
     private String senderName;
 
@@ -47,6 +52,7 @@ public class MailService {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setFrom(new InternetAddress(senderEmail, senderName));
+            helper.setReplyTo(new InternetAddress(getReplyToEmail(), senderName));
             helper.setTo(email);
             helper.setSubject("Signup authentication SauNah");
             helper.setText("<p>Bitte klicken sie auf den Link, um ihren Account zu aktivieren: " +
@@ -69,6 +75,7 @@ public class MailService {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setFrom(new InternetAddress(senderEmail, senderName));
+            helper.setReplyTo(new InternetAddress(replyToEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Password Reset SauNah");
             helper.setText("<p>Ihr Reset Token lautet: <h1>" + resetPasswordToken + "</h1></p><p>Bitte klicken sie auf den Link, falls Sie Ihren Passwort vergessen haben : " +
@@ -186,5 +193,18 @@ public class MailService {
                 "<p>Brennholz Preis: " + booking.getBookingPrice().getWoodPrice() + "</p>" +
                 "<p>Sauna Preis: " + booking.getBookingSauna().getSaunaPrice() + "</p>" +
                 "<p>Totalpreis: " + booking.getEndPrice() + "</p>";
+
+    }
+
+    /**
+     * Get the default reply to email. In case of the replyTo value being
+     * empty, the sender email will be returned.
+     * @return the default reply to email.
+     */
+    private String getReplyToEmail() {
+        if (!replyToEmail.isBlank()) {
+            return replyToEmail;
+        }
+        return senderEmail;
     }
 }

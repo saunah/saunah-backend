@@ -1,20 +1,34 @@
 package ch.saunah.saunahbackend.controller;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.lang.Nullable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import ch.saunah.saunahbackend.dto.SaunaImageResponse;
 import ch.saunah.saunahbackend.dto.SaunaResponse;
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
-import ch.saunah.saunahbackend.repository.SaunaRepository;
+import ch.saunah.saunahbackend.model.SaunaImage;
 import ch.saunah.saunahbackend.service.SaunaService;
+import ch.saunah.saunahbackend.util.ImageUpload;
+import ch.saunah.saunahbackend.util.ImageUploadLocal;
 import io.swagger.v3.oas.annotations.Operation;
 
 /**
@@ -23,12 +37,13 @@ import io.swagger.v3.oas.annotations.Operation;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class SaunaController {
-
-    @Autowired
-    private SaunaRepository saunaRepository;
+    protected final Log logger = LogFactory.getLog(getClass());
 
     @Autowired
     private SaunaService saunaService;
+
+    @Autowired
+    private ImageUpload imageUploadUtil;
 
     @Operation(description = "Allows adding a new Sauna type.")
     @PostMapping(path = "saunas")
@@ -66,7 +81,7 @@ public class SaunaController {
     @Operation(description = "Adds new images to the corresponding sauna.")
     @PostMapping(value = "/saunas/{id}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> saveImages(@PathVariable("id") int saunaId, @RequestBody List<MultipartFile> images)  {
+    public ResponseEntity<String> saveImages(@PathVariable("id") int saunaId, @RequestBody List<MultipartFile> images) throws IOException {
         saunaService.addSaunaImages(saunaId, images);
         return ResponseEntity.ok("success");
     }
@@ -75,7 +90,7 @@ public class SaunaController {
     @Operation(description = "Removes the image of the specified Id.")
     @DeleteMapping(path = "saunas/images/{id}")
     @ResponseBody
-    public ResponseEntity<String> removeImage(@PathVariable("id") int imageId) {
+    public ResponseEntity<String> removeImage(@PathVariable("id") int imageId) throws IOException {
         saunaService.removeSaunaImage(imageId);
         return ResponseEntity.ok("success");
     }
@@ -92,8 +107,32 @@ public class SaunaController {
     @ResponseBody
     public ResponseEntity<List<SaunaImageResponse>> getSaunaImages(@PathVariable("id") int saunaId) {
         List<SaunaImageResponse> saunaImages = saunaService.getSaunaImages(saunaId)
-            .stream().map(x -> new SaunaImageResponse(x.getId(), saunaId, x.getFileName())).collect(Collectors.toList());
-        return ResponseEntity.ok().body(saunaImages);
+            .stream().map(image -> new SaunaImageResponse(
+                image.getId(),
+                saunaId,
+                getImageUrl(image).toString()
+            )).collect(Collectors.toList());
+        return ResponseEntity.ok(saunaImages);
+    }
+
+    /**
+     * Retrieves the URL for the image passed image and returns it.
+     * @param saunaImage the image to get the URL for.
+     * @return the URL of the image.
+     * @throws IOException
+     */
+    @Nullable
+    private URL getImageUrl(SaunaImage saunaImage) {
+        String imageDir = (imageUploadUtil instanceof ImageUploadLocal)
+            ? "saunas/images"
+            : SaunaService.SAUNA_IMAGES_DIR;
+        URL url = null;
+        try {
+            url = imageUploadUtil.getImageURL(imageDir, saunaImage.getFileName());
+        } catch (IOException e) {
+            logger.error("Image URL could not be retrieved for SaunaImage", e);
+        }
+        return url;
     }
 
 }

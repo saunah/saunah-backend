@@ -2,18 +2,15 @@ package ch.saunah.saunahbackend.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-
-import ch.saunah.saunahbackend.model.Booking;
-import ch.saunah.saunahbackend.model.BookingPrice;
-import ch.saunah.saunahbackend.model.BookingSauna;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ch.saunah.saunahbackend.SaunahBackendApplication;
+import ch.saunah.saunahbackend.model.Booking;
+import ch.saunah.saunahbackend.model.BookingPrice;
+import ch.saunah.saunahbackend.model.BookingSauna;
 import ch.saunah.saunahbackend.model.User;
-
-import java.util.List;
 
 /**
  * This class tests the email method.
