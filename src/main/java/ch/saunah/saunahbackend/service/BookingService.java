@@ -126,7 +126,7 @@ public class BookingService {
         bookingPrice.setHandTowelPrice(bookingBody.getHandTowelAmount() * price.getHandTowel());
         bookingPrice.setWoodPrice(bookingBody.getWoodAmount() * price.getWood());
         bookingPrice.setDiscount(price.getDiscount());
-        bookingPrice.setDiscountDescription(bookingPrice.getDiscountDescription());
+        bookingPrice.setDiscountDescription(price.getDiscountDescription());
         return bookingPrice;
     }
 
