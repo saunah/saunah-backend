@@ -162,14 +162,25 @@ class BookingServiceTest {
         assertEquals(BookingState.APPROVED, bookingService.getBooking(booking.getId()).getState());
     }
 
-        /**
-     * This test checks if a booking can be approved
+    /**
+     * This test checks if a booking can be approved if the sauna does not have
+     * a google calendar id.
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void approveBookingWithoutGoogleCalenar() throws Exception {
-        assertThrows(NotFoundException.class, () -> bookingService.approveBooking(1));
-        sauna.setGoogleCalendarId("");
+        sauna.setGoogleCalendarId(null);
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        bookingService.approveBooking(booking.getId());
+        assertEquals(BookingState.APPROVED, bookingService.getBooking(booking.getId()).getState());
+    }
+
+    /**
+     * This test checks if a booking can be approved if event has empty google event id.
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void approveBookingWithEmptyId() throws Exception {
         Booking booking = bookingService.addBooking(bookingBody, user.getId());
         booking.setGoogleEventID("");
         bookingService.approveBooking(booking.getId());
@@ -184,6 +195,32 @@ class BookingServiceTest {
     void cancelBooking() throws Exception {
         assertThrows(NotFoundException.class, () -> bookingService.cancelBooking(1));
         Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        bookingService.cancelBooking(booking.getId());
+        assertEquals(BookingState.CANCELED, bookingService.getBooking(booking.getId()).getState());
+    }
+
+    /**
+     * This test checks if a booking can be canceled, if the sauna does not have
+     * a google calendar id.
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void cancelBookingWithoutGoogleCalendar() throws Exception {
+        sauna.setGoogleCalendarId(null);
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        bookingService.cancelBooking(booking.getId());
+        assertEquals(BookingState.CANCELED, bookingService.getBooking(booking.getId()).getState());
+    }
+
+    /**
+     * This test checks if a booking can be canceled, if the booking does not have
+     * a google calendar event id.
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void cancelBookingWithEmptyId() throws Exception {
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        booking.setGoogleEventID(null);
         bookingService.cancelBooking(booking.getId());
         assertEquals(BookingState.CANCELED, bookingService.getBooking(booking.getId()).getState());
     }
