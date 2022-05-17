@@ -162,6 +162,19 @@ class BookingServiceTest {
         assertEquals(BookingState.APPROVED, bookingService.getBooking(booking.getId()).getState());
     }
 
+        /**
+     * This test checks if a booking can be approved
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void approveBookingWithoutGoogleCalenar() throws Exception {
+        assertThrows(NotFoundException.class, () -> bookingService.approveBooking(1));
+        sauna.setGoogleCalendarId("");
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        bookingService.approveBooking(booking.getId());
+        assertEquals(BookingState.APPROVED, bookingService.getBooking(booking.getId()).getState());
+    }
+
     /**
      * This test checks if a booking can be canceled
      */
