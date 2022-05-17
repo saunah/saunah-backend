@@ -52,7 +52,7 @@ sonarqube {
     property 'sonar.organization', 'saunah'
     property 'sonar.host.url', 'https://sonarcloud.io'
     property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/jacoco/test/jacocoTestReport.xml'
-    property 'sonar.coverage.exclusions', 'src/main/java/ch/saunah/saunahbackend/security/JwtRequestFilter.java,src/main/java/ch/saunah/saunahbackend/util/ImageUploadScaleway.java,src/main/java/ch/saunah/saunahbackend/model/*.java,src/main/java/ch/saunah/saunahbackend/controller/*.java'
+    property 'sonar.coverage.exclusions', 'src/main/java/ch/saunah/saunahbackend/security/JwtRequestFilter.java,src/main/java/ch/saunah/saunahbackend/util/ImageUploadS3.java,src/main/java/ch/saunah/saunahbackend/model/*.java,src/main/java/ch/saunah/saunahbackend/controller/*.java'
     property 'sonar.exclusions', 'src/main/java/ch/saunah/saunahbackend/dto/*.java'
   }
 }

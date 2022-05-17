@@ -20,7 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * This class is used as a helper class to save and read images from scaleway.
+ * This class is used as a helper class to save and read images from
+ * S3 object storage.
  */
 public class ImageUploadS3 implements ImageUpload {
 
@@ -52,7 +53,7 @@ public class ImageUploadS3 implements ImageUpload {
     }
 
     /**
-     * Saves the image to the specified scaleway bucket.
+     * Saves the image to the specified S3 bucket.
      *
      * @param directory directory where image will be saved
      * @param filename the fileName of the image
@@ -96,7 +97,7 @@ public class ImageUploadS3 implements ImageUpload {
     }
 
     /**
-     * Deletes the image file on the specified scaleway path.
+     * Deletes the image file on the specified S3 path.
      *
      * @param directory the directory where the file is stored
      * @param fileName the filename of the image
