@@ -170,6 +170,7 @@ class BookingServiceTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void approveBookingWithoutGoogleCalenar() throws Exception {
         sauna.setGoogleCalendarId(null);
+        saunaRepository.save(sauna);
         Booking booking = bookingService.addBooking(bookingBody, user.getId());
         bookingService.approveBooking(booking.getId());
         assertEquals(BookingState.APPROVED, bookingService.getBooking(booking.getId()).getState());
@@ -183,6 +184,7 @@ class BookingServiceTest {
     void approveBookingWithEmptyId() throws Exception {
         Booking booking = bookingService.addBooking(bookingBody, user.getId());
         booking.setGoogleEventID("");
+        bookingRepository.save(booking);
         bookingService.approveBooking(booking.getId());
         assertEquals(BookingState.APPROVED, bookingService.getBooking(booking.getId()).getState());
     }
@@ -207,6 +209,7 @@ class BookingServiceTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void cancelBookingWithoutGoogleCalendar() throws Exception {
         sauna.setGoogleCalendarId(null);
+        saunaRepository.save(sauna);
         Booking booking = bookingService.addBooking(bookingBody, user.getId());
         bookingService.cancelBooking(booking.getId());
         assertEquals(BookingState.CANCELED, bookingService.getBooking(booking.getId()).getState());
@@ -221,6 +224,7 @@ class BookingServiceTest {
     void cancelBookingWithEmptyId() throws Exception {
         Booking booking = bookingService.addBooking(bookingBody, user.getId());
         booking.setGoogleEventID(null);
+        bookingRepository.save(booking);
         bookingService.cancelBooking(booking.getId());
         assertEquals(BookingState.CANCELED, bookingService.getBooking(booking.getId()).getState());
     }
