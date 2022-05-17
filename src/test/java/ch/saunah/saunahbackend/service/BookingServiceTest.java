@@ -171,6 +171,7 @@ class BookingServiceTest {
         assertThrows(NotFoundException.class, () -> bookingService.approveBooking(1));
         sauna.setGoogleCalendarId("");
         Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        booking.setGoogleEventID("");
         bookingService.approveBooking(booking.getId());
         assertEquals(BookingState.APPROVED, bookingService.getBooking(booking.getId()).getState());
     }
