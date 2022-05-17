@@ -109,7 +109,7 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
             ).hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
             .antMatchers(
                 "/users",
-                "users/visible"
+                "users/all"
             ).hasAuthority(UserRole.ADMIN.toString())
             .antMatchers(
                 HttpMethod.PUT,

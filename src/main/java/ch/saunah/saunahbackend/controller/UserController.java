@@ -82,14 +82,14 @@ public class UserController {
     }
 
     @Operation(description = "Returns a list of all Users.")
-    @GetMapping(path = "users")
+    @GetMapping(path = "users/all")
     public @ResponseBody
     List<UserResponse> getAllUsers() {
         return userService.getAllUser().stream().map(x -> new UserResponse(x)).collect(Collectors.toList());
     }
 
     @Operation(description = "Returns a list of all Users that have not been soft deleted.")
-    @GetMapping(path = "users/visible")
+    @GetMapping(path = "users")
     public @ResponseBody
     List<UserResponse> getAllVisibleUsers() {
         return userService.getAllVisibleUser().stream().map(x -> new UserResponse(x)).collect(Collectors.toList());
