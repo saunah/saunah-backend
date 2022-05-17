@@ -7,6 +7,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import ch.saunah.saunahbackend.exception.SaunahMailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
@@ -38,8 +39,9 @@ public class MailService {
      *
      * @param email The email of the user
      * @param verificationId The verification id of the user
+     * @exception SaunahMailException is thrown when the mail was not sent.
      */
-    public void sendUserActivationMail(String email, String verificationId) {
+    public void sendUserActivationMail(String email, String verificationId) throws SaunahMailException {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -52,6 +54,7 @@ public class MailService {
         }
         catch (MessagingException | MailException | UnsupportedEncodingException exception){
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
+            throw new SaunahMailException("User activation mail was not able to be sent");
         }
     }
     /**
@@ -60,9 +63,9 @@ public class MailService {
      * @param email The email of the user
      * @param userID The internal id of the user
      * @param resetPasswordToken This token will be used for the authentification for the reset
+     * @exception SaunahMailException is thrown when the mail was not sent.
      */
-
-    public void sendPasswordResetMail(String email, int userID , int resetPasswordToken) {
+    public void sendPasswordResetMail(String email, int userID , int resetPasswordToken) throws SaunahMailException {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -75,6 +78,7 @@ public class MailService {
         }
         catch (MessagingException | MailException | UnsupportedEncodingException exception){
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
+            throw new SaunahMailException("Password reset mail was not able to be sent");
         }
     }
 }

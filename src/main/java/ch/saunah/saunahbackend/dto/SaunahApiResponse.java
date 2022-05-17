@@ -1,56 +1,36 @@
-package ch.saunah.saunahbackend.exception;
+package ch.saunah.saunahbackend.dto;
 
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-
 
 /**
  * This class represents the response class when an error is occurred when a request was sent.
  */
-public class ApiError {
+public class SaunahApiResponse {
 
     private Date timestamp;
     private HttpStatus status;
     private String message;
-    private List<String> errors;
+    private String path;
 
     /**
      * Creates an instance and sets the fields.
      *
      * @param status
      * @param message
-     * @param errors
      */
-    public ApiError(HttpStatus status, String message, List<String> errors) {
-        super();
+    public SaunahApiResponse(HttpStatus status, String message) {
         timestamp = new Date(System.currentTimeMillis());
         this.status = status;
         this.message = message;
-        this.errors = errors;
-    }
-
-    /**
-     *
-     * @param status
-     * @param message
-     * @param error
-     */
-    public ApiError(HttpStatus status, String message, String error) {
-        super();
-        timestamp = new Date(System.currentTimeMillis());
-        this.status = status;
-        this.message = message;
-        errors = Arrays.asList(error);
     }
 
     public Date getTimestamp(){
         return timestamp;
     }
 
-    public int getStatusCode() {
+    public int getCode() {
         return status.value();
     }
 
@@ -60,9 +40,5 @@ public class ApiError {
 
     public String getMessage() {
         return message;
-    }
-
-    public List<String> getErrors() {
-        return errors;
     }
 }

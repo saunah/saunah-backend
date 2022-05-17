@@ -1,6 +1,7 @@
 package ch.saunah.saunahbackend.service;
 
 import ch.saunah.saunahbackend.dto.ResetPasswordBody;
+import ch.saunah.saunahbackend.exception.SaunahLoginException;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
@@ -9,7 +10,6 @@ import ch.saunah.saunahbackend.security.JwtTokenUtil;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.UserBody;
 import org.apache.http.auth.AuthenticationException;
-import org.hibernate.annotations.NotFound;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -32,14 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import ch.saunah.saunahbackend.dto.ResetPasswordBody;
-import ch.saunah.saunahbackend.dto.SignInBody;
-import ch.saunah.saunahbackend.dto.UserBody;
-import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.model.UserRole;
-import ch.saunah.saunahbackend.repository.UserRepository;
-import ch.saunah.saunahbackend.security.JwtResponse;
-import ch.saunah.saunahbackend.security.JwtTokenUtil;
 
 /**
  * This class contains registration, verification and login methods.
@@ -191,7 +182,7 @@ public class UserService {
      * @return if the login was successful
      * @throws Exception
      */
-    public ResponseEntity<JwtResponse> signIn(SignInBody signInBody) throws Exception {
+    public ResponseEntity<JwtResponse> signIn(SignInBody signInBody) throws SaunahLoginException {
         try {
             User foundUser = userRepository.findByEmail(signInBody.getEmail());
             if (foundUser == null) {
@@ -207,10 +198,8 @@ public class UserService {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 context.setAuthentication(authentication);
             }
-        } catch (DisabledException e) {
-            throw new DisabledException("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("INVALID_CREDENTIALS", e);
+        } catch (Exception e) {
+           throw new SaunahLoginException(e.getMessage());
         }
         String jwtToken = jwtTokenUtil.generateToken(userDetailsService.loadUserByUsername(signInBody.getEmail()));
         return ResponseEntity.ok(new JwtResponse(jwtToken));
