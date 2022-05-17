@@ -17,6 +17,8 @@ public class UserResponse {
     private String zip;
     private boolean activated;
     private UserRole role;
+    private boolean initialAdmin;
+    private boolean isDeleted;
 
     /**
      * This constructor sets all the fields of this object.
@@ -32,6 +34,8 @@ public class UserResponse {
         this.zip = user.getZip();
         this.activated = user.isActivated();
         this.role = user.getRole();
+        this.initialAdmin = user.getInitialAdmin();
+        this.isDeleted = user.getIsDeleted();
     }
 
     public Integer getId() {
@@ -73,5 +77,9 @@ public class UserResponse {
     public UserRole getRole() {
         return role;
     }
+
+    public boolean isDeleted() {return isDeleted;}
+
+    public  boolean isInitialAdmin() {return initialAdmin;}
 
 }
