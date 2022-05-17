@@ -30,7 +30,7 @@ public class ImageUploadS3 implements ImageUpload {
     @Value("${saunah.object-storage.bucket.endpoint}")
     private String endpoint;
     @Value("${saunah.object-storage.bucket.access-key}")
-    private String key;
+    private String accessKey;
     @Value("${saunah.object-storage.bucket.secret-key}")
     private String secretKey;
 
@@ -38,7 +38,7 @@ public class ImageUploadS3 implements ImageUpload {
     private String region;
 
     private AmazonS3 getObjectStorageClient(){
-        AWSCredentials credentials = new BasicAWSCredentials(key, secretKey);
+        AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
         return AmazonS3ClientBuilder
             .standard()
             .withCredentials(new AWSStaticCredentialsProvider(credentials))
