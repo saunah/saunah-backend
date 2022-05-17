@@ -15,7 +15,6 @@ import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.BookingPriceRepository;
 import ch.saunah.saunahbackend.repository.BookingSaunaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.SpringVersion;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -59,7 +58,7 @@ public class BookingService {
         Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getLocation(), "Location must not be null!");
-        dateRangeCheck(bookingBody);
+        validateBookingData(bookingBody);
         Booking booking = new Booking();
         setBookingFields(booking, bookingBody);
         booking.setUserId(userId);
@@ -74,7 +73,7 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
-    private void dateRangeCheck(BookingBody bookingBody) {
+    private void validateBookingData(BookingBody bookingBody) {
         Date now = new Date(System.currentTimeMillis());
         if (now.after(bookingBody.getStartBookingDate())) {
             throw new IllegalArgumentException("Booking date is in the past");
@@ -159,7 +158,7 @@ public class BookingService {
         Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getLocation(), "Location must not be null!");
-        dateRangeCheck(bookingBody);
+        validateBookingData(bookingBody);
         Booking editBooking = getBooking(bookingId);
         setBookingFields(editBooking, bookingBody);
         return bookingRepository.save(editBooking);
