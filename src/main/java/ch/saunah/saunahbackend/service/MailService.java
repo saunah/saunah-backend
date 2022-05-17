@@ -27,8 +27,13 @@ public class MailService {
 
     @Value("${saunah.frontend.baseurl}")
     private String frontendBaseUrl;
+
     @Value("${saunah.email.from.email}")
     private String senderEmail;
+
+    @Value("${saunah.email.from.reply-to}")
+    private String replyToEmail;
+
     @Value("${saunah.email.from.name}")
     private String senderName;
 
@@ -44,6 +49,7 @@ public class MailService {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setFrom(new InternetAddress(senderEmail, senderName));
+            helper.setReplyTo(new InternetAddress(getReplyToEmail(), senderName));
             helper.setTo(email);
             helper.setSubject("Signup authentication");
             helper.setText("<p>Bitte klicken sie auf den Link, um ihren Account zu aktivieren: " +
@@ -67,6 +73,7 @@ public class MailService {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setFrom(new InternetAddress(senderEmail, senderName));
+            helper.setReplyTo(new InternetAddress(replyToEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Password Reset SauNah");
             helper.setText("<p>Ihr Reset Token lautet: <h1>"+ resetPasswordToken +"</h1></p><p>Bitte klicken sie auf den Link, falls Sie Ihren Passwort vergessen haben : " +
@@ -76,5 +83,17 @@ public class MailService {
         catch (MessagingException | MailException | UnsupportedEncodingException exception){
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
         }
+    }
+
+    /**
+     * Get the default reply to email. In case of the replyTo value being
+     * empty, the sender email will be returned.
+     * @return the default reply to email.
+     */
+    private String getReplyToEmail() {
+        if (!replyToEmail.isBlank()) {
+            return replyToEmail;
+        }
+        return senderEmail;
     }
 }

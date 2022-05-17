@@ -195,9 +195,7 @@ public class SaunaService {
             : SAUNA_IMAGES_DIR;
         URL url = null;
         try {
-            logger.error("Before Getting URL");
             url = imageUploadUtil.getImageURL(imageDir, saunaImage.getFileName());
-            logger.error("After Getting URL");
         } catch (IOException e) {
             logger.error("Image URL could not be retrieved for SaunaImage", e);
         }

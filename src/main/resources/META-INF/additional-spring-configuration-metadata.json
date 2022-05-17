@@ -20,6 +20,11 @@
     "description": "The email address which is listed as the sender."
   },
   {
+    "name": "saunah.email.from.reply-to",
+    "type": "java.lang.String",
+    "description": "The email address which will be added as reply to."
+  },
+  {
     "name": "saunah.email.from.name",
     "type": "java.lang.String",
     "description": "The name which is listed as the sender name."
