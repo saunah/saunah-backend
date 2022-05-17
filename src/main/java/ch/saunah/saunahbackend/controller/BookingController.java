@@ -47,7 +47,9 @@ public class BookingController {
     ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws Exception {
         User currentUser = userService.getUserByMail(principal.getName());
         Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
-        mailService.sendAdminOpenedBookingMail(userRepository.findByRole(UserRole.ADMIN), booking);
+        for (User admin : userRepository.findByRole(UserRole.ADMIN)) {
+            mailService.sendAdminOpenedBookingMail(admin, booking);
+        }
         mailService.sendUserOpenedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
         return ResponseEntity.ok(new BookingResponse(booking));
     }

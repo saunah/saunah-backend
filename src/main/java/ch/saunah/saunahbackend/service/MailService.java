@@ -87,7 +87,7 @@ public class MailService {
      */
     public void sendUserOpenedBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihre Buchung wurde erfolgreich eröffnet. Hier sehen sie ihre neue Buchung:</p>";
-        messageUserSetup(email, mailText, booking);
+        messageMailSetup(email, mailText, booking);
     }
 
     /**
@@ -98,7 +98,7 @@ public class MailService {
      */
     public void sendUserApprovedBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihre Buchung wurde genehmigt. Hier sehen sie die Buchung:</p>";
-        messageUserSetup(email, mailText, booking);
+        messageMailSetup(email, mailText, booking);
     }
 
     /**
@@ -109,7 +109,7 @@ public class MailService {
      */
     public void sendUserCanceledBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihr Buchung wurde storniert. Hier sehen sie die Buchung:</p>";
-        messageUserSetup(email, mailText, booking);
+        messageMailSetup(email, mailText, booking);
     }
 
     /**
@@ -120,10 +120,10 @@ public class MailService {
      */
     public void sendUserEditedBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihr Buchung wurde verändert. Hier sehen sie die Buchung:</p>";
-        messageUserSetup(email, mailText, booking);
+        messageMailSetup(email, mailText, booking);
     }
 
-    private void messageUserSetup(String email, String mailText, Booking booking) {
+    private void messageMailSetup(String email, String mailText, Booking booking) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -140,23 +140,20 @@ public class MailService {
     /**
      * This method sends a mail to all admins that a new booking has been created.
      *
-     * @param adminEmailList The email list of the all admins
-     * @param booking        The Booking info
+     * @param booking The Booking info
      */
-    public void sendAdminOpenedBookingMail(List<User> adminEmailList, Booking booking) {
-        for (User admin : adminEmailList) {
-            try {
-                MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-                helper.setFrom(new InternetAddress(senderEmail, senderName));
-                helper.setTo(admin.getEmail());
-                helper.setSubject("Booking Info SauNah");
-                helper.setText("<p>Eine neue Buchung wurde eröffnet. Hier sehen sie die Buchung:<h1>" +
-                    "<br><a href=\"" + frontendBaseUrl + "/bookings/" + booking.getId() + "/" + "\">zur Buchung</a></p>", true);
-                javaMailSender.send(mimeMessage);
-            } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
-                System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
-            }
+    public void sendAdminOpenedBookingMail(User admin, Booking booking) {
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setFrom(new InternetAddress(senderEmail, senderName));
+            helper.setTo(admin.getEmail());
+            helper.setSubject("Booking Info SauNah");
+            helper.setText("<p>Eine neue Buchung wurde eröffnet. Hier sehen sie die Buchung:<h1>" +
+                "<br><a href=\"" + frontendBaseUrl + "/bookings/" + booking.getId() + "/" + "\">zur Buchung</a></p>", true);
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
+            System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
         }
     }
 
