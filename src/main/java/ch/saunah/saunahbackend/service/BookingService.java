@@ -175,7 +175,7 @@ public class BookingService {
         }
         booking.setState(BookingState.APPROVED);
 
-        Sauna sauna = saunaService.getSauna(id);
+        Sauna sauna = saunaService.getSauna(booking.getBookingSauna().getSaunaId());
         calendarService.approveEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
 
         bookingRepository.save(booking);
@@ -195,7 +195,7 @@ public class BookingService {
         }
         booking.setState(BookingState.CANCELED);
 
-        Sauna sauna = saunaService.getSauna(id);
+        Sauna sauna = saunaService.getSauna(booking.getBookingSauna().getSaunaId());
         calendarService.deleteEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
 
         bookingRepository.save(booking);
