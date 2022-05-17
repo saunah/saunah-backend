@@ -19,7 +19,7 @@ import javax.persistence.OneToMany;
 @Entity(name = "sauna")
 public class Sauna {
     @Id
-    @Column(name="id", nullable = false)
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
@@ -53,13 +53,13 @@ public class Sauna {
     @Column(name = "type", nullable = false)
     private String type;
 
-    @OneToMany(mappedBy="sauna", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sauna", cascade = CascadeType.ALL)
     private Set<SaunaImage> saunaImages = new HashSet<>();
 
     @Column(name = "google_calendar_id", nullable = true)
     private String googleCalendarId;
 
-    public Sauna(){
+    public Sauna() {
 
     }
 
@@ -108,7 +108,7 @@ public class Sauna {
     }
 
     public String getGoogleCalendarId() {
-        return  googleCalendarId;
+        return googleCalendarId;
     }
 
     public List<SaunaImage> getSaunaImages() {
@@ -159,7 +159,7 @@ public class Sauna {
         this.googleCalendarId = googleCalendarId;
     }
 
-    public void addSaunaImage(SaunaImage saunaImage){
+    public void addSaunaImage(SaunaImage saunaImage) {
         this.saunaImages.add(saunaImage);
     }
 }

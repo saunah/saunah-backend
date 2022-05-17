@@ -50,9 +50,9 @@ class GoogleCalendarServiceTest {
     private static final String TEST_CALENDAR_ID = "cs85d7fer742u5v5r4v6e7jink@group.calendar.google.com";
 
 
-
     /**
      * Test if the authenicate is functioning
+     *
      * @throws IOException
      */
     @Test
@@ -64,21 +64,22 @@ class GoogleCalendarServiceTest {
 
     /**
      * Testing all CRUD operation on the google api
+     *
      * @throws IOException
      */
     @Test
-    void crudCalenderTest () throws IOException {
+    void crudCalenderTest() throws IOException {
         Event event = createEvent();
-        String eventID = calendarService.insertEvent(TEST_CALENDAR_ID,event);
+        String eventID = calendarService.insertEvent(TEST_CALENDAR_ID, event);
         assertNotNull(eventID);
         assertDoesNotThrow(() -> calendarService.getEvent(TEST_CALENDAR_ID, eventID));
-        assertDoesNotThrow(() -> calendarService.updateEvent(TEST_CALENDAR_ID, eventID , new DateTime(System.currentTimeMillis() + 20000),new DateTime( System.currentTimeMillis() + 30000)));
+        assertDoesNotThrow(() -> calendarService.updateEvent(TEST_CALENDAR_ID, eventID, new DateTime(System.currentTimeMillis() + 20000), new DateTime(System.currentTimeMillis() + 30000)));
         assertDoesNotThrow(() -> calendarService.deleteEvent(TEST_CALENDAR_ID, eventID));
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void bookingCalenderTest () throws Exception {
+    void bookingCalenderTest() throws Exception {
         Sauna sauna = new Sauna();
         sauna.setName("Mobile Sauna 1");
         sauna.setDescription("Eine Mobile Sauna");
@@ -100,6 +101,8 @@ class GoogleCalendarServiceTest {
         price.setDeposit(100F);
         price.setHandTowel(5.00F);
         price.setWood(20.00F);
+        price.setDiscount(-20.00F);
+        price.setDiscountDescription(":)");
         priceRepository.save(price);
 
         User user = new User();
@@ -121,46 +124,47 @@ class GoogleCalendarServiceTest {
         bookingBody.setEndBookingDate(new Date(System.currentTimeMillis() + 50000));
         bookingBody.setSaunaId(sauna.getId());
         bookingBody.setLocation("Zürich");
-        bookingBody.setTransportService(true);
+        bookingBody.setTransportServiceDistance(20);
         bookingBody.setWashService(true);
-        bookingBody.setSaunahImp(false);
-        bookingBody.setDeposit(true);
-        bookingBody.setHandTowel(false);
-        bookingBody.setWood(true);
+        bookingBody.setSaunahImpAmount(2);
+        bookingBody.setHandTowelAmount(2);
+        bookingBody.setWoodAmount(2);
+        bookingBody.setComment("very nice");
 
         Booking booking = bookingService.addBooking(bookingBody, user.getId());
         String eventID = "";
 
         try {
-            eventID = calendarService.createEvent(TEST_CALENDAR_ID,booking);
-        }
-        catch(IOException exception) {
+            eventID = calendarService.createEvent(TEST_CALENDAR_ID, booking);
+        } catch (IOException exception) {
             fail("Test failed");
         }
 
         String finalEventID = eventID;
-        assertDoesNotThrow(() ->calendarService.approveEvent(TEST_CALENDAR_ID, finalEventID));
+        assertDoesNotThrow(() -> calendarService.approveEvent(TEST_CALENDAR_ID, finalEventID));
     }
+
     /**
      * Creates an event with values
+     *
      * @return An Event
      */
-    private Event createEvent(){
-            Event event = new Event()
-                .setSummary("Saunah Test")
-                .setLocation("Saunah ")
-                .setDescription("A chance to hear more about Google's developer products.");
-            DateTime startDateTime = new DateTime(System.currentTimeMillis() + 10000 );
-            EventDateTime start = new EventDateTime()
-                .setDateTime(startDateTime)
-                .setTimeZone("Europe/Zurich");
-            event.setStart(start);
+    private Event createEvent() {
+        Event event = new Event()
+            .setSummary("Saunah Test")
+            .setLocation("Saunah ")
+            .setDescription("A chance to hear more about Google's developer products.");
+        DateTime startDateTime = new DateTime(System.currentTimeMillis() + 10000);
+        EventDateTime start = new EventDateTime()
+            .setDateTime(startDateTime)
+            .setTimeZone("Europe/Zurich");
+        event.setStart(start);
 
-            DateTime endDateTime = new DateTime(System.currentTimeMillis() + 20000);
-            EventDateTime end = new EventDateTime()
-                .setDateTime(endDateTime)
-                .setTimeZone("Europe/Zurich");
-            event.setEnd(end);
+        DateTime endDateTime = new DateTime(System.currentTimeMillis() + 20000);
+        EventDateTime end = new EventDateTime()
+            .setDateTime(endDateTime)
+            .setTimeZone("Europe/Zurich");
+        event.setEnd(end);
         return event;
     }
 }

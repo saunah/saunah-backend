@@ -75,6 +75,8 @@ class BookingServiceTest {
         price.setDeposit(100F);
         price.setHandTowel(5.00F);
         price.setWood(20.00F);
+        price.setDiscount(-20.00F);
+        price.setDiscountDescription(":)");
         priceRepository.save(price);
 
         user = new User();
@@ -96,12 +98,12 @@ class BookingServiceTest {
         bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 1).getTime());
         bookingBody.setSaunaId(sauna.getId());
         bookingBody.setLocation("Zürich");
-        bookingBody.setTransportService(true);
+        bookingBody.setTransportServiceDistance(20);
         bookingBody.setWashService(true);
-        bookingBody.setSaunahImp(false);
-        bookingBody.setDeposit(true);
-        bookingBody.setHandTowel(false);
-        bookingBody.setWood(true);
+        bookingBody.setSaunahImpAmount(3);
+        bookingBody.setHandTowelAmount(2);
+        bookingBody.setWoodAmount(3);
+        bookingBody.setComment("very nice");
     }
 
     @AfterEach
@@ -300,5 +302,31 @@ class BookingServiceTest {
         Date newDate = new Date();
         newDate.setTime(date.getTime() + seconds * 1000);
         return newDate;
+    }
+
+    /**
+     * This test checks if a bookingPrice can be found via it's id
+     *
+     * @throws Exception is thrown if no such bookingPrice is found
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void getBookingPrice() throws Exception {
+        assertThrows(NotFoundException.class, () -> bookingService.getBookingPrice(1));
+        bookingService.addBooking(bookingBody, user.getId());
+        assertNotNull(bookingService.getBookingPrice(1));
+    }
+
+    /**
+     * This test checks if a bookingSauna can be found via it's id
+     *
+     * @throws Exception is thrown if no such bookingSauna is found
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void getBookingSauna() throws Exception {
+        assertThrows(NotFoundException.class, () -> bookingService.getBookingSauna(1));
+        bookingService.addBooking(bookingBody, user.getId());
+        assertNotNull(bookingService.getBookingSauna(1));
     }
 }
