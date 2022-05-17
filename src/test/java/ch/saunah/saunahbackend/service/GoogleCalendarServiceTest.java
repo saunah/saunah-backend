@@ -101,6 +101,8 @@ class GoogleCalendarServiceTest {
         price.setDeposit(100F);
         price.setHandTowel(5.00F);
         price.setWood(20.00F);
+        price.setDiscount(-20.00F);
+        price.setDiscountDescription(":)");
         priceRepository.save(price);
 
         User user = new User();
