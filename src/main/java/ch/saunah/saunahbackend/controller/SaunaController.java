@@ -116,10 +116,9 @@ public class SaunaController {
     }
 
     /**
-     * Constructs a SaunaImageUrl object by retrieving the URL to the image
-     * passed and returning it as an object.
+     * Retrieves the URL for the image passed image and returns it.
      * @param saunaImage the image to get the URL for.
-     * @return the object containing both the image information as well as the URL.
+     * @return the URL of the image.
      * @throws IOException
      */
     @Nullable
