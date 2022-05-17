@@ -49,6 +49,12 @@ public class User {
     @Column(name = "resetpasswordhash")
     private String resetpasswordhash;
 
+    @Column(name = "initialAdmin")
+    private boolean initialAdmin;
+
+    @Column(name = "isDeleted")
+    private boolean isDeleted;
+
     /**
      * The default constructor for the user.
      */
@@ -152,4 +158,11 @@ public class User {
 
     public void setResetpasswordHash(String resetpassword_hash){this.resetpasswordhash = resetpassword_hash;}
 
+    public boolean getInitialAdmin() {return initialAdmin; }
+
+    public  void setInitialAdmin(boolean initialAdmin) { this.initialAdmin = initialAdmin;}
+
+    public boolean getIsDeleted() {return isDeleted; }
+
+    public void setIsDeleted(boolean isDeleted) { this.isDeleted = isDeleted;}
 }
