@@ -71,6 +71,7 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
                 "/saunas/{id}"
             ).permitAll()
             .antMatchers(
+                "/saunas",
                 "/saunas/{id}"
             ).hasAuthority(UserRole.ADMIN.toString())
             // sauna images
