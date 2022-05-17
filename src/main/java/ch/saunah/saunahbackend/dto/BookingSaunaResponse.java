@@ -1,6 +1,5 @@
 package ch.saunah.saunahbackend.dto;
 
-import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.BookingSauna;
 
 /**

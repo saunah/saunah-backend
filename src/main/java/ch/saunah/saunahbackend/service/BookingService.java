@@ -75,9 +75,9 @@ public class BookingService {
         setBookingFields(booking, bookingBody);
         booking.setUserId(userId);
         bookingRepository.save(booking);
-        BookingPrice bookingPrice = createBookingPrice(bookingBody, booking);
+        BookingPrice bookingPrice = createBookingPrice(bookingBody);
         bookingPriceRepository.save(bookingPrice);
-        BookingSauna bookingSauna = createBookingSauna(bookingBody, booking);
+        BookingSauna bookingSauna = createBookingSauna(bookingBody);
         bookingSaunaRepository.save(bookingSauna);
         booking.setBookingPrice(bookingPrice);
         booking.setBookingSauna(bookingSauna);
@@ -109,7 +109,7 @@ public class BookingService {
         booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalendarId(), booking));
     }
 
-    private BookingPrice createBookingPrice(BookingBody bookingBody, Booking id) {
+    private BookingPrice createBookingPrice(BookingBody bookingBody) {
         Price price = priceRepository.findAll().iterator().next();
         if (price == null) {
             throw new NotFoundException("No Price available in the database!");
@@ -125,7 +125,7 @@ public class BookingService {
         return bookingPrice;
     }
 
-    private BookingSauna createBookingSauna(BookingBody bookingBody, Booking id) {
+    private BookingSauna createBookingSauna(BookingBody bookingBody) {
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
         BookingSauna bookingSauna = new BookingSauna();
         bookingSauna.setSaunaId(bookingBody.getSaunaId());
@@ -150,6 +150,23 @@ public class BookingService {
      * @return the booking that has been edited
      */
     public Booking editBooking(int bookingId, BookingBody bookingBody) throws IOException {
+        Objects.requireNonNull(bookingBody, "BookingBody must not be null!");
+        Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
+        Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
+        Objects.requireNonNull(bookingBody.getLocation(), "Location must not be null!");
+        Date now = new Date(System.currentTimeMillis());
+        if (now.after(bookingBody.getStartBookingDate())) {
+            throw new IllegalArgumentException("Booking date is in the past");
+        }
+        if (bookingBody.getStartBookingDate().after(bookingBody.getEndBookingDate())) {
+            throw new IllegalArgumentException("Invalid start date");
+        }
+        List<BookingSauna> allSaunaBookings = bookingSaunaRepository.findAllBySaunaId(bookingBody.getSaunaId());
+        List<Booking> allBookings = getAllBooking().stream().filter(x -> allSaunaBookings.stream().anyMatch(y -> y.getId() == x.getId())).collect(Collectors.toList());
+        if (allBookings.stream().anyMatch(x -> dateRangeCollide(bookingBody.getStartBookingDate(),
+            bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate()))) {
+            throw new IllegalArgumentException("Sauna is not available during this date range");
+        }
         Booking editBooking = getBooking(bookingId);
         setBookingFields(editBooking, bookingBody);
         return bookingRepository.save(editBooking);

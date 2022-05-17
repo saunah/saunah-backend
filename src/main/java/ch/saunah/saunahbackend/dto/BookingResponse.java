@@ -1,7 +1,5 @@
 package ch.saunah.saunahbackend.dto;
 
-import ch.saunah.saunahbackend.model.BookingPrice;
-import ch.saunah.saunahbackend.model.BookingSauna;
 import ch.saunah.saunahbackend.model.BookingState;
 import ch.saunah.saunahbackend.model.Booking;
 
@@ -13,8 +11,8 @@ import java.util.Date;
 public class BookingResponse {
 
     private int id;
-    private BookingPrice bookingPrice;
-    private BookingSauna bookingSauna;
+    private int bookingPriceId;
+    private int bookingSaunaId;
     private Date startBookingDate;
     private Date endBookingDate;
     private Date creation;
@@ -30,15 +28,14 @@ public class BookingResponse {
     private String discountDescription;
     private String comment;
     private double endPrice;
-    private String googleEventID;
 
     /**
      * This constructor sets all the fields of this object.
      */
     public BookingResponse(Booking booking) {
         this.id = booking.getId();
-        this.bookingPrice = booking.getBookingPrice();
-        this.bookingSauna = booking.getBookingSauna();
+        this.bookingPriceId = booking.getBookingPrice().getId();
+        this.bookingSaunaId = booking.getBookingSauna().getId();
         this.startBookingDate = booking.getStartBookingDate();
         this.endBookingDate = booking.getEndBookingDate();
         this.creation = booking.getCreation();
@@ -54,19 +51,18 @@ public class BookingResponse {
         this.discountDescription = booking.getDiscountDescription();
         this.comment = booking.getComment();
         this.endPrice = booking.getEndPrice();
-        this.googleEventID = booking.getGoogleEventID();
     }
 
     public int getId() {
         return id;
     }
 
-    public BookingPrice getBookingPrice() {
-        return bookingPrice;
+    public int getBookingPriceId() {
+        return bookingPriceId;
     }
 
-    public BookingSauna getBookingSauna() {
-        return bookingSauna;
+    public int getBookingSaunaId() {
+        return bookingSaunaId;
     }
 
     public Date getStartBookingDate() {
@@ -129,7 +125,4 @@ public class BookingResponse {
         return endPrice;
     }
 
-    public String getGoogleEventID() {
-        return googleEventID;
-    }
 }

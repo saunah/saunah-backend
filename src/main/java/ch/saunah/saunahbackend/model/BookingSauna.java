@@ -1,13 +1,12 @@
 package ch.saunah.saunahbackend.model;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Model of a bookingSauna structure
  */
 @Entity(name = "bookingSauna")
-public class BookingSauna implements Serializable {
+public class BookingSauna {
 
     @Id
     @Column(name = "id", nullable = false)

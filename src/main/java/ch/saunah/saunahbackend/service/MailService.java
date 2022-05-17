@@ -9,8 +9,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import ch.saunah.saunahbackend.model.Booking;
-import ch.saunah.saunahbackend.model.BookingPrice;
-import ch.saunah.saunahbackend.model.BookingSauna;
 import ch.saunah.saunahbackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,8 +82,8 @@ public class MailService {
     /**
      * This method sends a mail which informs the user that his booking has been opened.
      *
-     * @param email        The email of the user
-     * @param booking      The Booking info
+     * @param email   The email of the user
+     * @param booking The Booking info
      */
     public void sendUserOpenedBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihre Buchung wurde erfolgreich eröffnet. Hier sehen sie ihre neue Buchung:</p>";
@@ -95,8 +93,8 @@ public class MailService {
     /**
      * This method sends a mail which informs the user that his booking has been approved.
      *
-     * @param email        The email of the user
-     * @param booking      The Booking info
+     * @param email   The email of the user
+     * @param booking The Booking info
      */
     public void sendUserApprovedBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihre Buchung wurde genehmigt. Hier sehen sie die Buchung:</p>";
@@ -106,8 +104,8 @@ public class MailService {
     /**
      * This method sends a mail which informs the user that his booking has been canceled.
      *
-     * @param email        The email of the user
-     * @param booking      The Booking info
+     * @param email   The email of the user
+     * @param booking The Booking info
      */
     public void sendUserCanceledBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihr Buchung wurde storniert. Hier sehen sie die Buchung:</p>";
@@ -117,8 +115,8 @@ public class MailService {
     /**
      * This method sends a mail which informs the user that his booking has been edited.
      *
-     * @param email        The email of the user
-     * @param booking      The Booking info
+     * @param email   The email of the user
+     * @param booking The Booking info
      */
     public void sendUserEditedBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihr Buchung wurde verändert. Hier sehen sie die Buchung:</p>";
@@ -132,7 +130,7 @@ public class MailService {
             helper.setFrom(new InternetAddress(senderEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Booking Info SauNah");
-            helper.setText(mailText + bookingInfo(booking), true);
+            helper.setText(mailText + generateBookingInfoMessage(booking), true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
@@ -162,7 +160,7 @@ public class MailService {
         }
     }
 
-    private String bookingInfo(Booking booking) {
+    private String generateBookingInfoMessage(Booking booking) {
         return
             "<p>Buchungsnummer: " + booking.getId() + "</p>" +
                 "<p>UserId: " + booking.getUserId() + "</p>" +

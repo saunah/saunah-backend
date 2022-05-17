@@ -57,7 +57,7 @@ public class BookingController {
     public @ResponseBody
     ResponseEntity<BookingPriceResponse> getBookingPrice(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
         Booking booking = bookingService.getBooking(id);
-        BookingPrice bookingPrice = bookingService.getBookingPrice(id);
+        BookingPrice bookingPrice = booking.getBookingPrice();
         User user = userService.getUserByMail(principal.getName());
         if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
             return ResponseEntity.ok(new BookingPriceResponse(bookingPrice));
@@ -70,7 +70,7 @@ public class BookingController {
     public @ResponseBody
     ResponseEntity<BookingSaunaResponse> getBookingSauna(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
         Booking booking = bookingService.getBooking(id);
-        BookingSauna bookingSauna = bookingService.getBookingSauna(id);
+        BookingSauna bookingSauna = booking.getBookingSauna();
         User user = userService.getUserByMail(principal.getName());
         if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
             return ResponseEntity.ok(new BookingSaunaResponse(bookingSauna));
