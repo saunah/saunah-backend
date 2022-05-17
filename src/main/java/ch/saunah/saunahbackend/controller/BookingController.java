@@ -48,7 +48,7 @@ public class BookingController {
         User currentUser = userService.getUserByMail(principal.getName());
         Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
         mailService.sendAdminOpenedBookingMail(userRepository.findByRole(UserRole.ADMIN), booking);
-        mailService.sendUserOpenedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking, booking.getBookingPrice(), booking.getBookingSauna());
+        mailService.sendUserOpenedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
         return ResponseEntity.ok(new BookingResponse(booking));
     }
 
@@ -103,7 +103,7 @@ public class BookingController {
     public @ResponseBody
     ResponseEntity<BookingResponse> editBooking(@PathVariable(value = "id", required = true) Integer id, @RequestBody BookingBody bookingBody) throws IOException {
         Booking booking = bookingService.editBooking(id, bookingBody);
-        mailService.sendUserEditedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking, booking.getBookingPrice(), booking.getBookingSauna());
+        mailService.sendUserEditedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
         return ResponseEntity.ok(new BookingResponse(booking));
     }
 
@@ -113,7 +113,7 @@ public class BookingController {
     ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
         bookingService.approveBooking(id);
         Booking booking = bookingService.getBooking(id);
-        mailService.sendUserApprovedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking, booking.getBookingPrice(), booking.getBookingSauna());
+        mailService.sendUserApprovedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
         return ResponseEntity.ok("success");
     }
 
@@ -123,7 +123,7 @@ public class BookingController {
     ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
         bookingService.cancelBooking(id);
         Booking booking = bookingService.getBooking(id);
-        mailService.sendUserCanceledBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking, booking.getBookingPrice(), booking.getBookingSauna());
+        mailService.sendUserCanceledBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
         return ResponseEntity.ok("success");
     }
 

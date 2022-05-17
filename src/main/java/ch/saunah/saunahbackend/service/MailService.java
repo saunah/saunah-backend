@@ -86,12 +86,10 @@ public class MailService {
      *
      * @param email        The email of the user
      * @param booking      The Booking info
-     * @param bookingPrice The bookingPrice info
-     * @param bookingSauna The bookingSauna info
      */
-    public void sendUserOpenedBookingMail(String email, Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
+    public void sendUserOpenedBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihre Buchung wurde erfolgreich eröffnet. Hier sehen sie ihre neue Buchung:</p>";
-        messageUserSetup(email, mailText, booking, bookingPrice, bookingSauna);
+        messageUserSetup(email, mailText, booking);
     }
 
     /**
@@ -99,12 +97,10 @@ public class MailService {
      *
      * @param email        The email of the user
      * @param booking      The Booking info
-     * @param bookingPrice The bookingPrice info
-     * @param bookingSauna The bookingSauna info
      */
-    public void sendUserApprovedBookingMail(String email, Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
+    public void sendUserApprovedBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihre Buchung wurde genehmigt. Hier sehen sie die Buchung:</p>";
-        messageUserSetup(email, mailText, booking, bookingPrice, bookingSauna);
+        messageUserSetup(email, mailText, booking);
     }
 
     /**
@@ -112,12 +108,10 @@ public class MailService {
      *
      * @param email        The email of the user
      * @param booking      The Booking info
-     * @param bookingPrice The bookingPrice info
-     * @param bookingSauna The bookingSauna info
      */
-    public void sendUserCanceledBookingMail(String email, Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
+    public void sendUserCanceledBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihr Buchung wurde storniert. Hier sehen sie die Buchung:</p>";
-        messageUserSetup(email, mailText, booking, bookingPrice, bookingSauna);
+        messageUserSetup(email, mailText, booking);
     }
 
     /**
@@ -125,22 +119,20 @@ public class MailService {
      *
      * @param email        The email of the user
      * @param booking      The Booking info
-     * @param bookingPrice The bookingPrice info
-     * @param bookingSauna The bookingSauna info
      */
-    public void sendUserEditedBookingMail(String email, Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
+    public void sendUserEditedBookingMail(String email, Booking booking) {
         String mailText = "<p>Ihr Buchung wurde verändert. Hier sehen sie die Buchung:</p>";
-        messageUserSetup(email, mailText, booking, bookingPrice, bookingSauna);
+        messageUserSetup(email, mailText, booking);
     }
 
-    private void messageUserSetup(String email, String mailText, Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
+    private void messageUserSetup(String email, String mailText, Booking booking) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setFrom(new InternetAddress(senderEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Booking Info SauNah");
-            helper.setText(mailText + bookingInfo(booking, bookingPrice, bookingSauna), true);
+            helper.setText(mailText + bookingInfo(booking), true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
@@ -170,34 +162,34 @@ public class MailService {
         }
     }
 
-    private String bookingInfo(Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
+    private String bookingInfo(Booking booking) {
         return
             "<p>Buchungsnummer: " + booking.getId() + "</p>" +
                 "<p>UserId: " + booking.getUserId() + "</p>" +
                 "<p>Erstellungsdatum der Buchung:" + booking.getCreation() + "</p>" +
                 "<p>Buchung Start Datum: " + booking.getStartBookingDate() + "</p>" +
                 "<p>Buchung End Datum: " + booking.getEndBookingDate() + "</p>" +
-                "<p>SaunaId: " + bookingSauna.getSaunaId() + "</p>" +
-                "<p>Sauna: " + bookingSauna.getSaunaName() + "</p>" +
-                "<p>Sauna Typ: " + bookingSauna.getSaunaType() + "</p>" +
-                "<p>Sauna Ort: " + bookingSauna.getSaunaLocation() + "</p>" +
-                "<p>Sauna Strasse: " + bookingSauna.getSaunaStreet() + "</p>" +
-                "<p>Sauna PLZ: " + bookingSauna.getSaunaZip() + "</p>" +
-                "<p>Sauna Beschreibung: " + bookingSauna.getSaunaDescription() + "</p>" +
-                "<p>Sauna maximale Temperatur: " + bookingSauna.getSaunaMaxTemp() + "</p>" +
-                "<p>Sauna Personen Kapazität: " + bookingSauna.getSaunaNumberOfPeople() + "</p>" +
+                "<p>SaunaId: " + booking.getBookingSauna().getSaunaId() + "</p>" +
+                "<p>Sauna: " + booking.getBookingSauna().getSaunaName() + "</p>" +
+                "<p>Sauna Typ: " + booking.getBookingSauna().getSaunaType() + "</p>" +
+                "<p>Sauna Ort: " + booking.getBookingSauna().getSaunaLocation() + "</p>" +
+                "<p>Sauna Strasse: " + booking.getBookingSauna().getSaunaStreet() + "</p>" +
+                "<p>Sauna PLZ: " + booking.getBookingSauna().getSaunaZip() + "</p>" +
+                "<p>Sauna Beschreibung: " + booking.getBookingSauna().getSaunaDescription() + "</p>" +
+                "<p>Sauna maximale Temperatur: " + booking.getBookingSauna().getSaunaMaxTemp() + "</p>" +
+                "<p>Sauna Personen Kapazität: " + booking.getBookingSauna().getSaunaNumberOfPeople() + "</p>" +
                 "<p>Ihr angegebener Ort: " + booking.getLocation() + "</p>" +
                 "<p>Transport Service Distanz in km: " + booking.getTransportServiceDistance() + "</p>" +
-                "<p>Transport Service Preis: " + bookingPrice.getTransportServicePrice() + "</p>" +
-                "<p>Wasch Service Preis: " + bookingPrice.getWashServicePrice() + "</p>" +
+                "<p>Transport Service Preis: " + booking.getBookingPrice().getTransportServicePrice() + "</p>" +
+                "<p>Wasch Service Preis: " + booking.getBookingPrice().getWashServicePrice() + "</p>" +
                 "<p>Imp Anzahl: " + booking.getSaunahImpAmount() + "</p>" +
-                "<p>Imp Preis: " + bookingPrice.getSaunahImpPrice() + "</p>" +
-                "<p>Deposit Preis: " + bookingPrice.getDepositPrice() + "</p>" +
+                "<p>Imp Preis: " + booking.getBookingPrice().getSaunahImpPrice() + "</p>" +
+                "<p>Deposit Preis: " + booking.getBookingPrice().getDepositPrice() + "</p>" +
                 "<p>Handtuch Anzahl: " + booking.getHandTowelAmount() + "</p>" +
-                "<p>Handtuch Preis: " + bookingPrice.getHandTowelPrice() + "</p>" +
+                "<p>Handtuch Preis: " + booking.getBookingPrice().getHandTowelPrice() + "</p>" +
                 "<p>Brennholz Anzahl: " + booking.getWoodAmount() + "</p>" +
-                "<p>Brennholz Preis: " + bookingPrice.getWoodPrice() + "</p>" +
-                "<p>Sauna Preis: " + bookingSauna.getSaunaPrice() + "</p>" +
+                "<p>Brennholz Preis: " + booking.getBookingPrice().getWoodPrice() + "</p>" +
+                "<p>Sauna Preis: " + booking.getBookingSauna().getSaunaPrice() + "</p>" +
                 "<p>Totalpreis: " + booking.getEndPrice() + "</p>";
     }
 }
