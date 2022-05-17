@@ -91,7 +91,7 @@ public class BookingService {
         booking.setSaunaType(sauna.getType());
         booking.setState(BookingState.OPENED);
 
-        if (sauna.getGoogleCalendarId() != null && !sauna.getGoogleCalendarId().isBlank()) {
+        if (isValidId(sauna.getGoogleCalendarId())) {
             booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalendarId(), booking));
         }
 
@@ -120,8 +120,7 @@ public class BookingService {
 
         Sauna sauna = saunaService.getSauna(booking.getSaunaId());
 
-        if (sauna.getGoogleCalendarId() != null && !sauna.getGoogleCalendarId().isBlank()
-            && booking.getGoogleEventID() != null && !booking.getGoogleEventID().isBlank()) {
+        if (isValidId(sauna.getGoogleCalendarId()) && isValidId(booking.getGoogleEventID())) {
             calendarService.approveEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
         }
 
@@ -144,8 +143,7 @@ public class BookingService {
 
         Sauna sauna = saunaService.getSauna(booking.getSaunaId());
 
-        if (sauna.getGoogleCalendarId() != null && !sauna.getGoogleCalendarId().isBlank()
-            && booking.getGoogleEventID() != null && !booking.getGoogleEventID().isBlank()) {
+        if (isValidId(sauna.getGoogleCalendarId()) && isValidId(booking.getGoogleEventID())) {
             calendarService.deleteEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
         }
 
@@ -199,5 +197,14 @@ public class BookingService {
         }
 
         return endPrice;
+    }
+
+    /**
+     * Checks whether the ID passed is neither null nor blank.
+     * @param id The id to check.
+     * @return Whether the id is valid.
+     */
+    private boolean isValidId(String id) {
+        return id != null && !id.isBlank();
     }
 }
