@@ -17,7 +17,7 @@ public class SaunaResponse {
     private String street;
     private int zip;
     private String type;
-    private String googleCalenderID;
+    private String googleCalendarId;
 
     /**
      * This constructor sets all the fields of this object.
@@ -34,7 +34,7 @@ public class SaunaResponse {
         this.street = sauna.getStreet();
         this.zip = sauna.getZip();
         this.type = sauna.getType();
-        this.googleCalenderID =sauna.getGoogleCalenderID();
+        this.googleCalendarId = sauna.getGoogleCalendarId();
     }
 
     public int getId() {
@@ -79,5 +79,7 @@ public class SaunaResponse {
         return type;
     }
 
-    public String getGoogleCalenderID() { return googleCalenderID; }
+    public String getGoogleCalendarId() {
+        return googleCalendarId;
+    }
 }

@@ -71,6 +71,7 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
                 "/saunas/{id}"
             ).permitAll()
             .antMatchers(
+                "/saunas",
                 "/saunas/{id}"
             ).hasAuthority(UserRole.ADMIN.toString())
             // sauna images
@@ -94,13 +95,19 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
             ).hasAuthority(UserRole.ADMIN.toString())
             // bookings
             .mvcMatchers(
+                HttpMethod.PUT,
+                "/bookings/{id}"
+            ).hasAuthority(UserRole.ADMIN.toString())
+            .mvcMatchers(
                 "/bookings",
                 "/bookings/{id}",
-                "/bookings/{id}/cancel"
+                "bookings/{id}/price",
+                "bookings/{id}/sauna"
             ).hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
             .antMatchers(
-                "/allBookings",
-                "/bookings/{id}/approve"
+                "/bookings/all",
+                "/bookings/{id}/approve",
+                "/bookings/{id}/cancel"
             ).hasAuthority(UserRole.ADMIN.toString())
             //users
             .mvcMatchers(

@@ -41,6 +41,8 @@ class PriceServiceTest {
         priceBody.setDeposit(100F);
         priceBody.setHandTowel(5.00F);
         priceBody.setWood(20.00F);
+        priceBody.setDiscount(-20.00F);
+        priceBody.setDiscountDescription(":)");
     }
 
     @AfterEach
@@ -84,9 +86,9 @@ class PriceServiceTest {
         priceService.addPrice(priceBody);
         priceService.addPrice(priceBody);
         priceService.addPrice(priceBody);
-        assertEquals(3,priceRepository.count());
+        assertEquals(3, priceRepository.count());
         priceService.removePrice(1);
-        assertEquals(2,priceRepository.count());
+        assertEquals(2, priceRepository.count());
     }
 
 
@@ -104,6 +106,8 @@ class PriceServiceTest {
         priceBodyChanged.setWood(1000);
         priceBodyChanged.setHandTowel(1000);
         priceBodyChanged.setSaunahImp(1000);
+        priceBodyChanged.setDiscount(-30);
+        priceBodyChanged.setDiscountDescription(":D");
         price = priceService.editPrice(price.getId(), priceBodyChanged);
         checkPriceFields(priceBodyChanged, price);
     }
@@ -124,8 +128,9 @@ class PriceServiceTest {
 
     /**
      * This method helps checking if the values are correct
+     *
      * @param priceBody the Parameters of a price structure
-     * @param price the instance of a Price
+     * @param price     the instance of a Price
      */
     private void checkPriceFields(PriceBody priceBody, Price price) {
         assertEquals(priceBody.getDeposit(), price.getDeposit());
@@ -134,5 +139,7 @@ class PriceServiceTest {
         assertEquals(priceBody.getHandTowel(), price.getHandTowel());
         assertEquals(priceBody.getSaunahImp(), price.getSaunahImp());
         assertEquals(priceBody.getWood(), price.getWood());
+        assertEquals(priceBody.getDiscount(), price.getDiscount());
+        assertEquals(priceBody.getDiscountDescription(), price.getDiscountDescription());
     }
 }

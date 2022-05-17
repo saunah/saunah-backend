@@ -10,12 +10,12 @@ public class BookingBody {
     private Date endBookingDate;
     private int saunaId;
     private String location;
-    private boolean transportService;
+    private int transportServiceDistance;
     private boolean washService;
-    private boolean saunahImp;
-    private boolean deposit;
-    private boolean handTowel;
-    private boolean wood;
+    private int saunahImpAmount;
+    private int handTowelAmount;
+    private int woodAmount;
+    private String comment;
 
     public Date getStartBookingDate() {
         return startBookingDate;
@@ -49,12 +49,12 @@ public class BookingBody {
         this.location = location;
     }
 
-    public boolean isTransportService() {
-        return transportService;
+    public int getTransportServiceDistance() {
+        return transportServiceDistance;
     }
 
-    public void setTransportService(boolean transportService) {
-        this.transportService = transportService;
+    public void setTransportServiceDistance(int transportServiceDistance) {
+        this.transportServiceDistance = transportServiceDistance;
     }
 
     public boolean isWashService() {
@@ -65,35 +65,35 @@ public class BookingBody {
         this.washService = washService;
     }
 
-    public boolean isSaunahImp() {
-        return saunahImp;
+    public int getSaunahImpAmount() {
+        return saunahImpAmount;
     }
 
-    public void setSaunahImp(boolean saunahImp) {
-        this.saunahImp = saunahImp;
+    public void setSaunahImpAmount(int saunahImpAmount) {
+        this.saunahImpAmount = saunahImpAmount;
     }
 
-    public boolean isDeposit() {
-        return deposit;
+    public int getHandTowelAmount() {
+        return handTowelAmount;
     }
 
-    public void setDeposit(boolean deposit) {
-        this.deposit = deposit;
+    public void setHandTowelAmount(int handTowelAmount) {
+        this.handTowelAmount = handTowelAmount;
     }
 
-    public boolean isHandTowel() {
-        return handTowel;
+    public int getWoodAmount() {
+        return woodAmount;
     }
 
-    public void setHandTowel(boolean handTowel) {
-        this.handTowel = handTowel;
+    public void setWoodAmount(int woodAmount) {
+        this.woodAmount = woodAmount;
     }
 
-    public boolean isWood() {
-        return wood;
+    public String getComment() {
+        return comment;
     }
 
-    public void setWood(boolean wood) {
-        this.wood = wood;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

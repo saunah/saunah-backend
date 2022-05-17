@@ -2,11 +2,7 @@ package ch.saunah.saunahbackend.model;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Model of a booking structure
@@ -14,9 +10,17 @@ import javax.persistence.Id;
 @Entity(name = "booking")
 public class Booking {
     @Id
-    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private int id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bookingPriceId", referencedColumnName = "id")
+    private BookingPrice bookingPrice;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bookingSaunaId", referencedColumnName = "id")
+    private BookingSauna bookingSauna;
 
     @Column(name = "start_booking_date", nullable = false)
     private Date startBookingDate;
@@ -30,65 +34,35 @@ public class Booking {
     @Column(name = "state", nullable = false)
     private BookingState state;
 
-    @Column(name = "endPrice", nullable = false)
-    private double endPrice;
-
     @Column(name = "userId", nullable = false)
     private int userId;
 
     @Column(name = "location", nullable = false)
     private String location;
 
-    @Column(name = "transportService", nullable = false)
-    private boolean transportService;
+    @Column(name = "transportServiceDistance", nullable = false)
+    private int transportServiceDistance;
 
     @Column(name = "washService", nullable = false)
     private boolean washService;
 
-    @Column(name = "saunahImp", nullable = false)
-    private boolean saunahImp;
+    @Column(name = "saunahImpAmount", nullable = false)
+    private int saunahImpAmount;
 
     @Column(name = "deposit", nullable = false)
     private boolean deposit;
 
-    @Column(name = "handTowel", nullable = false)
-    private boolean handTowel;
+    @Column(name = "handTowelAmount", nullable = false)
+    private int handTowelAmount;
 
-    @Column(name = "wood", nullable = false)
-    private boolean wood;
+    @Column(name = "woodAmount", nullable = false)
+    private int woodAmount;
 
-    @Column(name = "saunaId", nullable = false)
-    private int saunaId;
+    @Column(name = "comment", nullable = false)
+    private String comment;
 
-    @Column(name = "sauna_name", nullable = false)
-    private String saunaName;
-
-    @Column(name = "sauna_description")
-    private String saunaDescription;
-
-    @Column(name = "sauna_isMobile", nullable = false)
-    private boolean saunaIsMobile;
-
-    @Column(name = "sauna_price", nullable = false)
-    private int saunaPrice;
-
-    @Column(name = "sauna_max_temp", nullable = false)
-    private int saunaMaxTemp;
-
-    @Column(name = "sauna_numberOfPeople", nullable = false)
-    private int saunaNumberOfPeople;
-
-    @Column(name = "sauna_location", nullable = false)
-    private String saunaLocation;
-
-    @Column(name = "sauna_street", nullable = false)
-    private String saunaStreet;
-
-    @Column(name = "sauna_zip", nullable = false)
-    private int saunaZip;
-
-    @Column(name = "sauna_type", nullable = false)
-    private String saunaType;
+    @Column(name = "endPrice", nullable = false)
+    private double endPrice;
 
     @Column(name = "google_event_id", nullable = true)
     private String googleEventID;
@@ -101,12 +75,20 @@ public class Booking {
         return id;
     }
 
-    public String getSaunaName() {
-        return saunaName;
+    public BookingPrice getBookingPrice() {
+        return bookingPrice;
     }
 
-    public void setSaunaName(String saunaName) {
-        this.saunaName = saunaName;
+    public void setBookingPrice(BookingPrice bookingPrice) {
+        this.bookingPrice = bookingPrice;
+    }
+
+    public BookingSauna getBookingSauna() {
+        return bookingSauna;
+    }
+
+    public void setBookingSauna(BookingSauna bookingSauna) {
+        this.bookingSauna = bookingSauna;
     }
 
     public Date getStartBookingDate() {
@@ -141,28 +123,12 @@ public class Booking {
         this.state = state;
     }
 
-    public double getEndPrice() {
-        return endPrice;
-    }
-
-    public void setEndPrice(double endPrice) {
-        this.endPrice = endPrice;
-    }
-
     public int getUserId() {
         return userId;
     }
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public int getSaunaId() {
-        return saunaId;
-    }
-
-    public void setSaunaId(int saunaId) {
-        this.saunaId = saunaId;
     }
 
     public String getLocation() {
@@ -173,12 +139,12 @@ public class Booking {
         this.location = location;
     }
 
-    public boolean isTransportService() {
-        return transportService;
+    public int getTransportServiceDistance() {
+        return transportServiceDistance;
     }
 
-    public void setTransportService(boolean transportService) {
-        this.transportService = transportService;
+    public void setTransportServiceDistance(int transportService) {
+        this.transportServiceDistance = transportService;
     }
 
     public boolean isWashService() {
@@ -189,12 +155,12 @@ public class Booking {
         this.washService = washService;
     }
 
-    public boolean isSaunahImp() {
-        return saunahImp;
+    public int getSaunahImpAmount() {
+        return saunahImpAmount;
     }
 
-    public void setSaunahImp(boolean saunahImp) {
-        this.saunahImp = saunahImp;
+    public void setSaunahImpAmount(int saunahImp) {
+        this.saunahImpAmount = saunahImp;
     }
 
     public boolean isDeposit() {
@@ -205,92 +171,36 @@ public class Booking {
         this.deposit = deposit;
     }
 
-    public boolean isHandTowel() {
-        return handTowel;
+    public int getHandTowelAmount() {
+        return handTowelAmount;
     }
 
-    public void setHandTowel(boolean handTowel) {
-        this.handTowel = handTowel;
+    public void setHandTowelAmount(int handTowel) {
+        this.handTowelAmount = handTowel;
     }
 
-    public boolean isWood() {
-        return wood;
+    public int getWoodAmount() {
+        return woodAmount;
     }
 
-    public void setWood(boolean wood) {
-        this.wood = wood;
+    public void setWoodAmount(int wood) {
+        this.woodAmount = wood;
     }
 
-    public String getSaunaDescription() {
-        return saunaDescription;
+    public String getComment() {
+        return comment;
     }
 
-    public void setSaunaDescription(String saunaDescription) {
-        this.saunaDescription = saunaDescription;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
-    public boolean isSaunaIsMobile() {
-        return saunaIsMobile;
+    public double getEndPrice() {
+        return endPrice;
     }
 
-    public void setSaunaIsMobile(boolean saunaIsMobile) {
-        this.saunaIsMobile = saunaIsMobile;
-    }
-
-    public int getSaunaPrice() {
-        return saunaPrice;
-    }
-
-    public void setSaunaPrice(int saunaPrice) {
-        this.saunaPrice = saunaPrice;
-    }
-
-    public int getSaunaMaxTemp() {
-        return saunaMaxTemp;
-    }
-
-    public void setSaunaMaxTemp(int saunaMaxTemp) {
-        this.saunaMaxTemp = saunaMaxTemp;
-    }
-
-    public int getSaunaNumberOfPeople() {
-        return saunaNumberOfPeople;
-    }
-
-    public void setSaunaNumberOfPeople(int saunaNumberOfPeople) {
-        this.saunaNumberOfPeople = saunaNumberOfPeople;
-    }
-
-    public String getSaunaLocation() {
-        return saunaLocation;
-    }
-
-    public void setSaunaLocation(String saunaLocation) {
-        this.saunaLocation = saunaLocation;
-    }
-
-    public String getSaunaStreet() {
-        return saunaStreet;
-    }
-
-    public void setSaunaStreet(String saunaStreet) {
-        this.saunaStreet = saunaStreet;
-    }
-
-    public int getSaunaZip() {
-        return saunaZip;
-    }
-
-    public void setSaunaZip(int saunaZip) {
-        this.saunaZip = saunaZip;
-    }
-
-    public String getSaunaType() {
-        return saunaType;
-    }
-
-    public void setSaunaType(String saunaType) {
-        this.saunaType = saunaType;
+    public void setEndPrice(double endPrice) {
+        this.endPrice = endPrice;
     }
 
     public void setGoogleEventID(String googleEventID) {
