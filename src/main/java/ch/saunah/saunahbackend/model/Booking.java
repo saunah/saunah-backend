@@ -58,9 +58,6 @@ public class Booking {
     @Column(name = "woodAmount", nullable = false)
     private int woodAmount;
 
-    @Column(name = "discountDescription", nullable = false)
-    private String discountDescription;
-
     @Column(name = "comment", nullable = false)
     private String comment;
 
@@ -188,14 +185,6 @@ public class Booking {
 
     public void setWoodAmount(int wood) {
         this.woodAmount = wood;
-    }
-
-    public String getDiscountDescription() {
-        return discountDescription;
-    }
-
-    public void setDiscountDescription(String discountDescription) {
-        this.discountDescription = discountDescription;
     }
 
     public String getComment() {

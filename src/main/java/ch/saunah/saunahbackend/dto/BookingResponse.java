@@ -25,7 +25,6 @@ public class BookingResponse {
     private boolean deposit;
     private int handTowelAmount;
     private int woodAmount;
-    private String discountDescription;
     private String comment;
     private double endPrice;
 
@@ -48,7 +47,6 @@ public class BookingResponse {
         this.deposit = booking.isDeposit();
         this.handTowelAmount = booking.getHandTowelAmount();
         this.woodAmount = booking.getWoodAmount();
-        this.discountDescription = booking.getDiscountDescription();
         this.comment = booking.getComment();
         this.endPrice = booking.getEndPrice();
     }
@@ -111,10 +109,6 @@ public class BookingResponse {
 
     public int getWoodAmount() {
         return woodAmount;
-    }
-
-    public String getDiscountDescription() {
-        return discountDescription;
     }
 
     public String getComment() {

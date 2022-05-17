@@ -37,6 +37,9 @@ public class BookingPrice {
     @Column(name = "discount", nullable = false)
     private double discount;
 
+    @Column(name = "discountDescription", nullable = false)
+    private String discountDescription;
+
     public BookingPrice() {
 
     }
@@ -100,5 +103,13 @@ public class BookingPrice {
 
     public void setDiscount(double discount) {
         this.discount = discount;
+    }
+
+    public String getDiscountDescription() {
+        return discountDescription;
+    }
+
+    public void setDiscountDescription(String discountDescription) {
+        this.discountDescription = discountDescription;
     }
 }

@@ -33,6 +33,9 @@ public class Price {
     @Column(name = "discount", nullable = false)
     private float discount;
 
+    @Column(name = "discountDescription", nullable = false)
+    private String discountDescription;
+
 
     public Price() {
 
@@ -70,6 +73,10 @@ public class Price {
         return discount;
     }
 
+    public String getDiscountDescription() {
+        return discountDescription;
+    }
+
     public void setTransportService(float transportService) {
         this.transportService = transportService;
     }
@@ -96,5 +103,9 @@ public class Price {
 
     public void setDiscount(float discount) {
         this.discount = discount;
+    }
+
+    public void setDiscountDescription(String discountDescription) {
+        this.discountDescription = discountDescription;
     }
 }

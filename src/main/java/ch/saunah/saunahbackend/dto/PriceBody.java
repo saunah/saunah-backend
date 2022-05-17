@@ -11,33 +11,69 @@ public class PriceBody {
     private float handTowel;
     private float wood;
     private float discount;
+    private String discountDescription;
 
-    public float getTransportService() { return  transportService; }
+    public float getTransportService() {
+        return transportService;
+    }
 
-    public float getWashService() { return  washService; }
+    public float getWashService() {
+        return washService;
+    }
 
-    public float getSaunahImp() { return saunahImp; }
+    public float getSaunahImp() {
+        return saunahImp;
+    }
 
-    public float getDeposit() { return deposit; }
+    public float getDeposit() {
+        return deposit;
+    }
 
-    public float getHandTowel() { return handTowel; }
+    public float getHandTowel() {
+        return handTowel;
+    }
 
-    public float getWood() { return wood; }
+    public float getWood() {
+        return wood;
+    }
 
-    public float getDiscount() { return discount; }
+    public float getDiscount() {
+        return discount;
+    }
 
-    public void setTransportService(float transportService) { this.transportService = transportService; }
+    public String getDiscountDescription() {
+        return discountDescription;
+    }
 
-    public void setWashService(float washService) { this.washService = washService; }
+    public void setTransportService(float transportService) {
+        this.transportService = transportService;
+    }
 
-    public void setSaunahImp(float saunahImp) { this.saunahImp = saunahImp; }
+    public void setWashService(float washService) {
+        this.washService = washService;
+    }
 
-    public void setDeposit(float deposit) { this.deposit = deposit; }
+    public void setSaunahImp(float saunahImp) {
+        this.saunahImp = saunahImp;
+    }
 
-    public void setHandTowel(float handTowel) { this.handTowel = handTowel; }
+    public void setDeposit(float deposit) {
+        this.deposit = deposit;
+    }
 
-    public void setWood(float wood) { this.wood = wood; }
+    public void setHandTowel(float handTowel) {
+        this.handTowel = handTowel;
+    }
 
-    public void setDiscount(float discount) { this.discount = discount; }
+    public void setWood(float wood) {
+        this.wood = wood;
+    }
 
+    public void setDiscount(float discount) {
+        this.discount = discount;
+    }
+
+    public void setDiscountDescription(String discountDescription) {
+        this.discountDescription = discountDescription;
+    }
 }

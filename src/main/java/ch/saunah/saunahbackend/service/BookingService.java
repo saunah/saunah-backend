@@ -109,7 +109,6 @@ public class BookingService {
         booking.setWoodAmount(bookingBody.getWoodAmount());
         booking.setCreation(new Date(System.currentTimeMillis()));
         booking.setState(BookingState.OPENED);
-        booking.setDiscountDescription("test");
         booking.setComment(bookingBody.getComment());
         booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalendarId(), booking));
     }
@@ -127,6 +126,7 @@ public class BookingService {
         bookingPrice.setHandTowelPrice(bookingBody.getHandTowelAmount() * price.getHandTowel());
         bookingPrice.setWoodPrice(bookingBody.getWoodAmount() * price.getWood());
         bookingPrice.setDiscount(price.getDiscount());
+        bookingPrice.setDiscountDescription(bookingPrice.getDiscountDescription());
         return bookingPrice;
     }
 

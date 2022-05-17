@@ -102,8 +102,8 @@ public class PriceService {
         price.setWood(priceBody.getWood());
         price.setSaunahImp(priceBody.getSaunahImp());
         price.setDiscount(priceBody.getDiscount());
+        price.setDiscountDescription(priceBody.getDiscountDescription());
         return price;
     }
-
 
 }
