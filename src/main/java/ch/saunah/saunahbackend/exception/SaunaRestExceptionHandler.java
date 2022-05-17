@@ -33,8 +33,8 @@ public class SaunaRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, WebRequest request) {
-        String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
-        SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
+        String error = ex.getName() + " is a wrong Argument type";
+        SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.BAD_REQUEST, error);
         return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
@@ -42,19 +42,15 @@ public class SaunaRestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex,
                                                                    HttpHeaders headers, HttpStatus status, WebRequest request) {
         String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
-        SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
+        SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.NOT_FOUND, error);
         return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
         HttpHeaders headers, HttpStatus status, WebRequest request) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(ex.getMethod());
-        builder.append(" method is not supported for this request. Supported methods are ");
-        ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
-
-        SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getLocalizedMessage());
+        String error = ex.getMethod() + " method is not supported for this request.";
+        SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.METHOD_NOT_ALLOWED, error);
         return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
