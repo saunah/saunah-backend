@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,6 @@ import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.SaunaImage;
-import ch.saunah.saunahbackend.model.SaunaImageUrl;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
 
 /**
@@ -238,25 +236,6 @@ class SaunaServiceTest {
         for (SaunaImage image : images) {
             assertDoesNotThrow(() -> saunaService.getImage(image.getFileName()));
         }
-    }
-
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getSaunaImageUrls() {
-        saunaService.addSauna(saunaTypeBody);
-        Sauna sauna = saunaService.getAllSauna().get(0);
-        int saunaId = sauna.getId();
-        MockMultipartFile mockImage = mockImageFile("image.jpg", 0);
-        List<MultipartFile> mockImages = List.of(mockImage);
-
-        assertDoesNotThrow(() -> saunaService.addSaunaImages(saunaId, mockImages));
-
-        List<SaunaImageUrl> imageUrls = saunaService.getSaunaImageUrls(saunaId);
-        assertEquals(1, imageUrls.size());
-
-        URL imageUrl = imageUrls.get(0).getUrl();
-        assertNotNull(imageUrl);
-        assertFalse(imageUrl.toString().isBlank());
     }
 
     private MockMultipartFile mockImageFile(String name, int size) {

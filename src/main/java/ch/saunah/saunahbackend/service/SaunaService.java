@@ -1,12 +1,10 @@
 package ch.saunah.saunahbackend.service;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +22,6 @@ import org.webjars.NotFoundException;
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.model.SaunaImage;
-import ch.saunah.saunahbackend.model.SaunaImageUrl;
 import ch.saunah.saunahbackend.repository.SaunaImageRepository;
 import ch.saunah.saunahbackend.repository.SaunaRepository;
 import ch.saunah.saunahbackend.util.ImageUpload;
@@ -43,8 +40,7 @@ public class SaunaService {
     @Autowired
     private ImageUpload imageUploadUtil;
 
-    private static final String SAUNA_IMAGES_DIR = "sauna-images";
-    private static final String LOCAL_IMAGES_URL_PREFIX = "saunas/images";
+    public static final String SAUNA_IMAGES_DIR = "sauna-images";
     public static final int MAX_IMAGE_SIZE = 1024 * 1024 * 5;
 
     protected final Log logger = LogFactory.getLog(getClass());
@@ -168,38 +164,6 @@ public class SaunaService {
     public List<SaunaImage> getSaunaImages(int saunaId) throws NotFoundException {
         Sauna sauna = getSauna(saunaId);
         return saunaImageRepository.findBySaunaId(sauna.getId());
-    }
-
-    /**
-     * Get a list of all SaunaImages belongin to this object, wrapped into a SaunaImageUrl,
-     * which contains both image information, as well as the URL.
-     * @param saunaId the sauna id to fetch images for.
-     * @return the image information and url. In case of an error to determine
-     * the URL, it will be null.
-     */
-    public List<SaunaImageUrl> getSaunaImageUrls(int saunaId) {
-        List<SaunaImage> saunaImages = getSaunaImages(saunaId);
-        return saunaImages.stream().map(this::mapToSaunaImageUrl).collect(Collectors.toList());
-    }
-
-    /**
-     * Constructs a SaunaImageUrl object by retrieving the URL to the image
-     * passed and returning it as an object.
-     * @param saunaImage the image to get the URL for.
-     * @return the object containing both the image information as well as the URL.
-     * @throws IOException
-     */
-    private SaunaImageUrl mapToSaunaImageUrl(SaunaImage saunaImage) {
-        String imageDir = (imageUploadUtil instanceof ImageUploadLocal)
-            ? LOCAL_IMAGES_URL_PREFIX
-            : SAUNA_IMAGES_DIR;
-        URL url = null;
-        try {
-            url = imageUploadUtil.getImageURL(imageDir, saunaImage.getFileName());
-        } catch (IOException e) {
-            logger.error("Image URL could not be retrieved for SaunaImage", e);
-        }
-        return new SaunaImageUrl(saunaImage, url);
     }
 
     /**

@@ -15,6 +15,7 @@ import com.google.api.services.calendar.model.EventDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import ch.saunah.saunahbackend.SaunahBackendApplication;
 import ch.saunah.saunahbackend.dto.BookingBody;
@@ -76,6 +77,7 @@ class GoogleCalendarServiceTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void bookingCalenderTest () throws Exception {
         Sauna sauna = new Sauna();
         sauna.setName("Mobile Sauna 1");
