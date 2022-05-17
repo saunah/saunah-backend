@@ -99,7 +99,7 @@ public class BookingController {
     }
 
     @Operation(description = "Allows editing an existing Booking structure.")
-    @PutMapping(path = "bookings/{id}")
+    @PutMapping(path = "bookings/{id}/edit")
     public @ResponseBody
     ResponseEntity<BookingResponse> editBooking(@PathVariable(value = "id", required = true) Integer id, @RequestBody BookingBody bookingBody) throws IOException {
         Booking booking = bookingService.editBooking(id, bookingBody);
