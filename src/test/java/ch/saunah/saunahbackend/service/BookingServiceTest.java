@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.junit.jupiter.api.AfterEach;
@@ -197,5 +198,50 @@ class BookingServiceTest {
         bookingService.addBooking(bookingBody, user.getId());
         assertEquals(3, bookingRepository.count());
         assertEquals(3, bookingService.getAllBooking().size());
+    }
+
+    /**
+     * Check for correct total price
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void verifyTotalPrice() throws Exception {
+        setAllBookingBodyOptions(bookingBody, false);
+        bookingService.addBooking(bookingBody, user.getId());
+        Booking noOptionsBooking = bookingService.getAllBooking().get(0);
+        assertEquals(500, noOptionsBooking.getEndPrice());
+
+        bookingBody.setStartBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 24 * 3600));
+        bookingBody.setEndBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 48 * 3600));
+
+        setAllBookingBodyOptions(bookingBody, true);
+        bookingService.addBooking(bookingBody, user.getId());
+        Booking allOptionsBooking = bookingService.getAllBooking().get(1);
+        assertEquals(701.50, allOptionsBooking.getEndPrice());
+    }
+
+    /**
+     * Helper method to set all options on a booking at once
+     * @param body the booking body
+     * @param enabled whether options should be enabled or not
+     */
+    private void setAllBookingBodyOptions(BookingBody body, boolean enabled) {
+        body.setTransportService(enabled);
+        body.setWashService(enabled);
+        body.setSaunahImp(enabled);
+        body.setDeposit(enabled);
+        body.setHandTowel(enabled);
+        body.setWood(enabled);
+    }
+
+    /**
+     * Helper method to increase date by a given number of seconds
+     * @param seconds seconds to increase date
+     * @return modified date
+     */
+    private Date increaseDateBy(Date date, long seconds) {
+        Date newDate = new Date();
+        newDate.setTime(date.getTime() + seconds * 1000);
+        return newDate;
     }
 }
