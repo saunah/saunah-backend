@@ -34,9 +34,6 @@ public class BookingPrice {
     @Column(name = "woodPrice", nullable = false)
     private double woodPrice;
 
-    @Column(name = "hourlyRate", nullable = false)
-    private double hourlyRate;
-
     public BookingPrice() {
 
     }
@@ -94,11 +91,4 @@ public class BookingPrice {
         this.woodPrice = woodPrice;
     }
 
-    public double getHourlyRate() {
-        return hourlyRate;
-    }
-
-    public void setHourlyRate(double hourlyRate) {
-        this.hourlyRate = hourlyRate;
-    }
 }

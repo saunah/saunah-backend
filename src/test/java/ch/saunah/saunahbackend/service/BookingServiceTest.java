@@ -69,7 +69,6 @@ class BookingServiceTest {
         saunaRepository.save(sauna);
 
         Price price = new Price();
-        price.setHourlyRate(20.00F);
         price.setTransportService(1.50F);
         price.setWashService(50.00F);
         price.setSaunahImp(25.00F);
@@ -102,6 +101,7 @@ class BookingServiceTest {
         bookingBody.setSaunahImpAmount(3);
         bookingBody.setHandTowelAmount(2);
         bookingBody.setWoodAmount(3);
+        bookingBody.setDeposit(true);
         bookingBody.setComment("very nice");
     }
 
@@ -267,8 +267,8 @@ class BookingServiceTest {
         setAllBookingBodyOptions(bookingBody, false);
         bookingService.addBooking(bookingBody, user.getId());
         Booking noOptionsBooking = bookingService.getAllBooking().get(0);
-        //20 (hourly rate) * 288.0 (booking Duration) + 100 (deposit) = 5860
-        assertEquals(5860, noOptionsBooking.getEndPrice());
+        //500 (hourly rate) * 288.0 (booking Duration) + 100 (deposit) = 144100
+        assertEquals(144100, noOptionsBooking.getEndPrice());
 
         bookingBody.setStartBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 24 * 3600));
         bookingBody.setEndBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 48 * 3600));
@@ -276,14 +276,15 @@ class BookingServiceTest {
         setAllBookingBodyOptions(bookingBody, true);
         bookingService.addBooking(bookingBody, user.getId());
         Booking allOptionsBooking = bookingService.getAllBooking().get(1);
-        // 500 (base price) + 100 (deposit) - 20 (discount) + 1.5 (transport service) + 50 (wash service)
-        // + 25 (sauna imp) + 5 (hand towel) + 20 (wood) = 681.5
-        assertEquals(681.5, allOptionsBooking.getEndPrice());
+        // 500 (hourly rate) * 24.0 (booking Duration) + 100 (deposit) + 1.5 (transport service) + 50 (wash service)
+        // + 25 (sauna imp) + 5 (hand towel) + 20 (wood) = 12201.5
+        assertEquals(12201.5, allOptionsBooking.getEndPrice());
     }
 
     /**
      * Helper method to set all options on a booking at once
-     * @param body the booking body
+     *
+     * @param body    the booking body
      * @param enabled whether options should be enabled or not
      */
     private void setAllBookingBodyOptions(BookingBody body, boolean enabled) {
@@ -293,10 +294,12 @@ class BookingServiceTest {
         body.setSaunahImpAmount(amount);
         body.setHandTowelAmount(amount);
         body.setWoodAmount(amount);
+        body.setDeposit(enabled);
     }
 
     /**
      * Helper method to increase date by a given number of seconds
+     *
      * @param seconds seconds to increase date
      * @return modified date
      */

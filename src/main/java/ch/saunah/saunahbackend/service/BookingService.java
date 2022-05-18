@@ -58,8 +58,8 @@ public class BookingService {
         Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getLocation(), "Location must not be null!");
-        validateBookingData(bookingBody);
         Booking booking = new Booking();
+        validateBookingData(bookingBody, booking.getId());
         setBookingFields(booking, bookingBody, true, false);
         booking.setUserId(userId);
         bookingRepository.save(booking);
@@ -69,11 +69,11 @@ public class BookingService {
         bookingSaunaRepository.save(bookingSauna);
         booking.setBookingPrice(bookingPrice);
         booking.setBookingSauna(bookingSauna);
-        booking.setEndPrice(calculatePrice(booking, bookingPrice));
+        booking.setEndPrice(calculatePrice(booking, bookingPrice, bookingSauna));
         return bookingRepository.save(booking);
     }
 
-    private void validateBookingData(BookingBody bookingBody) {
+    private void validateBookingData(BookingBody bookingBody, int bookingId) {
         Date now = new Date(System.currentTimeMillis());
         if (now.after(bookingBody.getStartBookingDate())) {
             throw new IllegalArgumentException("Booking date is in the past");
@@ -84,7 +84,8 @@ public class BookingService {
         List<BookingSauna> allSaunaBookings = bookingSaunaRepository.findAllBySaunaId(bookingBody.getSaunaId());
         List<Booking> allBookings = getAllBooking().stream().filter(x -> allSaunaBookings.stream().anyMatch(y -> y.getId() == x.getId())).collect(Collectors.toList());
         if (allBookings.stream().anyMatch(x -> dateRangeCollide(bookingBody.getStartBookingDate(),
-            bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate()))) {
+            bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate())) &&
+            !getBooking(bookingId).equals(allBookings.get(bookingId))) {
             throw new IllegalArgumentException("Sauna is not available during this date range");
         }
     }
@@ -141,7 +142,6 @@ public class BookingService {
         bookingPrice.setDepositPrice(price.getDeposit());
         bookingPrice.setHandTowelPrice(price.getHandTowel());
         bookingPrice.setWoodPrice(price.getWood());
-        bookingPrice.setHourlyRate(price.getHourlyRate());
         return bookingPrice;
     }
 
@@ -174,7 +174,7 @@ public class BookingService {
         Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getLocation(), "Location must not be null!");
-        validateBookingData(bookingBody);
+        validateBookingData(bookingBody, bookingId);
         Booking editBooking = getBooking(bookingId);
         setBookingFields(editBooking, bookingBody, false, true);
         return bookingRepository.save(editBooking);
@@ -285,9 +285,9 @@ public class BookingService {
         return ((booking.getEndBookingDate().getTime() - booking.getStartBookingDate().getTime()) / 1000.00) / 3600.00;
     }
 
-    private double calculatePrice(Booking booking, BookingPrice bookingPrice) {
+    private double calculatePrice(Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
         double endPrice = 0;
-        endPrice += booking.getBookingDuration() * bookingPrice.getHourlyRate();
+        endPrice += booking.getBookingDuration() * bookingSauna.getSaunaPrice();
         endPrice += booking.getTransportServiceDistance() * bookingPrice.getTransportServicePrice();
         endPrice += booking.getSaunahImpAmount() * bookingPrice.getSaunahImpPrice();
         endPrice += booking.getHandTowelAmount() * bookingPrice.getHandTowelPrice();
@@ -300,6 +300,7 @@ public class BookingService {
 
     /**
      * Checks whether the ID passed is neither null nor blank.
+     *
      * @param id The id to check.
      * @return Whether the id is valid.
      */
