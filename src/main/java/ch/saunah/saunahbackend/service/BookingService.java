@@ -107,7 +107,10 @@ public class BookingService {
         booking.setWoodAmount(bookingBody.getWoodAmount());
         booking.setState(BookingState.OPENED);
         booking.setComment(bookingBody.getComment());
-        booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalendarId(), booking));
+
+        if (isValidId(sauna.getGoogleCalendarId())) {
+            booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalendarId(), booking));
+        }
 
         if (setDefaultValues) {
             // set default values
@@ -192,8 +195,10 @@ public class BookingService {
 
 
         Sauna sauna = saunaService.getSauna(booking.getBookingSauna().getSaunaId());
-        calendarService.approveEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
 
+        if (isValidId(sauna.getGoogleCalendarId()) && isValidId(booking.getGoogleEventID())) {
+            calendarService.approveEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
+        }
 
         bookingRepository.save(booking);
     }
@@ -213,8 +218,10 @@ public class BookingService {
         booking.setState(BookingState.CANCELED);
 
         Sauna sauna = saunaService.getSauna(booking.getBookingSauna().getSaunaId());
-        calendarService.deleteEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
 
+        if (isValidId(sauna.getGoogleCalendarId()) && isValidId(booking.getGoogleEventID())) {
+            calendarService.deleteEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
+        }
 
         bookingRepository.save(booking);
     }
