@@ -161,7 +161,7 @@ public class UserService {
      * @return true if he provided id matches, false if it does not
      */
     public void verifyUser(String activationId) throws NotFoundException{
-        User user = userRepository.findByActivationId(activationId).orElse(null);
+        User user = userRepository.findByActivationId(activationId);
         if (user == null) {
             throw new NotFoundException(String.format("User with the activation id %s not found!", activationId));
         }
