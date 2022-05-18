@@ -81,11 +81,19 @@ public class BookingService {
         if (bookingBody.getStartBookingDate().after(bookingBody.getEndBookingDate())) {
             throw new IllegalArgumentException("Invalid start date");
         }
-        List<BookingSauna> allSaunaBookings = bookingSaunaRepository.findAllBySaunaId(bookingBody.getSaunaId());
-        List<Booking> allBookings = getAllBooking().stream().filter(x -> allSaunaBookings.stream().anyMatch(y -> y.getId() == x.getId())).collect(Collectors.toList());
-        if (allBookings.stream().anyMatch(x -> dateRangeCollide(bookingBody.getStartBookingDate(),
-            bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate())) &&
-            !getBooking(bookingId).equals(allBookings.get(bookingId))) {
+
+        List<Booking> allBookings = getAllBooking().stream().filter(booking ->
+            booking.getBookingSauna().getSaunaId() == bookingBody.getSaunaId() &&
+                booking.getId() != bookingId &&
+                booking.getState() != BookingState.CANCELED
+        ).collect(Collectors.toList());
+
+        if (allBookings.stream().anyMatch(x ->
+            dateRangeCollide(bookingBody.getStartBookingDate(),
+                bookingBody.getEndBookingDate(),
+                x.getStartBookingDate(),
+                x.getEndBookingDate()))
+        ) {
             throw new IllegalArgumentException("Sauna is not available during this date range");
         }
     }
@@ -177,6 +185,7 @@ public class BookingService {
         validateBookingData(bookingBody, bookingId);
         Booking editBooking = getBooking(bookingId);
         setBookingFields(editBooking, bookingBody, false, true);
+        editBooking.setEndPrice(calculatePrice(editBooking, editBooking.getBookingPrice(), editBooking.getBookingSauna()));
         return bookingRepository.save(editBooking);
     }
 
