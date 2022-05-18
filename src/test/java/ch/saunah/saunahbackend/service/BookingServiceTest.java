@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -149,6 +150,51 @@ class BookingServiceTest {
         sauna.setGoogleCalendarId(null);
         Booking booking2 = bookingService.addBooking(bookingBody, userId);
         assertNotEquals(booking.getId(), booking2.getId());
+    }
+
+    /**
+     * This test checks if the fields values of an existing booking can be edited
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void editBooking() throws Exception {
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        BookingBody bookingBodyChange = new BookingBody();
+        bookingBodyChange.setStartBookingDate(new GregorianCalendar(2023, Calendar.AUGUST, 20).getTime());
+        bookingBodyChange.setEndBookingDate(new GregorianCalendar(2023, Calendar.SEPTEMBER, 1).getTime());
+        bookingBodyChange.setSaunaId(sauna.getId());
+        bookingBodyChange.setLocation("Bassersdorf");
+        bookingBodyChange.setTransportServiceDistance(20);
+        bookingBodyChange.setWashService(true);
+        bookingBodyChange.setSaunahImpAmount(1);
+        bookingBodyChange.setHandTowelAmount(1);
+        bookingBodyChange.setWoodAmount(3);
+        bookingBodyChange.setDeposit(true);
+        bookingBodyChange.setComment("very nice");
+        booking = bookingService.editBooking(user.getId(), bookingBodyChange);
+        checkBookingFields(bookingBodyChange, booking);
+    }
+
+    /**
+     * This method helps checking if the values are correct
+     *
+     * @param bookingBody The booking parameters
+     * @param booking     the instance of a booking
+     */
+    private void checkBookingFields(BookingBody bookingBody, Booking booking) {
+        assertEquals(bookingBody.getStartBookingDate(), booking.getStartBookingDate());
+        assertEquals(bookingBody.getEndBookingDate(), booking.getEndBookingDate());
+        assertEquals(bookingBody.getSaunaId(), booking.getBookingSauna().getSaunaId());
+        assertEquals(bookingBody.getLocation(), booking.getLocation());
+        assertEquals(bookingBody.getTransportServiceDistance(), booking.getTransportServiceDistance());
+        assertEquals(bookingBody.isWashService(), booking.isWashService());
+        assertEquals(bookingBody.getSaunahImpAmount(), booking.getSaunahImpAmount());
+        assertEquals(bookingBody.getHandTowelAmount(), booking.getHandTowelAmount());
+        assertEquals(bookingBody.getWoodAmount(), booking.getWoodAmount());
+        assertEquals(bookingBody.isDeposit(), booking.isDeposit());
+        assertEquals(bookingBody.getComment(), booking.getComment());
+
+
     }
 
     /**
