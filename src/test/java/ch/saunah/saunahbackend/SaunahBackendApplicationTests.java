@@ -6,15 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.util.UUID;
 import java.util.stream.StreamSupport;
 
-import ch.saunah.saunahbackend.model.UserRole;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
 
-@SpringBootTest
+@SpringBootTest(classes = SaunahBackendApplication.class)
 class SaunahBackendApplicationTests {
 
     @Autowired
@@ -43,7 +43,7 @@ class SaunahBackendApplicationTests {
         newUser.setFirstName("Max");
         newUser.setLastName("Müller");
         newUser.setPhoneNumber("079 123 45 67");
-        newUser.setPlz("8500");
+        newUser.setZip("8500");
         newUser.setPlace("Winterthur");
         newUser.setStreet("Müllerstrasse 20");
         newUser.setRole(UserRole.USER);

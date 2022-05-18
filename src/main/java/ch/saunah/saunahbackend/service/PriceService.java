@@ -21,6 +21,7 @@ public class PriceService {
 
     /**
      * Adds a new Price structure to the Database
+     *
      * @param priceBody the parameter needed to create a Price structure
      * @return a new Price structure
      * @throws NullPointerException if a required Object is null
@@ -35,7 +36,8 @@ public class PriceService {
 
     /**
      * Lets the user edit an existing price structure
-     * @param id The id of the Price structure that shall be edited
+     *
+     * @param id        The id of the Price structure that shall be edited
      * @param priceBody the parameters of the price structure that is being edited
      * @return The price structure with the changed values
      * @throws NullPointerException if no price structure exists
@@ -48,12 +50,13 @@ public class PriceService {
 
     /**
      * Remove an existing price structure from the database
+     *
      * @param id the id of the price structure that should be deleted
      * @throws NotFoundException if no such price structure exists
      */
     public void removePrice(int id) throws NotFoundException {
         Price price = priceRepository.findById(id).orElse(null);
-        if (price == null){
+        if (price == null) {
             throw new NotFoundException(String.format("Price structure with id %d not found!", id));
         }
         priceRepository.deleteById(id);
@@ -61,13 +64,14 @@ public class PriceService {
 
     /**
      * Get a specific price structure from the database
+     *
      * @param id The id of the price structure that is requested
      * @return the requested price structure
      * @throws NotFoundException if no such price structure exists
      */
     public Price getPrice(int id) throws NotFoundException {
         Price price = priceRepository.findById(id).orElse(null);
-        if (price == null){
+        if (price == null) {
             throw new NotFoundException(String.format("Price format with id %d not found!", id));
         }
         return price;
@@ -85,11 +89,12 @@ public class PriceService {
 
     /**
      * Method that helps to set values for price structure fields
-     * @param price the price instance whose fields need to be set
+     *
+     * @param price     the price instance whose fields need to be set
      * @param priceBody the parameters to be set in the corresponding fields
      * @return the price instance with the set field values
      */
-    private Price setPriceFields (Price price, PriceBody priceBody) {
+    private Price setPriceFields(Price price, PriceBody priceBody) {
         price.setDeposit(priceBody.getDeposit());
         price.setWashService(priceBody.getWashService());
         price.setTransportService(priceBody.getTransportService());
@@ -98,6 +103,5 @@ public class PriceService {
         price.setSaunahImp(priceBody.getSaunahImp());
         return price;
     }
-
 
 }

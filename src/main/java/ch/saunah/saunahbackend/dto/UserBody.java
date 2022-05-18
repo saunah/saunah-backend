@@ -1,9 +1,11 @@
 package ch.saunah.saunahbackend.dto;
 
+import ch.saunah.saunahbackend.model.UserRole;
+
 /**
  * This class is used as the DTO object when registering an account.
  */
-public class SignUpBody {
+public class UserBody {
     private String firstName;
     private String lastName;
     private String password;
@@ -11,7 +13,8 @@ public class SignUpBody {
     private String phoneNumber;
     private String street;
     private String place;
-    private String plz;
+    private String zip;
+    private UserRole role;
 
     public String getFirstName() {
         return firstName;
@@ -69,11 +72,20 @@ public class SignUpBody {
         this.place = place;
     }
 
-    public String getPlz() {
-        return plz;
+    public String getZip() {
+        return zip;
     }
 
-    public void setPlz(String plz) {
-        this.plz = plz;
+    public void setZip(String zip) {
+        this.zip = zip;
     }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
 }

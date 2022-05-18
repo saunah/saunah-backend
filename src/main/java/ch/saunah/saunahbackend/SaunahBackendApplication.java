@@ -1,5 +1,8 @@
 package ch.saunah.saunahbackend;
 
+import ch.saunah.saunahbackend.model.UserRole;
+import ch.saunah.saunahbackend.security.JwtAuthenticationEntryPoint;
+import ch.saunah.saunahbackend.security.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,9 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import ch.saunah.saunahbackend.model.UserRole;
-import ch.saunah.saunahbackend.security.JwtAuthenticationEntryPoint;
-import ch.saunah.saunahbackend.security.JwtRequestFilter;
 
 /**
  * This class starts the application
@@ -47,7 +47,6 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
         SpringApplication.run(SaunahBackendApplication.class, args);
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
@@ -62,8 +61,8 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
                 "/login",
                 "/signup",
                 "/verify/**",
-                "/resetpassword/**",
-                "/resetpasswordrequest"
+                "/reset-password/**",
+                "/reset-password"
             ).permitAll()
             // saunas
             .mvcMatchers(
@@ -72,6 +71,7 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
                 "/saunas/{id}"
             ).permitAll()
             .antMatchers(
+                "/saunas",
                 "/saunas/{id}"
             ).hasAuthority(UserRole.ADMIN.toString())
             // sauna images
@@ -93,6 +93,39 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
             .antMatchers(
                 "/prices/{id}"
             ).hasAuthority(UserRole.ADMIN.toString())
+            // bookings
+            .mvcMatchers(
+                HttpMethod.PUT,
+                "/bookings/{id}"
+            ).hasAuthority(UserRole.ADMIN.toString())
+            .mvcMatchers(
+                "/bookings",
+                "/bookings/{id}",
+                "bookings/{id}/price",
+                "bookings/{id}/sauna"
+            ).hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
+            .antMatchers(
+                "/bookings/all",
+                "/bookings/{id}/approve",
+                "/bookings/{id}/cancel"
+            ).hasAuthority(UserRole.ADMIN.toString())
+            //users
+            .mvcMatchers(
+                HttpMethod.GET,
+                "/users/{id}"
+            ).hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
+            .antMatchers(
+                "/users",
+                "users/all"
+            ).hasAuthority(UserRole.ADMIN.toString())
+            .antMatchers(
+                HttpMethod.PUT,
+                "/users/{id}"
+            ).hasAnyAuthority(UserRole.USER.toString(), UserRole.ADMIN.toString())
+            .antMatchers(
+                HttpMethod.DELETE,
+                "/users/{id}"
+            ).hasAnyAuthority(UserRole.ADMIN.toString())
             .and()
             .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

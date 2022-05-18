@@ -1,10 +1,6 @@
 package ch.saunah.saunahbackend.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * This class is used to define the table of the database of the user entity.
@@ -40,17 +36,24 @@ public class User {
     @Column(name = "place", nullable = false)
     private String place;
 
-    @Column(name = "plz", nullable = false)
-    private String plz;
+    @Column(name = "zip", nullable = false)
+    private String zip;
 
     @Column(name = "activated", nullable = false)
     private boolean activated;
 
     @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @Column(name = "resetpasswordhash")
     private String resetpasswordhash;
+
+    @Column(name = "initialAdmin")
+    private boolean initialAdmin;
+
+    @Column(name = "isDeleted")
+    private boolean isDeleted;
 
     /**
      * The default constructor for the user.
@@ -95,8 +98,8 @@ public class User {
         return place;
     }
 
-    public String getPlz() {
-        return plz;
+    public String getZip() {
+        return zip;
     }
 
     public void setActivationId(String activationId) {
@@ -131,8 +134,8 @@ public class User {
         this.place = place;
     }
 
-    public void setPlz(String plz) {
-        this.plz = plz;
+    public void setZip(String zip) {
+        this.zip = zip;
     }
 
     public boolean isActivated() {
@@ -155,4 +158,11 @@ public class User {
 
     public void setResetpasswordHash(String resetpassword_hash){this.resetpasswordhash = resetpassword_hash;}
 
+    public boolean getInitialAdmin() {return initialAdmin; }
+
+    public  void setInitialAdmin(boolean initialAdmin) { this.initialAdmin = initialAdmin;}
+
+    public boolean getIsDeleted() {return isDeleted; }
+
+    public void setIsDeleted(boolean isDeleted) { this.isDeleted = isDeleted;}
 }

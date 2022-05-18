@@ -6,19 +6,19 @@ package ch.saunah.saunahbackend.dto;
 public class SaunaImageResponse {
     private final int id;
     private final int saunaId;
-    private final String fileName;
+    private final String url;
 
     /**
      * This constructor sets all the fields of this object.
      *
      * @param id the id of the image
      * @param saunaId the id of the saune
-     * @param fileName the fileName of the image
+     * @param url the url of the image
      */
-    public SaunaImageResponse(int id, int saunaId, String fileName){
+    public SaunaImageResponse(int id, int saunaId, String url){
         this.id = id;
         this.saunaId = saunaId;
-        this.fileName = fileName;
+        this.url = url;
     }
 
     public int getId() {
@@ -29,7 +29,7 @@ public class SaunaImageResponse {
         return saunaId;
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getUrl() {
+        return url;
     }
 }

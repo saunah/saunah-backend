@@ -11,29 +11,53 @@ public class PriceBody {
     private float handTowel;
     private float wood;
 
-    public float getTransportService() { return  transportService; }
+    public float getTransportService() {
+        return transportService;
+    }
 
-    public float getWashService() { return  washService; }
+    public float getWashService() {
+        return washService;
+    }
 
-    public float getSaunahImp() { return saunahImp; }
+    public float getSaunahImp() {
+        return saunahImp;
+    }
 
-    public float getDeposit() { return deposit; }
+    public float getDeposit() {
+        return deposit;
+    }
 
-    public float getHandTowel() { return handTowel; }
+    public float getHandTowel() {
+        return handTowel;
+    }
 
-    public float getWood() { return wood; }
+    public float getWood() {
+        return wood;
+    }
 
-    public void setTransportService(float transportService) { this.transportService = transportService; }
 
-    public void setWashService(float washService) { this.washService = washService; }
+    public void setTransportService(float transportService) {
+        this.transportService = transportService;
+    }
 
-    public void setSaunahImp(float saunahImp) { this.saunahImp = saunahImp; }
+    public void setWashService(float washService) {
+        this.washService = washService;
+    }
 
-    public void setDeposit(float deposit) { this.deposit = deposit; }
+    public void setSaunahImp(float saunahImp) {
+        this.saunahImp = saunahImp;
+    }
 
-    public void setHandTowel(float handTowel) { this.handTowel = handTowel; }
+    public void setDeposit(float deposit) {
+        this.deposit = deposit;
+    }
 
-    public void setWood(float wood) { this.wood = wood; }
+    public void setHandTowel(float handTowel) {
+        this.handTowel = handTowel;
+    }
 
+    public void setWood(float wood) {
+        this.wood = wood;
+    }
 
 }
