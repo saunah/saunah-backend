@@ -11,12 +11,15 @@ public class BookingBody {
     private Date endBookingDate;
     private int saunaId;
     private String location;
-    private boolean transportService;
+    private int transportServiceDistance;
     private boolean washService;
-    private boolean saunahImp;
+    private int saunahImpAmount;
+    private int handTowelAmount;
+    private int woodAmount;
+    private String comment;
+    private double discount;
+    private String discountDescription;
     private boolean deposit;
-    private boolean handTowel;
-    private boolean wood;
 
     public Date getStartBookingDate() {
         return startBookingDate;
@@ -50,12 +53,12 @@ public class BookingBody {
         this.location = location;
     }
 
-    public boolean isTransportService() {
-        return transportService;
+    public int getTransportServiceDistance() {
+        return transportServiceDistance;
     }
 
-    public void setTransportService(boolean transportService) {
-        this.transportService = transportService;
+    public void setTransportServiceDistance(int transportServiceDistance) {
+        this.transportServiceDistance = transportServiceDistance;
     }
 
     public boolean isWashService() {
@@ -66,12 +69,52 @@ public class BookingBody {
         this.washService = washService;
     }
 
-    public boolean isSaunahImp() {
-        return saunahImp;
+    public int getSaunahImpAmount() {
+        return saunahImpAmount;
     }
 
-    public void setSaunahImp(boolean saunahImp) {
-        this.saunahImp = saunahImp;
+    public void setSaunahImpAmount(int saunahImpAmount) {
+        this.saunahImpAmount = saunahImpAmount;
+    }
+
+    public int getHandTowelAmount() {
+        return handTowelAmount;
+    }
+
+    public void setHandTowelAmount(int handTowelAmount) {
+        this.handTowelAmount = handTowelAmount;
+    }
+
+    public int getWoodAmount() {
+        return woodAmount;
+    }
+
+    public void setWoodAmount(int woodAmount) {
+        this.woodAmount = woodAmount;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public String getDiscountDescription() {
+        return discountDescription;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public void setDiscountDescription(String discountDescription) {
+        this.discountDescription = discountDescription;
     }
 
     public boolean isDeposit() {
@@ -82,19 +125,4 @@ public class BookingBody {
         this.deposit = deposit;
     }
 
-    public boolean isHandTowel() {
-        return handTowel;
-    }
-
-    public void setHandTowel(boolean handTowel) {
-        this.handTowel = handTowel;
-    }
-
-    public boolean isWood() {
-        return wood;
-    }
-
-    public void setWood(boolean wood) {
-        this.wood = wood;
-    }
 }

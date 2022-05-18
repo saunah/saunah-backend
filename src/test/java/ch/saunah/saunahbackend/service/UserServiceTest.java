@@ -196,7 +196,7 @@ class UserServiceTest {
     }
 
     /**
-     * This test checks if all saunas can be found that exist in the database
+     * This test checks if all user can be found that exist in the database
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -211,6 +211,27 @@ class UserServiceTest {
         userService.signUp(userBody);
         assertEquals(4,userRepository.count());
     }
+
+    /**
+     * This test checks if all user can be found that exist in the database who have not been soft deleted
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void getAllVisibleUser() throws Exception {
+        userService.signUp(userBody);
+        userBody.setEmail("test1@gmail.com");
+        userService.signUp(userBody);
+        userBody.setEmail("test2@gmail.com");
+        userService.signUp(userBody);
+        userBody.setEmail("test3@gmail.com");
+        userService.signUp(userBody);
+        assertEquals(4,userRepository.count());
+        userService.deleteUser(4);
+        assertEquals(3,userRepository.findByIsDeleted(false).stream().count());
+        userService.deleteUser(3);
+        assertEquals(2,userRepository.findByIsDeleted(false).stream().count());
+    }
+
 
     /**
      * This test checks if the fields values of an existing user can be edited
@@ -261,12 +282,24 @@ class UserServiceTest {
 
     /**
      * This test, checks if an Admin can change the Userrole of others
-     * @throws Exception
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void editUserRole() throws Exception {
+    void deleteUser() throws Exception {
         User userAdmin = userService.signUp(userBody);
+        assertTrue(userAdmin.getInitialAdmin());
+        assertFalse(userAdmin.getIsDeleted());
+
+        userBody.setEmail("test1@gmail.com");
+        User secondUser = userService.signUp(userBody);
+        assertFalse(secondUser.getInitialAdmin());
+        assertFalse(secondUser.getIsDeleted());
+
+        userAdmin = userService.deleteUser(1);
+        assertFalse(userAdmin.getIsDeleted());
+        secondUser = userService.deleteUser(2);
+        assertTrue(secondUser.getIsDeleted());
+
 
     }
 

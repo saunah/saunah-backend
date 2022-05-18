@@ -84,9 +84,9 @@ class PriceServiceTest {
         priceService.addPrice(priceBody);
         priceService.addPrice(priceBody);
         priceService.addPrice(priceBody);
-        assertEquals(3,priceRepository.count());
+        assertEquals(3, priceRepository.count());
         priceService.removePrice(1);
-        assertEquals(2,priceRepository.count());
+        assertEquals(2, priceRepository.count());
     }
 
 
@@ -124,8 +124,9 @@ class PriceServiceTest {
 
     /**
      * This method helps checking if the values are correct
+     *
      * @param priceBody the Parameters of a price structure
-     * @param price the instance of a Price
+     * @param price     the instance of a Price
      */
     private void checkPriceFields(PriceBody priceBody, Price price) {
         assertEquals(priceBody.getDeposit(), price.getDeposit());

@@ -25,22 +25,34 @@ public class PriceResponse {
         this.deposit = price.getDeposit();
         this.handTowel = price.getHandTowel();
         this.wood = price.getWood();
-     }
+    }
 
     public int getId() {
         return id;
     }
 
-    public float getTransportService() { return  transportService; }
+    public float getTransportService() {
+        return transportService;
+    }
 
-    public float getWashService() { return  washService; }
+    public float getWashService() {
+        return washService;
+    }
 
-    public float getSaunahImp() { return saunahImp; }
+    public float getSaunahImp() {
+        return saunahImp;
+    }
 
-    public float getDeposit() { return deposit; }
+    public float getDeposit() {
+        return deposit;
+    }
 
-    public float getHandTowel() { return handTowel; }
+    public float getHandTowel() {
+        return handTowel;
+    }
 
-    public float getWood() { return wood; }
+    public float getWood() {
+        return wood;
+    }
 
 }

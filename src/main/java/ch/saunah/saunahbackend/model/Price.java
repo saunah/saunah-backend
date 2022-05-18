@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity(name = "price")
 public class Price {
     @Id
-    @Column(name="id", nullable = false)
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
@@ -30,8 +30,7 @@ public class Price {
     @Column(name = "wood", nullable = false)
     private float wood;
 
-
-    public Price(){
+    public Price() {
 
     }
 
@@ -39,28 +38,52 @@ public class Price {
         return id;
     }
 
-    public float getTransportService() { return  transportService; }
+    public float getTransportService() {
+        return transportService;
+    }
 
-    public float getWashService() { return  washService; }
+    public float getWashService() {
+        return washService;
+    }
 
-    public float getSaunahImp() { return saunahImp; }
+    public float getSaunahImp() {
+        return saunahImp;
+    }
 
-    public float getDeposit() { return deposit; }
+    public float getDeposit() {
+        return deposit;
+    }
 
-    public float getHandTowel() { return handTowel; }
+    public float getHandTowel() {
+        return handTowel;
+    }
 
-    public float getWood() { return wood; }
+    public float getWood() {
+        return wood;
+    }
 
-    public void setTransportService(float transportService) { this.transportService = transportService; }
+    public void setTransportService(float transportService) {
+        this.transportService = transportService;
+    }
 
-    public void setWashService(float washService) { this.washService = washService; }
+    public void setWashService(float washService) {
+        this.washService = washService;
+    }
 
-    public void setSaunahImp(float saunahImp) { this.saunahImp = saunahImp; }
+    public void setSaunahImp(float saunahImp) {
+        this.saunahImp = saunahImp;
+    }
 
-    public void setDeposit(float deposit) { this.deposit = deposit; }
+    public void setDeposit(float deposit) {
+        this.deposit = deposit;
+    }
 
-    public void setHandTowel(float handTowel) { this.handTowel = handTowel; }
+    public void setHandTowel(float handTowel) {
+        this.handTowel = handTowel;
+    }
 
-    public void setWood(float wood) { this.wood = wood; }
+    public void setWood(float wood) {
+        this.wood = wood;
+    }
 
 }

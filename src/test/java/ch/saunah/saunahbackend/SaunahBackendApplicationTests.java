@@ -14,7 +14,7 @@ import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
 
-@SpringBootTest
+@SpringBootTest(classes = SaunahBackendApplication.class)
 class SaunahBackendApplicationTests {
 
     @Autowired

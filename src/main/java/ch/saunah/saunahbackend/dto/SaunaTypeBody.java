@@ -14,6 +14,7 @@ public class SaunaTypeBody {
     private String street;
     private int zip;
     private String type;
+    private String googleCalendarId;
 
     public String getName() {
         return name;
@@ -53,7 +54,13 @@ public class SaunaTypeBody {
         return type;
     }
 
-    public void setName(String name) { this.name = name;}
+    public String getGoogleCalendarId() {
+        return googleCalendarId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public void setDescription(String description) {
         this.description = description;
@@ -89,5 +96,9 @@ public class SaunaTypeBody {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public void setGoogleCalendarId(String googleCalendarId) {
+        this.googleCalendarId = googleCalendarId;
     }
 }
