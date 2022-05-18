@@ -99,6 +99,7 @@ public class BookingService {
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
         booking.setStartBookingDate(bookingBody.getStartBookingDate());
         booking.setEndBookingDate(bookingBody.getEndBookingDate());
+        booking.setBookingDuration(calculateBookingDuration(booking));
         booking.setLocation(bookingBody.getLocation());
         booking.setTransportServiceDistance(bookingBody.getTransportServiceDistance());
         booking.setWashService(bookingBody.isWashService());
@@ -286,7 +287,7 @@ public class BookingService {
 
     private double calculatePrice(Booking booking, BookingPrice bookingPrice) {
         double endPrice = 0;
-        endPrice += calculateBookingDuration(booking) * bookingPrice.getHourlyRate();
+        endPrice += booking.getBookingDuration() * bookingPrice.getHourlyRate();
         endPrice += booking.getTransportServiceDistance() * bookingPrice.getTransportServicePrice();
         endPrice += booking.getSaunahImpAmount() * bookingPrice.getSaunahImpPrice();
         endPrice += booking.getHandTowelAmount() * bookingPrice.getHandTowelPrice();

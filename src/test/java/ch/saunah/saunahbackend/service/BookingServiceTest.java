@@ -69,13 +69,13 @@ class BookingServiceTest {
         saunaRepository.save(sauna);
 
         Price price = new Price();
+        price.setHourlyRate(20.00F);
         price.setTransportService(1.50F);
         price.setWashService(50.00F);
         price.setSaunahImp(25.00F);
         price.setDeposit(100F);
         price.setHandTowel(5.00F);
         price.setWood(20.00F);
-        price.setHourlyRate(20.00F);
         priceRepository.save(price);
 
         user = new User();
@@ -267,8 +267,8 @@ class BookingServiceTest {
         setAllBookingBodyOptions(bookingBody, false);
         bookingService.addBooking(bookingBody, user.getId());
         Booking noOptionsBooking = bookingService.getAllBooking().get(0);
-        // 500 (base price) + 100 (deposit) - 20 (discount) = 580
-        assertEquals(580, noOptionsBooking.getEndPrice());
+        //20 (hourly rate) * 288.0 (booking Duration) + 100 (deposit) = 5860
+        assertEquals(5860, noOptionsBooking.getEndPrice());
 
         bookingBody.setStartBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 24 * 3600));
         bookingBody.setEndBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 48 * 3600));

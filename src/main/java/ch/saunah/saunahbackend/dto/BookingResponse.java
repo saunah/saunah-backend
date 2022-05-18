@@ -13,6 +13,7 @@ public class BookingResponse {
     private int id;
     private Date startBookingDate;
     private Date endBookingDate;
+    private double bookingDuration;
     private Date creation;
     private BookingState state;
     private int userId;
@@ -37,6 +38,7 @@ public class BookingResponse {
         this.id = booking.getId();
         this.startBookingDate = booking.getStartBookingDate();
         this.endBookingDate = booking.getEndBookingDate();
+        this.bookingDuration = booking.getBookingDuration();
         this.creation = booking.getCreation();
         this.state = booking.getState();
         this.userId = booking.getUserId();
@@ -65,6 +67,10 @@ public class BookingResponse {
 
     public Date getEndBookingDate() {
         return endBookingDate;
+    }
+
+    public double getBookingDuration() {
+        return bookingDuration;
     }
 
     public Date getCreation() {

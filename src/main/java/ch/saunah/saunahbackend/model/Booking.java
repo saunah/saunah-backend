@@ -28,6 +28,9 @@ public class Booking {
     @Column(name = "end_booking_date", nullable = false)
     private Date endBookingDate;
 
+    @Column(name = "bookingDuration", nullable = false)
+    private double bookingDuration;
+
     @Column(name = "creation", nullable = false)
     private Date creation;
 
@@ -111,6 +114,14 @@ public class Booking {
 
     public void setEndBookingDate(Date endBookingDate) {
         this.endBookingDate = endBookingDate;
+    }
+
+    public double getBookingDuration() {
+        return bookingDuration;
+    }
+
+    public void setBookingDuration(double bookingDuration) {
+        this.bookingDuration = bookingDuration;
     }
 
     public Date getCreation() {
