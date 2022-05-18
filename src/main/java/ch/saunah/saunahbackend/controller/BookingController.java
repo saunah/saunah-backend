@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.naming.AuthenticationException;
 
 import ch.saunah.saunahbackend.dto.SaunahApiResponse;
+import ch.saunah.saunahbackend.exception.SaunahMailException;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -87,7 +88,7 @@ public class BookingController {
     @Operation(description = "Allows editing an existing Booking structure.")
     @PutMapping(path = "bookings/{id}")
     public @ResponseBody
-    ResponseEntity<BookingResponse> editBooking(@PathVariable(value = "id", required = true) Integer id, @RequestBody BookingBody bookingBody) throws IOException {
+    ResponseEntity<BookingResponse> editBooking(@PathVariable(value = "id", required = true) Integer id, @RequestBody BookingBody bookingBody) throws IOException, SaunahMailException {
         Booking booking = bookingService.editBooking(id, bookingBody);
         if (booking.getState() == BookingState.APPROVED) {
             mailService.sendUserEditedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
@@ -102,7 +103,7 @@ public class BookingController {
         @ApiResponse(responseCode = "400", description = "Booking does not exist", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
     public @ResponseBody
-    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws NotFoundException,IOException {
+    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws NotFoundException, IOException, SaunahMailException {
         bookingService.approveBooking(id);
         Booking booking = bookingService.getBooking(id);
         mailService.sendUserApprovedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
@@ -117,7 +118,7 @@ public class BookingController {
         @ApiResponse(responseCode = "401", description = "Not authorized", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
     public @ResponseBody
-    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException {
+    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException,SaunahMailException {
         bookingService.cancelBooking(id);
         Booking booking = bookingService.getBooking(id);
         mailService.sendUserCanceledBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);

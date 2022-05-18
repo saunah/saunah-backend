@@ -97,7 +97,7 @@ public class MailService {
      * @param email   The email of the user
      * @param booking The Booking info
      */
-    public void sendUserOpenedBookingMail(String email, Booking booking) {
+    public void sendUserOpenedBookingMail(String email, Booking booking) throws SaunahMailException {
         String mailText = "<p>Ihre Buchung wurde erfolgreich eröffnet. Hier sehen sie ihre neue Buchung:</p>";
         messageMailSetup(email, mailText, booking);
     }
@@ -108,7 +108,7 @@ public class MailService {
      * @param email   The email of the user
      * @param booking The Booking info
      */
-    public void sendUserApprovedBookingMail(String email, Booking booking) {
+    public void sendUserApprovedBookingMail(String email, Booking booking) throws SaunahMailException  {
         String mailText = "<p>Ihre Buchung wurde genehmigt. Hier sehen sie die Buchung:</p>";
         messageMailSetup(email, mailText, booking);
     }
@@ -119,7 +119,7 @@ public class MailService {
      * @param email   The email of the user
      * @param booking The Booking info
      */
-    public void sendUserCanceledBookingMail(String email, Booking booking) {
+    public void sendUserCanceledBookingMail(String email, Booking booking) throws SaunahMailException  {
         String mailText = "<p>Ihr Buchung wurde storniert. Hier sehen sie die Buchung:</p>";
         messageMailSetup(email, mailText, booking);
     }
@@ -130,12 +130,12 @@ public class MailService {
      * @param email   The email of the user
      * @param booking The Booking info
      */
-    public void sendUserEditedBookingMail(String email, Booking booking) {
+    public void sendUserEditedBookingMail(String email, Booking booking) throws SaunahMailException {
         String mailText = "<p>Ihr Buchung wurde verändert. Hier sehen sie die Buchung:</p>";
         messageMailSetup(email, mailText, booking);
     }
 
-    private void messageMailSetup(String email, String mailText, Booking booking) {
+    private void messageMailSetup(String email, String mailText, Booking booking) throws SaunahMailException {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -147,6 +147,7 @@ public class MailService {
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
+            throw new SaunahMailException("Message mail was not able to be sent");
         }
     }
 
@@ -155,7 +156,7 @@ public class MailService {
      *
      * @param booking The Booking info
      */
-    public void sendAdminOpenedBookingMail(User admin, Booking booking) {
+    public void sendAdminOpenedBookingMail(User admin, Booking booking) throws SaunahMailException {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -167,6 +168,7 @@ public class MailService {
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
+            throw new SaunahMailException("Message mail was not able to be sent");
         }
     }
 
