@@ -8,7 +8,7 @@ spec:
   secretName: saunah-cert
   dnsNames:
     - booking.saunah.ch
-    - booking-backend.saunah.ch
+    - api.booking.saunah.ch
   issuerRef:
     name: letsencrypt-prod #letsencrypt-staging
     kind: ClusterIssuer

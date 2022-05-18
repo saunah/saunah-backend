@@ -8,11 +8,11 @@ replicaCount: 1
 
 env:
   - name: SPRING_PROFILES_ACTIVE
-    value: staging
+    value: prod
   - name: SAUNAH_DB_HOST
-    value: "51.159.25.151"
+    value: "51.159.75.167"
   - name: SAUNAH_DB_PORT
-    value: "46989"
+    value: "46539"
   - name: SAUNAH_DB_USER
     value: saunah
   - name: SAUNAH_DB_PASSWORD
@@ -28,9 +28,9 @@ env:
   - name: SAUNAH_EXTRA_ALLOWED_CORS
     value: "http://localhost:3000"
   - name: SAUNAH_SMTP_HOST
-    value: smtp.mailtrap.io
+    value: smtp.mailersend.net
   - name: SAUNAH_SMTP_PORT
-    value: "2525"
+    value: "587"
   - name: SAUNAH_SMTP_USER
     valueFrom:
       secretKeyRef:
@@ -43,11 +43,37 @@ env:
         name: saunah-secrets-smtp
         key: password
         optional: false
+  - name: SAUNAH_FROM_EMAIL_ADDRESS
+    value: noreply@saunah.ch
+  - name: SAUNAH_FROM_EMAIL_REPLY_TO
+    value: wearesaunah@gmail.com
+  - name: SAUNAH_FROM_EMAIL_NAME
+    value: SauNah
   - name: SAUNAH_CREDENTIALS_GOOGLE_SERVICE
     valueFrom:
       secretKeyRef:
         name: saunah-secrets-credentials
         key: googleServiceAccount
+        optional: false
+  - name: SAUNAH_OBJECT_STORAGE_ENABLE
+    value: "true"
+  - name: SAUNAH_OBJECT_STORAGE_BUCKET_ID
+    value: saunah-data-prod
+  - name: SAUNAH_OBJECT_STORAGE_BUCKET_ENDPOINT
+    value: https://s3.fr-par.scw.cloud
+  - name: SAUNAH_OBJECT_STORAGE_BUCKET_REGION
+    value: fr-par
+  - name: SAUNAH_OBJECT_STORAGE_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-object-storage
+        key: accessKey
+        optional: false
+  - name: SAUNAH_OBJECT_STORAGE_SECRET_KEY
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-object-storage
+        key: secretKey
         optional: false
 
 image:
@@ -70,12 +96,12 @@ ingress:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd # prefixed for namespace (default)
   hosts:
-    - host: booking-backend.saunah.ch
+    - host: api.booking.saunah.ch
       paths: []
   tls:
     - secretName: saunah-cert
       hosts:
-        - booking-backend.saunah.ch
+        - api.booking.saunah.ch
 
 resources:
   limits:
