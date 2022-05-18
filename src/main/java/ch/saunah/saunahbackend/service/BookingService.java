@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
+import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.BookingPrice;
 import ch.saunah.saunahbackend.model.BookingSauna;
@@ -13,13 +18,8 @@ import ch.saunah.saunahbackend.model.BookingState;
 import ch.saunah.saunahbackend.model.Price;
 import ch.saunah.saunahbackend.model.Sauna;
 import ch.saunah.saunahbackend.repository.BookingPriceRepository;
-import ch.saunah.saunahbackend.repository.BookingSaunaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
-
-import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.repository.BookingRepository;
+import ch.saunah.saunahbackend.repository.BookingSaunaRepository;
 import ch.saunah.saunahbackend.repository.PriceRepository;
 
 /**
@@ -121,6 +121,7 @@ public class BookingService {
             booking.setDiscount(bookingBody.getDiscount());
             booking.setDiscountDescription(bookingBody.getDiscountDescription());
         } // else ignore
+
     }
 
     private BookingPrice createBookingPrice() {
@@ -132,6 +133,7 @@ public class BookingService {
         bookingPrice.setTransportServicePrice(price.getTransportService());
         bookingPrice.setWashServicePrice(price.getWashService());
         bookingPrice.setSaunahImpPrice(price.getSaunahImp());
+
         bookingPrice.setDepositPrice(price.getDeposit());
         bookingPrice.setHandTowelPrice(price.getHandTowel());
         bookingPrice.setWoodPrice(price.getWood());
@@ -188,8 +190,10 @@ public class BookingService {
         }
         booking.setState(BookingState.APPROVED);
 
+
         Sauna sauna = saunaService.getSauna(booking.getBookingSauna().getSaunaId());
         calendarService.approveEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
+
 
         bookingRepository.save(booking);
     }
@@ -210,6 +214,7 @@ public class BookingService {
 
         Sauna sauna = saunaService.getSauna(booking.getBookingSauna().getSaunaId());
         calendarService.deleteEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
+
 
         bookingRepository.save(booking);
     }
@@ -283,5 +288,14 @@ public class BookingService {
         endPrice += booking.isDeposit() ? bookingPrice.getDepositPrice() : 0;
         endPrice -= booking.getDiscount();
         return endPrice;
+    }
+
+    /**
+     * Checks whether the ID passed is neither null nor blank.
+     * @param id The id to check.
+     * @return Whether the id is valid.
+     */
+    private boolean isValidId(String id) {
+        return id != null && !id.isBlank();
     }
 }

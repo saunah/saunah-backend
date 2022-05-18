@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.junit.jupiter.api.AfterEach;
@@ -46,13 +47,14 @@ class BookingServiceTest {
     private BookingService bookingService;
     @Autowired
     private BookingRepository bookingRepository;
+    private Sauna sauna = null;
     private User user = null;
     private BookingBody bookingBody = null;
     private static final String TEST_CALENDAR_ID = "cs85d7fer742u5v5r4v6e7jink@group.calendar.google.com";
 
     @BeforeEach
     void setUp() {
-        Sauna sauna = new Sauna();
+        sauna = new Sauna();
         sauna.setName("Mobile Sauna 1");
         sauna.setDescription("Eine Mobile Sauna");
         sauna.setIsMobile(true);
@@ -144,6 +146,7 @@ class BookingServiceTest {
         assertThrows(Exception.class, () -> bookingService.addBooking(bookingBody, userId));
         bookingBody.setStartBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 10).getTime());
         bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.SEPTEMBER, 30).getTime());
+        sauna.setGoogleCalendarId(null);
         Booking booking2 = bookingService.addBooking(bookingBody, userId);
         assertNotEquals(booking.getId(), booking2.getId());
     }
@@ -161,6 +164,33 @@ class BookingServiceTest {
     }
 
     /**
+     * This test checks if a booking can be approved if the sauna does not have
+     * a google calendar id.
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void approveBookingWithoutGoogleCalenar() throws Exception {
+        sauna.setGoogleCalendarId(null);
+        saunaRepository.save(sauna);
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        bookingService.approveBooking(booking.getId());
+        assertEquals(BookingState.APPROVED, bookingService.getBooking(booking.getId()).getState());
+    }
+
+    /**
+     * This test checks if a booking can be approved if event has empty google event id.
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void approveBookingWithEmptyId() throws Exception {
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        booking.setGoogleEventID("");
+        bookingRepository.save(booking);
+        bookingService.approveBooking(booking.getId());
+        assertEquals(BookingState.APPROVED, bookingService.getBooking(booking.getId()).getState());
+    }
+
+    /**
      * This test checks if a booking can be canceled
      */
     @Test
@@ -168,6 +198,34 @@ class BookingServiceTest {
     void cancelBooking() throws Exception {
         assertThrows(NotFoundException.class, () -> bookingService.cancelBooking(1));
         Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        bookingService.cancelBooking(booking.getId());
+        assertEquals(BookingState.CANCELED, bookingService.getBooking(booking.getId()).getState());
+    }
+
+    /**
+     * This test checks if a booking can be canceled, if the sauna does not have
+     * a google calendar id.
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void cancelBookingWithoutGoogleCalendar() throws Exception {
+        sauna.setGoogleCalendarId(null);
+        saunaRepository.save(sauna);
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        bookingService.cancelBooking(booking.getId());
+        assertEquals(BookingState.CANCELED, bookingService.getBooking(booking.getId()).getState());
+    }
+
+    /**
+     * This test checks if a booking can be canceled, if the booking does not have
+     * a google calendar event id.
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void cancelBookingWithEmptyId() throws Exception {
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        booking.setGoogleEventID(null);
+        bookingRepository.save(booking);
         bookingService.cancelBooking(booking.getId());
         assertEquals(BookingState.CANCELED, bookingService.getBooking(booking.getId()).getState());
     }
@@ -197,6 +255,55 @@ class BookingServiceTest {
         bookingBody.setEndBookingDate(new GregorianCalendar(2022, Calendar.NOVEMBER, 1).getTime());
         bookingService.addBooking(bookingBody, user.getId());
         assertEquals(3, bookingRepository.count());
+        assertEquals(3, bookingService.getAllBooking().size());
+    }
+
+    /**
+     * Check for correct total price
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void verifyTotalPrice() throws Exception {
+        setAllBookingBodyOptions(bookingBody, false);
+        bookingService.addBooking(bookingBody, user.getId());
+        Booking noOptionsBooking = bookingService.getAllBooking().get(0);
+        // 500 (base price) + 100 (deposit) - 20 (discount) = 580
+        assertEquals(580, noOptionsBooking.getEndPrice());
+
+        bookingBody.setStartBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 24 * 3600));
+        bookingBody.setEndBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 48 * 3600));
+
+        setAllBookingBodyOptions(bookingBody, true);
+        bookingService.addBooking(bookingBody, user.getId());
+        Booking allOptionsBooking = bookingService.getAllBooking().get(1);
+        // 500 (base price) + 100 (deposit) - 20 (discount) + 1.5 (transport service) + 50 (wash service)
+        // + 25 (sauna imp) + 5 (hand towel) + 20 (wood) = 681.5
+        assertEquals(681.5, allOptionsBooking.getEndPrice());
+    }
+
+    /**
+     * Helper method to set all options on a booking at once
+     * @param body the booking body
+     * @param enabled whether options should be enabled or not
+     */
+    private void setAllBookingBodyOptions(BookingBody body, boolean enabled) {
+        int amount = enabled ? 1 : 0;
+        body.setTransportServiceDistance(amount);
+        body.setWashService(enabled);
+        body.setSaunahImpAmount(amount);
+        body.setHandTowelAmount(amount);
+        body.setWoodAmount(amount);
+    }
+
+    /**
+     * Helper method to increase date by a given number of seconds
+     * @param seconds seconds to increase date
+     * @return modified date
+     */
+    private Date increaseDateBy(Date date, long seconds) {
+        Date newDate = new Date();
+        newDate.setTime(date.getTime() + seconds * 1000);
+        return newDate;
     }
 
     /**

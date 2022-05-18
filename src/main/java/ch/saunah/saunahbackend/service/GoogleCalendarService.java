@@ -158,7 +158,7 @@ public class GoogleCalendarService {
      * @param eventID Id of the Event
      * @throws IOException
      */
-    public void deleteEvent (String calenderID, String eventID) throws IOException {
+    public void deleteEvent(String calenderID, String eventID) throws IOException {
         service.events().delete(calenderID, eventID).execute();
     }
 
