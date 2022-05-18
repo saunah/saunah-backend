@@ -10,8 +10,6 @@ public class PriceBody {
     private float deposit;
     private float handTowel;
     private float wood;
-    private float discount;
-    private String discountDescription;
 
     public float getTransportService() {
         return transportService;
@@ -37,13 +35,6 @@ public class PriceBody {
         return wood;
     }
 
-    public float getDiscount() {
-        return discount;
-    }
-
-    public String getDiscountDescription() {
-        return discountDescription;
-    }
 
     public void setTransportService(float transportService) {
         this.transportService = transportService;
@@ -69,11 +60,4 @@ public class PriceBody {
         this.wood = wood;
     }
 
-    public void setDiscount(float discount) {
-        this.discount = discount;
-    }
-
-    public void setDiscountDescription(String discountDescription) {
-        this.discountDescription = discountDescription;
-    }
 }

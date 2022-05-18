@@ -137,7 +137,8 @@ public class MailService {
             helper.setFrom(new InternetAddress(senderEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Booking Info SauNah");
-            helper.setText(mailText + generateBookingInfoMessage(booking), true);
+            helper.setText(mailText +
+                "<br><a href=\"" + frontendBaseUrl + "/bookings/" + booking.getId() + "/" + "\">zur Buchung</a></p>", true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());
@@ -164,41 +165,10 @@ public class MailService {
         }
     }
 
-    private String generateBookingInfoMessage(Booking booking) {
-        return
-            "<p>Buchungsnummer: " + booking.getId() + "</p>" +
-                "<p>UserId: " + booking.getUserId() + "</p>" +
-                "<p>Erstellungsdatum der Buchung:" + booking.getCreation() + "</p>" +
-                "<p>Buchung Start Datum: " + booking.getStartBookingDate() + "</p>" +
-                "<p>Buchung End Datum: " + booking.getEndBookingDate() + "</p>" +
-                "<p>SaunaId: " + booking.getBookingSauna().getSaunaId() + "</p>" +
-                "<p>Sauna: " + booking.getBookingSauna().getSaunaName() + "</p>" +
-                "<p>Sauna Typ: " + booking.getBookingSauna().getSaunaType() + "</p>" +
-                "<p>Sauna Ort: " + booking.getBookingSauna().getSaunaLocation() + "</p>" +
-                "<p>Sauna Strasse: " + booking.getBookingSauna().getSaunaStreet() + "</p>" +
-                "<p>Sauna PLZ: " + booking.getBookingSauna().getSaunaZip() + "</p>" +
-                "<p>Sauna Beschreibung: " + booking.getBookingSauna().getSaunaDescription() + "</p>" +
-                "<p>Sauna maximale Temperatur: " + booking.getBookingSauna().getSaunaMaxTemp() + "</p>" +
-                "<p>Sauna Personen Kapazität: " + booking.getBookingSauna().getSaunaNumberOfPeople() + "</p>" +
-                "<p>Ihr angegebener Ort: " + booking.getLocation() + "</p>" +
-                "<p>Transport Service Distanz in km: " + booking.getTransportServiceDistance() + "</p>" +
-                "<p>Transport Service Preis: " + booking.getBookingPrice().getTransportServicePrice() + "</p>" +
-                "<p>Wasch Service Preis: " + booking.getBookingPrice().getWashServicePrice() + "</p>" +
-                "<p>Imp Anzahl: " + booking.getSaunahImpAmount() + "</p>" +
-                "<p>Imp Preis: " + booking.getBookingPrice().getSaunahImpPrice() + "</p>" +
-                "<p>Deposit Preis: " + booking.getBookingPrice().getDepositPrice() + "</p>" +
-                "<p>Handtuch Anzahl: " + booking.getHandTowelAmount() + "</p>" +
-                "<p>Handtuch Preis: " + booking.getBookingPrice().getHandTowelPrice() + "</p>" +
-                "<p>Brennholz Anzahl: " + booking.getWoodAmount() + "</p>" +
-                "<p>Brennholz Preis: " + booking.getBookingPrice().getWoodPrice() + "</p>" +
-                "<p>Sauna Preis: " + booking.getBookingSauna().getSaunaPrice() + "</p>" +
-                "<p>Totalpreis: " + booking.getEndPrice() + "</p>";
-
-    }
-
     /**
      * Get the default reply to email. In case of the replyTo value being
      * empty, the sender email will be returned.
+     *
      * @return the default reply to email.
      */
     private String getReplyToEmail() {

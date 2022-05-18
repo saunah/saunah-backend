@@ -28,6 +28,9 @@ public class Booking {
     @Column(name = "end_booking_date", nullable = false)
     private Date endBookingDate;
 
+    @Column(name = "bookingDuration", nullable = false)
+    private double bookingDuration;
+
     @Column(name = "creation", nullable = false)
     private Date creation;
 
@@ -58,7 +61,7 @@ public class Booking {
     @Column(name = "woodAmount", nullable = false)
     private int woodAmount;
 
-    @Column(name = "comment", nullable = false)
+    @Column(name = "comment", nullable = true)
     private String comment;
 
     @Column(name = "endPrice", nullable = false)
@@ -66,6 +69,12 @@ public class Booking {
 
     @Column(name = "google_event_id", nullable = true)
     private String googleEventID;
+
+    @Column(name = "discount", nullable = true)
+    private double discount;
+
+    @Column(name = "discountDescription", nullable = true)
+    private String discountDescription;
 
     public Booking() {
 
@@ -105,6 +114,14 @@ public class Booking {
 
     public void setEndBookingDate(Date endBookingDate) {
         this.endBookingDate = endBookingDate;
+    }
+
+    public double getBookingDuration() {
+        return bookingDuration;
+    }
+
+    public void setBookingDuration(double bookingDuration) {
+        this.bookingDuration = bookingDuration;
     }
 
     public Date getCreation() {
@@ -209,5 +226,21 @@ public class Booking {
 
     public String getGoogleEventID() {
         return googleEventID;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public String getDiscountDescription() {
+        return discountDescription;
+    }
+
+    public void setDiscountDescription(String discountDescription) {
+        this.discountDescription = discountDescription;
     }
 }

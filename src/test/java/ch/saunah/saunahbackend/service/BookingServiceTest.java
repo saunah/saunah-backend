@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import ch.saunah.saunahbackend.dto.SaunaTypeBody;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,8 +76,6 @@ class BookingServiceTest {
         price.setDeposit(100F);
         price.setHandTowel(5.00F);
         price.setWood(20.00F);
-        price.setDiscount(-20.00F);
-        price.setDiscountDescription(":)");
         priceRepository.save(price);
 
         user = new User();
@@ -103,6 +102,7 @@ class BookingServiceTest {
         bookingBody.setSaunahImpAmount(3);
         bookingBody.setHandTowelAmount(2);
         bookingBody.setWoodAmount(3);
+        bookingBody.setDeposit(true);
         bookingBody.setComment("very nice");
     }
 
@@ -150,6 +150,51 @@ class BookingServiceTest {
         sauna.setGoogleCalendarId(null);
         Booking booking2 = bookingService.addBooking(bookingBody, userId);
         assertNotEquals(booking.getId(), booking2.getId());
+    }
+
+    /**
+     * This test checks if the fields values of an existing booking can be edited
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void editBooking() throws Exception {
+        Booking booking = bookingService.addBooking(bookingBody, user.getId());
+        BookingBody bookingBodyChange = new BookingBody();
+        bookingBodyChange.setStartBookingDate(new GregorianCalendar(2023, Calendar.AUGUST, 20).getTime());
+        bookingBodyChange.setEndBookingDate(new GregorianCalendar(2023, Calendar.SEPTEMBER, 1).getTime());
+        bookingBodyChange.setSaunaId(sauna.getId());
+        bookingBodyChange.setLocation("Bassersdorf");
+        bookingBodyChange.setTransportServiceDistance(20);
+        bookingBodyChange.setWashService(true);
+        bookingBodyChange.setSaunahImpAmount(1);
+        bookingBodyChange.setHandTowelAmount(1);
+        bookingBodyChange.setWoodAmount(3);
+        bookingBodyChange.setDeposit(true);
+        bookingBodyChange.setComment("very nice");
+        booking = bookingService.editBooking(user.getId(), bookingBodyChange);
+        checkBookingFields(bookingBodyChange, booking);
+    }
+
+    /**
+     * This method helps checking if the values are correct
+     *
+     * @param bookingBody The booking parameters
+     * @param booking     the instance of a booking
+     */
+    private void checkBookingFields(BookingBody bookingBody, Booking booking) {
+        assertEquals(bookingBody.getStartBookingDate(), booking.getStartBookingDate());
+        assertEquals(bookingBody.getEndBookingDate(), booking.getEndBookingDate());
+        assertEquals(bookingBody.getSaunaId(), booking.getBookingSauna().getSaunaId());
+        assertEquals(bookingBody.getLocation(), booking.getLocation());
+        assertEquals(bookingBody.getTransportServiceDistance(), booking.getTransportServiceDistance());
+        assertEquals(bookingBody.isWashService(), booking.isWashService());
+        assertEquals(bookingBody.getSaunahImpAmount(), booking.getSaunahImpAmount());
+        assertEquals(bookingBody.getHandTowelAmount(), booking.getHandTowelAmount());
+        assertEquals(bookingBody.getWoodAmount(), booking.getWoodAmount());
+        assertEquals(bookingBody.isDeposit(), booking.isDeposit());
+        assertEquals(bookingBody.getComment(), booking.getComment());
+
+
     }
 
     /**
@@ -268,8 +313,8 @@ class BookingServiceTest {
         setAllBookingBodyOptions(bookingBody, false);
         bookingService.addBooking(bookingBody, user.getId());
         Booking noOptionsBooking = bookingService.getAllBooking().get(0);
-        // 500 (base price) + 100 (deposit) - 20 (discount) = 580
-        assertEquals(580, noOptionsBooking.getEndPrice());
+        //500 (hourly rate) * 288.0 (booking Duration) + 100 (deposit) = 144100
+        assertEquals(144100, noOptionsBooking.getEndPrice());
 
         bookingBody.setStartBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 24 * 3600));
         bookingBody.setEndBookingDate(increaseDateBy(noOptionsBooking.getEndBookingDate(), 48 * 3600));
@@ -277,14 +322,15 @@ class BookingServiceTest {
         setAllBookingBodyOptions(bookingBody, true);
         bookingService.addBooking(bookingBody, user.getId());
         Booking allOptionsBooking = bookingService.getAllBooking().get(1);
-        // 500 (base price) + 100 (deposit) - 20 (discount) + 1.5 (transport service) + 50 (wash service)
-        // + 25 (sauna imp) + 5 (hand towel) + 20 (wood) = 681.5
-        assertEquals(681.5, allOptionsBooking.getEndPrice());
+        // 500 (hourly rate) * 24.0 (booking Duration) + 100 (deposit) + 1.5 (transport service) + 50 (wash service)
+        // + 25 (sauna imp) + 5 (hand towel) + 20 (wood) = 12201.5
+        assertEquals(12201.5, allOptionsBooking.getEndPrice());
     }
 
     /**
      * Helper method to set all options on a booking at once
-     * @param body the booking body
+     *
+     * @param body    the booking body
      * @param enabled whether options should be enabled or not
      */
     private void setAllBookingBodyOptions(BookingBody body, boolean enabled) {
@@ -294,10 +340,12 @@ class BookingServiceTest {
         body.setSaunahImpAmount(amount);
         body.setHandTowelAmount(amount);
         body.setWoodAmount(amount);
+        body.setDeposit(enabled);
     }
 
     /**
      * Helper method to increase date by a given number of seconds
+     *
      * @param seconds seconds to increase date
      * @return modified date
      */

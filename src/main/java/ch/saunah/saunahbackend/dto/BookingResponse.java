@@ -13,6 +13,7 @@ public class BookingResponse {
     private int id;
     private Date startBookingDate;
     private Date endBookingDate;
+    private double bookingDuration;
     private Date creation;
     private BookingState state;
     private int userId;
@@ -25,6 +26,10 @@ public class BookingResponse {
     private int woodAmount;
     private String comment;
     private double endPrice;
+    private double discount;
+    private String discountDescription;
+    private BookingPriceResponse price;
+    private BookingSaunaResponse sauna;
 
     /**
      * This constructor sets all the fields of this object.
@@ -33,6 +38,7 @@ public class BookingResponse {
         this.id = booking.getId();
         this.startBookingDate = booking.getStartBookingDate();
         this.endBookingDate = booking.getEndBookingDate();
+        this.bookingDuration = booking.getBookingDuration();
         this.creation = booking.getCreation();
         this.state = booking.getState();
         this.userId = booking.getUserId();
@@ -45,6 +51,10 @@ public class BookingResponse {
         this.woodAmount = booking.getWoodAmount();
         this.comment = booking.getComment();
         this.endPrice = booking.getEndPrice();
+        this.discount = booking.getDiscount();
+        this.discountDescription = booking.getDiscountDescription();
+        this.price = new BookingPriceResponse(booking.getBookingPrice());
+        this.sauna = new BookingSaunaResponse(booking.getBookingSauna());
     }
 
     public int getId() {
@@ -57,6 +67,10 @@ public class BookingResponse {
 
     public Date getEndBookingDate() {
         return endBookingDate;
+    }
+
+    public double getBookingDuration() {
+        return bookingDuration;
     }
 
     public Date getCreation() {
@@ -107,4 +121,19 @@ public class BookingResponse {
         return endPrice;
     }
 
+    public double getDiscount() {
+        return discount;
+    }
+
+    public String getDiscountDescription() {
+        return discountDescription;
+    }
+
+    public BookingPriceResponse getPrice() {
+        return price;
+    }
+
+    public BookingSaunaResponse getSauna() {
+        return sauna;
+    }
 }

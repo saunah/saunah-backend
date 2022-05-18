@@ -41,8 +41,6 @@ class PriceServiceTest {
         priceBody.setDeposit(100F);
         priceBody.setHandTowel(5.00F);
         priceBody.setWood(20.00F);
-        priceBody.setDiscount(-20.00F);
-        priceBody.setDiscountDescription(":)");
     }
 
     @AfterEach
@@ -106,8 +104,6 @@ class PriceServiceTest {
         priceBodyChanged.setWood(1000);
         priceBodyChanged.setHandTowel(1000);
         priceBodyChanged.setSaunahImp(1000);
-        priceBodyChanged.setDiscount(-30);
-        priceBodyChanged.setDiscountDescription(":D");
         price = priceService.editPrice(price.getId(), priceBodyChanged);
         checkPriceFields(priceBodyChanged, price);
     }
@@ -139,7 +135,5 @@ class PriceServiceTest {
         assertEquals(priceBody.getHandTowel(), price.getHandTowel());
         assertEquals(priceBody.getSaunahImp(), price.getSaunahImp());
         assertEquals(priceBody.getWood(), price.getWood());
-        assertEquals(priceBody.getDiscount(), price.getDiscount());
-        assertEquals(priceBody.getDiscountDescription(), price.getDiscountDescription());
     }
 }

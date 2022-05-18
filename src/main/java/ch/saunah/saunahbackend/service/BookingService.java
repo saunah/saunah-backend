@@ -58,22 +58,22 @@ public class BookingService {
         Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getLocation(), "Location must not be null!");
-        validateBookingData(bookingBody);
         Booking booking = new Booking();
-        setBookingFields(booking, bookingBody);
+        validateBookingData(bookingBody, booking.getId());
+        setBookingFields(booking, bookingBody, true, false);
         booking.setUserId(userId);
         bookingRepository.save(booking);
-        BookingPrice bookingPrice = createBookingPrice(bookingBody);
+        BookingPrice bookingPrice = createBookingPrice();
         bookingPriceRepository.save(bookingPrice);
         BookingSauna bookingSauna = createBookingSauna(bookingBody);
         bookingSaunaRepository.save(bookingSauna);
         booking.setBookingPrice(bookingPrice);
         booking.setBookingSauna(bookingSauna);
-        booking.setEndPrice(calculatePrice(booking, bookingSauna, bookingPrice));
+        booking.setEndPrice(calculatePrice(booking, bookingPrice, bookingSauna));
         return bookingRepository.save(booking);
     }
 
-    private void validateBookingData(BookingBody bookingBody) {
+    private void validateBookingData(BookingBody bookingBody, int bookingId) {
         Date now = new Date(System.currentTimeMillis());
         if (now.after(bookingBody.getStartBookingDate())) {
             throw new IllegalArgumentException("Booking date is in the past");
@@ -81,10 +81,19 @@ public class BookingService {
         if (bookingBody.getStartBookingDate().after(bookingBody.getEndBookingDate())) {
             throw new IllegalArgumentException("Invalid start date");
         }
-        List<BookingSauna> allSaunaBookings = bookingSaunaRepository.findAllBySaunaId(bookingBody.getSaunaId());
-        List<Booking> allBookings = getAllBooking().stream().filter(x -> allSaunaBookings.stream().anyMatch(y -> y.getId() == x.getId())).collect(Collectors.toList());
-        if (allBookings.stream().anyMatch(x -> dateRangeCollide(bookingBody.getStartBookingDate(),
-            bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate()))) {
+
+        List<Booking> allBookings = getAllBooking().stream().filter(booking ->
+            booking.getBookingSauna().getSaunaId() == bookingBody.getSaunaId() &&
+                booking.getId() != bookingId &&
+                booking.getState() != BookingState.CANCELED
+        ).collect(Collectors.toList());
+
+        if (allBookings.stream().anyMatch(x ->
+            dateRangeCollide(bookingBody.getStartBookingDate(),
+                bookingBody.getEndBookingDate(),
+                x.getStartBookingDate(),
+                x.getEndBookingDate()))
+        ) {
             throw new IllegalArgumentException("Sauna is not available during this date range");
         }
     }
@@ -95,40 +104,52 @@ public class BookingService {
             start.getTime() < startExisting.getTime() && end.getTime() > endExisting.getTime();
     }
 
-    private void setBookingFields(Booking booking, BookingBody bookingBody) throws IOException {
+    private void setBookingFields(Booking booking, BookingBody bookingBody, boolean setDefaultValues, boolean isAdmin) throws IOException {
         Sauna sauna = saunaService.getSauna(bookingBody.getSaunaId());
         booking.setStartBookingDate(bookingBody.getStartBookingDate());
         booking.setEndBookingDate(bookingBody.getEndBookingDate());
+        booking.setBookingDuration(calculateBookingDuration(booking));
         booking.setLocation(bookingBody.getLocation());
         booking.setTransportServiceDistance(bookingBody.getTransportServiceDistance());
         booking.setWashService(bookingBody.isWashService());
         booking.setSaunahImpAmount(bookingBody.getSaunahImpAmount());
-        booking.setDeposit(true);
         booking.setHandTowelAmount(bookingBody.getHandTowelAmount());
         booking.setWoodAmount(bookingBody.getWoodAmount());
-        booking.setCreation(new Date(System.currentTimeMillis()));
         booking.setState(BookingState.OPENED);
         booking.setComment(bookingBody.getComment());
 
         if (isValidId(sauna.getGoogleCalendarId())) {
             booking.setGoogleEventID(calendarService.createEvent(sauna.getGoogleCalendarId(), booking));
         }
+
+        if (setDefaultValues) {
+            // set default values
+            booking.setCreation(new Date(System.currentTimeMillis()));
+            booking.setDeposit(true);
+            booking.setDiscount(0);
+            booking.setDiscountDescription(null);
+        } else if (isAdmin) {
+            // let admin edit
+            booking.setDeposit(bookingBody.isDeposit());
+            booking.setDiscount(bookingBody.getDiscount());
+            booking.setDiscountDescription(bookingBody.getDiscountDescription());
+        } // else ignore
+
     }
 
-    private BookingPrice createBookingPrice(BookingBody bookingBody) {
+    private BookingPrice createBookingPrice() {
         Price price = priceRepository.findAll().iterator().next();
         if (price == null) {
             throw new NotFoundException("No Price available in the database!");
         }
         BookingPrice bookingPrice = new BookingPrice();
-        bookingPrice.setTransportServicePrice(bookingBody.getTransportServiceDistance() * price.getTransportService());
-        bookingPrice.setWashServicePrice(bookingBody.isWashService() ? price.getWashService() : 0);
-        bookingPrice.setSaunahImpPrice(bookingBody.getSaunahImpAmount() * price.getSaunahImp());
+        bookingPrice.setTransportServicePrice(price.getTransportService());
+        bookingPrice.setWashServicePrice(price.getWashService());
+        bookingPrice.setSaunahImpPrice(price.getSaunahImp());
+
         bookingPrice.setDepositPrice(price.getDeposit());
-        bookingPrice.setHandTowelPrice(bookingBody.getHandTowelAmount() * price.getHandTowel());
-        bookingPrice.setWoodPrice(bookingBody.getWoodAmount() * price.getWood());
-        bookingPrice.setDiscount(price.getDiscount());
-        bookingPrice.setDiscountDescription(price.getDiscountDescription());
+        bookingPrice.setHandTowelPrice(price.getHandTowel());
+        bookingPrice.setWoodPrice(price.getWood());
         return bookingPrice;
     }
 
@@ -161,9 +182,10 @@ public class BookingService {
         Objects.requireNonNull(bookingBody.getEndBookingDate(), "EndBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getStartBookingDate(), "StartBookingDate must not be null!");
         Objects.requireNonNull(bookingBody.getLocation(), "Location must not be null!");
-        validateBookingData(bookingBody);
+        validateBookingData(bookingBody, bookingId);
         Booking editBooking = getBooking(bookingId);
-        setBookingFields(editBooking, bookingBody);
+        setBookingFields(editBooking, bookingBody, false, true);
+        editBooking.setEndPrice(calculatePrice(editBooking, editBooking.getBookingPrice(), editBooking.getBookingSauna()));
         return bookingRepository.save(editBooking);
     }
 
@@ -181,7 +203,8 @@ public class BookingService {
         }
         booking.setState(BookingState.APPROVED);
 
-        Sauna sauna = saunaService.getSauna(id);
+
+        Sauna sauna = saunaService.getSauna(booking.getBookingSauna().getSaunaId());
 
         if (isValidId(sauna.getGoogleCalendarId()) && isValidId(booking.getGoogleEventID())) {
             calendarService.approveEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
@@ -204,7 +227,7 @@ public class BookingService {
         }
         booking.setState(BookingState.CANCELED);
 
-        Sauna sauna = saunaService.getSauna(id);
+        Sauna sauna = saunaService.getSauna(booking.getBookingSauna().getSaunaId());
 
         if (isValidId(sauna.getGoogleCalendarId()) && isValidId(booking.getGoogleEventID())) {
             calendarService.deleteEvent(sauna.getGoogleCalendarId(), booking.getGoogleEventID());
@@ -267,20 +290,26 @@ public class BookingService {
         return (List<Booking>) bookingRepository.findAll();
     }
 
-    private double calculatePrice(Booking booking, BookingSauna bookingSauna, BookingPrice bookingPrice) {
+    private double calculateBookingDuration(Booking booking) {
+        return ((booking.getEndBookingDate().getTime() - booking.getStartBookingDate().getTime()) / 1000.00) / 3600.00;
+    }
+
+    private double calculatePrice(Booking booking, BookingPrice bookingPrice, BookingSauna bookingSauna) {
         double endPrice = 0;
-        endPrice += bookingSauna.getSaunaPrice() + bookingPrice.getTransportServicePrice() + bookingPrice.getWashServicePrice() +
-            bookingPrice.getSaunahImpPrice() + bookingPrice.getHandTowelPrice() + bookingPrice.getWoodPrice() + bookingPrice.getDiscount();
-
-        if (booking.isDeposit()) {
-            endPrice += bookingPrice.getDepositPrice();
-        }
-
+        endPrice += booking.getBookingDuration() * bookingSauna.getSaunaPrice();
+        endPrice += booking.getTransportServiceDistance() * bookingPrice.getTransportServicePrice();
+        endPrice += booking.getSaunahImpAmount() * bookingPrice.getSaunahImpPrice();
+        endPrice += booking.getHandTowelAmount() * bookingPrice.getHandTowelPrice();
+        endPrice += booking.getWoodAmount() * bookingPrice.getWoodPrice();
+        endPrice += booking.isWashService() ? bookingPrice.getWashServicePrice() : 0;
+        endPrice += booking.isDeposit() ? bookingPrice.getDepositPrice() : 0;
+        endPrice -= booking.getDiscount();
         return endPrice;
     }
 
     /**
      * Checks whether the ID passed is neither null nor blank.
+     *
      * @param id The id to check.
      * @return Whether the id is valid.
      */
