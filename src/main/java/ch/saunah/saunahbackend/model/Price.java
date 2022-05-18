@@ -30,6 +30,9 @@ public class Price {
     @Column(name = "wood", nullable = false)
     private float wood;
 
+    @Column(name = "hourlyRate", nullable = false)
+    private float hourlyRate;
+
     public Price() {
 
     }
@@ -62,6 +65,10 @@ public class Price {
         return wood;
     }
 
+    public float getHourlyRate() {
+        return hourlyRate;
+    }
+
     public void setTransportService(float transportService) {
         this.transportService = transportService;
     }
@@ -84,5 +91,9 @@ public class Price {
 
     public void setWood(float wood) {
         this.wood = wood;
+    }
+
+    public void setHourlyRate(float hourlyRate) {
+        this.hourlyRate = hourlyRate;
     }
 }

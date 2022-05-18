@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.naming.AuthenticationException;
 
-import ch.saunah.saunahbackend.dto.BookingPriceResponse;
-import ch.saunah.saunahbackend.dto.BookingSaunaResponse;
 import ch.saunah.saunahbackend.model.*;
 import ch.saunah.saunahbackend.repository.UserRepository;
 import ch.saunah.saunahbackend.service.MailService;

@@ -63,13 +63,13 @@ public class BookingService {
         setBookingFields(booking, bookingBody, true, false);
         booking.setUserId(userId);
         bookingRepository.save(booking);
-        BookingPrice bookingPrice = createBookingPrice(bookingBody);
+        BookingPrice bookingPrice = createBookingPrice();
         bookingPriceRepository.save(bookingPrice);
         BookingSauna bookingSauna = createBookingSauna(bookingBody);
         bookingSaunaRepository.save(bookingSauna);
         booking.setBookingPrice(bookingPrice);
         booking.setBookingSauna(bookingSauna);
-        booking.setEndPrice(calculatePrice(booking, bookingSauna, bookingPrice));
+        booking.setEndPrice(calculatePrice(booking, bookingPrice));
         return bookingRepository.save(booking);
     }
 
@@ -81,6 +81,18 @@ public class BookingService {
         if (bookingBody.getStartBookingDate().after(bookingBody.getEndBookingDate())) {
             throw new IllegalArgumentException("Invalid start date");
         }
+        List<BookingSauna> allSaunaBookings = bookingSaunaRepository.findAllBySaunaId(bookingBody.getSaunaId());
+        List<Booking> allBookings = getAllBooking().stream().filter(x -> allSaunaBookings.stream().anyMatch(y -> y.getId() == x.getId())).collect(Collectors.toList());
+        if (allBookings.stream().anyMatch(x -> dateRangeCollide(bookingBody.getStartBookingDate(),
+            bookingBody.getEndBookingDate(), x.getStartBookingDate(), x.getEndBookingDate()))) {
+            throw new IllegalArgumentException("Sauna is not available during this date range");
+        }
+    }
+
+    private boolean dateRangeCollide(Date start, Date end, Date startExisting, Date endExisting) {
+        return start.getTime() >= startExisting.getTime() && start.getTime() <= endExisting.getTime() ||
+            end.getTime() >= startExisting.getTime() && end.getTime() <= endExisting.getTime() ||
+            start.getTime() < startExisting.getTime() && end.getTime() > endExisting.getTime();
     }
 
     private void setBookingFields(Booking booking, BookingBody bookingBody, boolean setDefaultValues, boolean isAdmin) throws IOException {
@@ -103,7 +115,7 @@ public class BookingService {
             booking.setDeposit(true);
             booking.setDiscount(0);
             booking.setDiscountDescription(null);
-        } else if (isAdmin){
+        } else if (isAdmin) {
             // let admin edit
             booking.setDeposit(bookingBody.isDeposit());
             booking.setDiscount(bookingBody.getDiscount());
@@ -111,7 +123,7 @@ public class BookingService {
         } // else ignore
     }
 
-    private BookingPrice createBookingPrice(BookingBody bookingBody) {
+    private BookingPrice createBookingPrice() {
         Price price = priceRepository.findAll().iterator().next();
         if (price == null) {
             throw new NotFoundException("No Price available in the database!");
@@ -123,6 +135,7 @@ public class BookingService {
         bookingPrice.setDepositPrice(price.getDeposit());
         bookingPrice.setHandTowelPrice(price.getHandTowel());
         bookingPrice.setWoodPrice(price.getWood());
+        bookingPrice.setHourlyRate(price.getHourlyRate());
         return bookingPrice;
     }
 
@@ -255,9 +268,20 @@ public class BookingService {
         return (List<Booking>) bookingRepository.findAll();
     }
 
-    private double calculatePrice(Booking booking, BookingSauna bookingSauna, BookingPrice bookingPrice) {
+    private double calculateBookingDuration(Booking booking) {
+        return ((booking.getEndBookingDate().getTime() - booking.getStartBookingDate().getTime()) / 1000.00) / 3600.00;
+    }
+
+    private double calculatePrice(Booking booking, BookingPrice bookingPrice) {
         double endPrice = 0;
-        // TODO: Calculate endPrice like in frontend.
+        endPrice += calculateBookingDuration(booking) * bookingPrice.getHourlyRate();
+        endPrice += booking.getTransportServiceDistance() * bookingPrice.getTransportServicePrice();
+        endPrice += booking.getSaunahImpAmount() * bookingPrice.getSaunahImpPrice();
+        endPrice += booking.getHandTowelAmount() * bookingPrice.getHandTowelPrice();
+        endPrice += booking.getWoodAmount() * bookingPrice.getWoodPrice();
+        endPrice += booking.isWashService() ? bookingPrice.getWashServicePrice() : 0;
+        endPrice += booking.isDeposit() ? bookingPrice.getDepositPrice() : 0;
+        endPrice -= booking.getDiscount();
         return endPrice;
     }
 }

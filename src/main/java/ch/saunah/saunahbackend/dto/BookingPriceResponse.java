@@ -14,6 +14,7 @@ public class BookingPriceResponse {
     private double depositPrice;
     private double handTowelPrice;
     private double woodPrice;
+    private double hourlyRate;
 
     /**
      * This constructor sets all the fields of this object.
@@ -26,6 +27,7 @@ public class BookingPriceResponse {
         this.depositPrice = bookingPrice.getDepositPrice();
         this.handTowelPrice = bookingPrice.getHandTowelPrice();
         this.woodPrice = bookingPrice.getWoodPrice();
+        this.hourlyRate = bookingPrice.getHourlyRate();
     }
 
     public int getId() {
@@ -54,5 +56,9 @@ public class BookingPriceResponse {
 
     public double getWoodPrice() {
         return woodPrice;
+    }
+
+    public double getHourlyRate() {
+        return hourlyRate;
     }
 }
