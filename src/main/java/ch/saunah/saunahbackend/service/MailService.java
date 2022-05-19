@@ -77,7 +77,7 @@ public class MailService {
             helper.setReplyTo(new InternetAddress(replyToEmail, senderName));
             helper.setTo(email);
             helper.setSubject("Password Reset SauNah");
-            helper.setText("<p>Ihr Reset Token lautet: <h1>" + resetPasswordToken + "</h1></p><p>Bitte klicken sie auf den Link, falls Sie Ihren Passwort vergessen haben : " +
+            helper.setText("<p>Ihr Reset Token lautet: <h1>" + resetPasswordToken + "</h1></p><p>Bitte klicken Sie innerhalb von einer Stunde auf den Link, falls Sie Ihres Passwort vergessen haben : " +
                 "<br><a href=\"" + frontendBaseUrl + "/resetPassword/" + resetPasswordToken + "\">Hier klicken</a></p>", true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
