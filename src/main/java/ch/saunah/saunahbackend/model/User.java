@@ -1,6 +1,7 @@
 package ch.saunah.saunahbackend.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * This class is used to define the table of the database of the user entity.
@@ -47,13 +48,16 @@ public class User {
     private UserRole role;
 
     @Column(name = "resetpasswordhash")
-    private String resetpasswordhash;
+    private String resetPasswordHash;
 
     @Column(name = "initialAdmin")
     private boolean initialAdmin;
 
     @Column(name = "isDeleted")
     private boolean isDeleted;
+
+    @Column(name = "tokenValidDate")
+    private Date tokenValidDate;
 
     /**
      * The default constructor for the user.
@@ -154,9 +158,9 @@ public class User {
         this.role = role;
     }
 
-    public String getResetpasswordHash(){return resetpasswordhash;}
+    public String getResetpasswordHash(){return resetPasswordHash;}
 
-    public void setResetpasswordHash(String resetpassword_hash){this.resetpasswordhash = resetpassword_hash;}
+    public void setResetpasswordHash(String resetpassword_hash){this.resetPasswordHash = resetpassword_hash;}
 
     public boolean getInitialAdmin() {return initialAdmin; }
 
@@ -165,4 +169,8 @@ public class User {
     public boolean getIsDeleted() {return isDeleted; }
 
     public void setIsDeleted(boolean isDeleted) { this.isDeleted = isDeleted;}
+
+    public void setTokenValidDate(Date tokenValidDate){this.tokenValidDate =  tokenValidDate;}
+
+    public Date getTokenValidDate(){return tokenValidDate;}
 }

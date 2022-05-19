@@ -26,6 +26,8 @@ import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
 
+import java.util.Date;
+
 /**
  * This class tests all user service methods.
  */
@@ -176,14 +178,19 @@ class UserServiceTest {
         User user = userRepository.findByEmail("hans.muster@mustermail.ch");
         user.setActivated(true);
         userRepository.save(user);
-        Integer resetPasswordToken = userService.createResetPasswordtoken(user);
+        String resetPasswordToken = userService.createResetPasswordtoken(user);
 
-        ResetPasswordBody resetPasswordBody = new ResetPasswordBody("hansmuster@mail.ch", "badToken" ,"newPassword12!");
-        assertThrows(Exception.class, () -> userService.resetPassword(user.getId(),resetPasswordBody));
-        ResetPasswordBody resetPasswordBody1 = new ResetPasswordBody("hansmuster@mail.ch", Integer.toString(resetPasswordToken) ,"badPassword");
-        assertThrows(Exception.class, () -> userService.resetPassword(user.getId(),resetPasswordBody1));
-        ResetPasswordBody resetPasswordBody2 = new ResetPasswordBody("hansmuster@mail.ch", Integer.toString(resetPasswordToken) ,"newPassword12!");
-        assertDoesNotThrow(() -> userService.resetPassword(user.getId(),resetPasswordBody2));
+        ResetPasswordBody resetPasswordBody = new ResetPasswordBody( "newPassword12!");
+        assertThrows(Exception.class, () -> userService.resetPassword("badToken",resetPasswordBody));
+        ResetPasswordBody resetPasswordBody1 = new ResetPasswordBody("badPassword");
+        assertThrows(Exception.class, () -> userService.resetPassword(resetPasswordToken,resetPasswordBody1));
+        ResetPasswordBody resetPasswordBody2 = new ResetPasswordBody("newPassword12!");
+        assertDoesNotThrow(() -> userService.resetPassword(resetPasswordToken,resetPasswordBody2));
+
+        String resetPasswordToken2 = userService.createResetPasswordtoken(user);
+        user.setTokenValidDate(new Date(System.currentTimeMillis() - 7200 * 1000));
+        userRepository.save(user);
+        assertThrows(Exception.class, () -> userService.resetPassword(resetPasswordToken2,resetPasswordBody2));
     }
 
     /**

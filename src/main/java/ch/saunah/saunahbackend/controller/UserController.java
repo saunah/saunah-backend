@@ -74,20 +74,16 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequestBody resetPasswordRequestBody) {
         User user = userService.getUserByMail(resetPasswordRequestBody.getEmail());
-        int passwordToken = userService.createResetPasswordtoken(user);
-        mailService.sendPasswordResetMail(resetPasswordRequestBody.getEmail(), user.getId(), passwordToken);
+        String passwordToken = userService.createResetPasswordtoken(user);
+        mailService.sendPasswordResetMail(resetPasswordRequestBody.getEmail(), passwordToken);
         return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Reset the users password with the new one")
-    @PostMapping(value = "/reset-password/{userID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/reset-password/{token}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordBody resetPasswordBody, @PathVariable Integer userID) throws Exception {
-        try {
-            userService.resetPassword(userID, resetPasswordBody);
-        } catch (IndexOutOfBoundsException exception) {
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
-        }
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordBody resetPasswordBody, @PathVariable String token) throws Exception {
+        userService.resetPassword(token,resetPasswordBody);
         return ResponseEntity.ok("success");
     }
 

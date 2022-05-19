@@ -1,10 +1,12 @@
 package ch.saunah.saunahbackend.service;
 
 import java.security.SecureRandom;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.management.BadAttributeValueExpException;
 import javax.validation.ValidationException;
@@ -39,6 +41,7 @@ public class UserService {
 
     private static final String PWD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()%[{}]:;',?/*~$^+=<>._|`-]).{8,20}$";
     private static final String EMAIL_PATTERN = "^(.+)@(\\S+)$";
+    private static final Integer VALIDPERIOD = 3600 * 1000;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -107,42 +110,55 @@ public class UserService {
     }
 
     /**
+     * This method returns the user with matching token
+     */
+    public User getUserByResetPasswordToken(String token) {
+
+        List<User> user = getAllUser().stream().filter(x -> passwordEncoder.matches(token , x.getResetpasswordHash())).collect(Collectors.toList());
+        if (user.size() != 1) {
+            throw new IllegalStateException();
+        }
+        return user.get(0);
+    }
+
+    /**
      * Create a crypto secure token to authenicate the password requester and saves it on the user
      *
      * @param user The user that requested the password change
-     * @return an int with 5 digits
+     * @return a  Pseudogenerated Passwordtoken
      */
-    public int createResetPasswordtoken(User user) {
-        int min = 10000;
-        int max = 99999;
+    public String createResetPasswordtoken(User user) {
+        String token = UUID.randomUUID().toString();
 
-        //Creates a random number between min and max
-        SecureRandom random = new SecureRandom();
-        int resetToken = Math.abs(random.nextInt() *(max-min+1)+min);
-        String resetTokenValue = Integer.toString(resetToken);
-        String hashedPassword = passwordEncoder.encode(resetTokenValue);
+        String hashedPassword = passwordEncoder.encode(token);
+
         user.setResetpasswordHash(hashedPassword);
+        user.setTokenValidDate(new Date(System.currentTimeMillis() + VALIDPERIOD));
         userRepository.save(user);
-        return resetToken;
+        return token;
     }
 
     /**
      * Reset the users password if all conditons are met.
      *
-     * @param userID            Int to identify
-     * @param resetPasswordBody
+     * @param token            token to identify the user
+     * @param resetPasswordBody new Password
      * @throws Exception
      */
-    public void resetPassword (Integer userID , ResetPasswordBody resetPasswordBody) throws Exception{
-        Optional<User> optionalUser = userRepository.findById(userID);
+    public void resetPassword (String token ,ResetPasswordBody resetPasswordBody) throws Exception{
+        Optional<User> optionalUser = Optional.ofNullable(getUserByResetPasswordToken(token));
         if(optionalUser.isEmpty()) {
-            throw new IndexOutOfBoundsException("There is no User with the ID:" + userID);
+            throw new IndexOutOfBoundsException("There is no User with the token:" + token);
         }
         User user = optionalUser.get();
         if(user.getResetpasswordHash().isBlank()){
             throw new BadAttributeValueExpException("This user didn't request a new password");
         }
-        if(!passwordEncoder.matches(resetPasswordBody.getResetToken(), user.getResetpasswordHash())){
+        Date now = new Date(System.currentTimeMillis());
+        if(new Date(user.getTokenValidDate().getTime()).before(now)){
+            throw new ValidationException("The Token is expired");
+        }
+        if(!passwordEncoder.matches(token, user.getResetpasswordHash())){
             throw new BadCredentialsException("The Token doesn't match");
         }
 
