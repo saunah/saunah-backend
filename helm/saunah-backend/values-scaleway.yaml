@@ -28,9 +28,9 @@ env:
   - name: SAUNAH_EXTRA_ALLOWED_CORS
     value: "http://localhost:3000"
   - name: SAUNAH_SMTP_HOST
-    value: smtp.mailersend.net
+    value: smtp.mailtrap.io
   - name: SAUNAH_SMTP_PORT
-    value: "587"
+    value: "2525"
   - name: SAUNAH_SMTP_USER
     valueFrom:
       secretKeyRef:
