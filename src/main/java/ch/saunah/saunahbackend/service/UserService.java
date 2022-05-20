@@ -2,7 +2,6 @@ package ch.saunah.saunahbackend.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -40,7 +39,7 @@ public class UserService {
 
     private static final String PWD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()%[{}]:;',?/*~$^+=<>._|`-]).{8,20}$";
     private static final String EMAIL_PATTERN = "^(.+)@(\\S+)$";
-    private static final Integer VALIDPERIOD = 3600 * 1000;
+    private static final Integer VALID_PERIOD = 3600 * 1000;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -112,27 +111,31 @@ public class UserService {
      * This method returns the user with matching token
      */
     public User getUserByResetPasswordToken(String token) {
+        List<User> user = getAllUser().stream().filter(
+            x -> passwordEncoder.matches(token , x.getResetPasswordHash())
+        ).collect(Collectors.toList());
 
-        List<User> user = getAllUser().stream().filter(x -> passwordEncoder.matches(token , x.getResetpasswordHash())).collect(Collectors.toList());
         if (user.size() != 1) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Password-Reset-Token is not unique.");
         }
+
         return user.get(0);
     }
 
     /**
-     * Create a crypto secure token to authenicate the password requester and saves it on the user
+     * Create a cryptographically secure token to authenicate the user requesting
+     * a password reset and saves it on the user
      *
      * @param user The user that requested the password change
-     * @return a  Pseudogenerated Passwordtoken
+     * @return a cryptographically secure token
      */
-    public String createResetPasswordtoken(User user) {
+    public String createResetPasswordToken(User user) {
         String token = UUID.randomUUID().toString();
 
         String hashedPassword = passwordEncoder.encode(token);
 
-        user.setResetpasswordHash(hashedPassword);
-        user.setTokenValidDate(new Date(System.currentTimeMillis() + VALIDPERIOD));
+        user.setResetPasswordHash(hashedPassword);
+        user.setTokenValidDate(new Date(System.currentTimeMillis() + VALID_PERIOD));
         userRepository.save(user);
         return token;
     }
@@ -144,27 +147,26 @@ public class UserService {
      * @param resetPasswordBody new Password
      * @throws Exception
      */
-    public void resetPassword (String token ,ResetPasswordBody resetPasswordBody) throws Exception{
-        Optional<User> optionalUser = Optional.ofNullable(getUserByResetPasswordToken(token));
-        if(optionalUser.isEmpty()) {
+    public void resetPassword (String token, ResetPasswordBody resetPasswordBody) throws BadAttributeValueExpException {
+        User user = getUserByResetPasswordToken(token);
+        if(user == null) {
             throw new IndexOutOfBoundsException("There is no User with the token:" + token);
         }
-        User user = optionalUser.get();
-        if(user.getResetpasswordHash().isBlank()){
+        if(user.getResetPasswordHash().isBlank()){
             throw new BadAttributeValueExpException("This user didn't request a new password");
         }
         Date now = new Date(System.currentTimeMillis());
         if(new Date(user.getTokenValidDate().getTime()).before(now)){
             throw new ValidationException("The Token is expired");
         }
-        if(!passwordEncoder.matches(token, user.getResetpasswordHash())){
+        if(!passwordEncoder.matches(token, user.getResetPasswordHash())){
             throw new BadCredentialsException("The Token doesn't match");
         }
 
         if (!Pattern.matches(PWD_PATTERN, resetPasswordBody.getNewPassword())) {
             throw new ValidationException("Password does not require the conditions");
         }
-        user.setResetpasswordHash("");
+        user.setResetPasswordHash("");
         user.setPasswordHash(passwordEncoder.encode(resetPasswordBody.getNewPassword()));
         userRepository.save(user);
 

@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.management.BadAttributeValueExpException;
 import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequestBody resetPasswordRequestBody) {
         User user = userService.getUserByMail(resetPasswordRequestBody.getEmail());
-        String passwordToken = userService.createResetPasswordtoken(user);
+        String passwordToken = userService.createResetPasswordToken(user);
         mailService.sendPasswordResetMail(resetPasswordRequestBody.getEmail(), passwordToken);
         return ResponseEntity.ok("success");
     }
@@ -81,8 +82,8 @@ public class UserController {
     @Operation(description = "Reset the users password with the new one")
     @PutMapping(value = "/reset-password/{token}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordBody resetPasswordBody, @PathVariable String token) throws Exception {
-        userService.resetPassword(token,resetPasswordBody);
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordBody resetPasswordBody, @PathVariable String token) throws BadAttributeValueExpException {
+        userService.resetPassword(token, resetPasswordBody);
         return ResponseEntity.ok("success");
     }
 

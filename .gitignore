@@ -46,3 +46,4 @@ out/
 helm/saunah-secrets/values-local.yaml
 helm/saunah-secrets/values-staging.yaml
 helm/saunah-secrets/values-prod.yaml
+helm/saunah-secrets/values-scaleway.yaml

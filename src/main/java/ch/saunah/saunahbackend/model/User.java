@@ -1,7 +1,14 @@
 package ch.saunah.saunahbackend.model;
 
-import javax.persistence.*;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * This class is used to define the table of the database of the user entity.
@@ -25,7 +32,7 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(name = "passwordHash", nullable = false)
     private String passwordHash;
 
     @Column(name = "phoneNumber", nullable = false)
@@ -47,7 +54,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @Column(name = "resetpasswordhash")
+    @Column(name = "resetPasswordHash")
     private String resetPasswordHash;
 
     @Column(name = "initialAdmin")
@@ -158,19 +165,35 @@ public class User {
         this.role = role;
     }
 
-    public String getResetpasswordHash(){return resetPasswordHash;}
+    public String getResetPasswordHash() {
+        return resetPasswordHash;
+    }
 
-    public void setResetpasswordHash(String resetpassword_hash){this.resetPasswordHash = resetpassword_hash;}
+    public void setResetPasswordHash(String resetPasswordHash) {
+        this.resetPasswordHash = resetPasswordHash;
+    }
 
-    public boolean getInitialAdmin() {return initialAdmin; }
+    public boolean getInitialAdmin() {
+        return initialAdmin;
+    }
 
-    public  void setInitialAdmin(boolean initialAdmin) { this.initialAdmin = initialAdmin;}
+    public  void setInitialAdmin(boolean initialAdmin) {
+        this.initialAdmin = initialAdmin;
+    }
 
-    public boolean getIsDeleted() {return isDeleted; }
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
 
-    public void setIsDeleted(boolean isDeleted) { this.isDeleted = isDeleted;}
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
-    public void setTokenValidDate(Date tokenValidDate){this.tokenValidDate =  tokenValidDate;}
+    public void setTokenValidDate(Date tokenValidDate) {
+        this.tokenValidDate =  tokenValidDate;
+    }
 
-    public Date getTokenValidDate(){return tokenValidDate;}
+    public Date getTokenValidDate() {
+        return tokenValidDate;
+    }
 }
