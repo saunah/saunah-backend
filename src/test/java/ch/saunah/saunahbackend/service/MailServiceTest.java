@@ -60,6 +60,7 @@ class MailServiceTest {
         assertDoesNotThrow(() -> mailService.sendPasswordResetMail(user.getEmail(), resetToken));
         assertDoesNotThrow(() -> mailService.sendPasswordResetMail(user.getEmail(), resetToken));
         assertDoesNotThrow(() -> mailService.sendUserOpenedBookingMail(user.getEmail(), booking));
+        assertDoesNotThrow(() -> mailService.sendUserEditedBookingMail(user.getEmail(), booking));
         assertDoesNotThrow(() -> mailService.sendUserApprovedBookingMail(user.getEmail(), booking));
         assertDoesNotThrow(() -> mailService.sendUserCanceledBookingMail(user.getEmail(), booking));
         assertDoesNotThrow(() -> mailService.sendAdminOpenedBookingMail(user, booking));
@@ -83,6 +84,7 @@ class MailServiceTest {
         assertThrows(SaunahMailException.class, () -> mailService.sendPasswordResetMail(user.getEmail(), resetToken));
         assertThrows(SaunahMailException.class, () -> mailService.sendPasswordResetMail(user.getEmail(), resetToken));
         assertThrows(SaunahMailException.class, () -> mailService.sendUserOpenedBookingMail(user.getEmail(), booking));
+        assertThrows(SaunahMailException.class, () -> mailService.sendUserEditedBookingMail(user.getEmail(), booking));
         assertThrows(SaunahMailException.class, () -> mailService.sendUserApprovedBookingMail(user.getEmail(), booking));
         assertThrows(SaunahMailException.class, () -> mailService.sendUserCanceledBookingMail(user.getEmail(), booking));
         assertThrows(SaunahMailException.class, () -> mailService.sendAdminOpenedBookingMail(user, booking));
