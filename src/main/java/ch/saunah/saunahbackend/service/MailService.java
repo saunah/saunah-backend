@@ -34,9 +34,6 @@ public class MailService {
     private static final String BOOKING_URL_TEMPLATE = "%s/bookings/%s";
     private static final String VIEW_BOOKING_TEXT_TEMPLATE = "<p>Hier können Sie Ihre Buchung einsehen: <a href=\"%s\">%s</a></p>";
 
-    @Autowired
-    private JavaMailSender javaMailSender;
-
     @Value("${saunah.frontend.baseurl}")
     private String frontendBaseUrl;
 
@@ -49,6 +46,8 @@ public class MailService {
     @Value("${saunah.email.from.name}")
     private String senderName;
 
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     /**
      * This method sends a message authentication link to the email of the user.

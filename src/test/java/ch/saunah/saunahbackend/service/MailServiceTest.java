@@ -1,13 +1,21 @@
 package ch.saunah.saunahbackend.service;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.when;
 
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import ch.saunah.saunahbackend.SaunahBackendApplication;
-import ch.saunah.saunahbackend.exception.SaunahMailException;
 import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.BookingPrice;
 import ch.saunah.saunahbackend.model.BookingSauna;
@@ -19,36 +27,39 @@ import ch.saunah.saunahbackend.model.User;
 @SpringBootTest(classes = SaunahBackendApplication.class)
 class MailServiceTest {
 
+    @Mock
+    private JavaMailSender javaMailSender;
+
     @Autowired
+    @InjectMocks
     private MailService mailService;
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+        when(javaMailSender.createMimeMessage()).thenReturn(new MimeMessage((Session) null));
+    }
 
     /**
      * This method tests if the email is sent once to the correct user.
      */
     @Test
-    void sendMail() {
+    void testSendMail() {
         Booking booking = new Booking();
         BookingPrice bookingPrice = new BookingPrice();
         BookingSauna bookingSauna = new BookingSauna();
         booking.setBookingPrice(bookingPrice);
         booking.setBookingSauna(bookingSauna);
         User user = new User();
-        user.setEmail("not-registered@example.test");
+        user.setEmail("hello@example.test");
         String verificationId = "1";
         String resetToken = "12345";
-        assertThrows(SaunahMailException.class, () -> mailService.sendUserActivationMail(user.getEmail(), verificationId));
-        assertThrows(SaunahMailException.class, () -> mailService.sendPasswordResetMail(user.getEmail(), resetToken));
-        assertThrows(SaunahMailException.class, () -> mailService.sendPasswordResetMail(user.getEmail(), resetToken));
-        assertThrows(SaunahMailException.class, () -> mailService.sendUserOpenedBookingMail(user.getEmail(), booking));
-        assertThrows(SaunahMailException.class, () -> mailService.sendUserApprovedBookingMail(user.getEmail(), booking));
-        assertThrows(SaunahMailException.class, () -> mailService.sendUserCanceledBookingMail(user.getEmail(), booking));
-        assertThrows(SaunahMailException.class, () -> mailService.sendAdminOpenedBookingMail(user, booking));
-        user.setEmail("bad email");
-        assertThrows(SaunahMailException.class, () -> mailService.sendUserActivationMail(user.getEmail(), verificationId));
-        assertThrows(SaunahMailException.class, () -> mailService.sendPasswordResetMail(user.getEmail(), resetToken));
-        assertThrows(SaunahMailException.class, () -> mailService.sendUserOpenedBookingMail(user.getEmail(), booking));
-        assertThrows(SaunahMailException.class, () -> mailService.sendUserApprovedBookingMail(user.getEmail(), booking));
-        assertThrows(SaunahMailException.class, () -> mailService.sendUserCanceledBookingMail(user.getEmail(), booking));
-        assertThrows(SaunahMailException.class, () -> mailService.sendAdminOpenedBookingMail(user, booking));
+        assertDoesNotThrow(() -> mailService.sendUserActivationMail(user.getEmail(), verificationId));
+        assertDoesNotThrow(() -> mailService.sendPasswordResetMail(user.getEmail(), resetToken));
+        assertDoesNotThrow(() -> mailService.sendPasswordResetMail(user.getEmail(), resetToken));
+        assertDoesNotThrow(() -> mailService.sendUserOpenedBookingMail(user.getEmail(), booking));
+        assertDoesNotThrow(() -> mailService.sendUserApprovedBookingMail(user.getEmail(), booking));
+        assertDoesNotThrow(() -> mailService.sendUserCanceledBookingMail(user.getEmail(), booking));
+        assertDoesNotThrow(() -> mailService.sendAdminOpenedBookingMail(user, booking));
     }
 }
