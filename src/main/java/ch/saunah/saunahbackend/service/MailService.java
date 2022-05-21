@@ -32,6 +32,7 @@ public class MailService {
     private static final String VERIFY_URL_TEMPLATE = "%s/verify/%s";
     private static final String RESET_URL_TEMPLATE = "%s/reset-password/%s";
     private static final String BOOKING_URL_TEMPLATE = "%s/bookings/%s";
+    private static final String VIEW_BOOKING_TEXT_TEMPLATE = "<p>Hier können Sie Ihre Buchung einsehen: <a href=\"%s\">%s</a></p>";
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -103,8 +104,7 @@ public class MailService {
         String bookingUrl = String.format(BOOKING_URL_TEMPLATE, frontendBaseUrl, booking.getId());
         String message = String.format(
             "<p>Ihre Buchung wurde erfolgreich eröffnet.</p>" +
-            "<p>Hier können Sie Ihre neue Buchung einsehen: <a href=\"%s\">%s</a></p>",
-            frontendBaseUrl,
+            VIEW_BOOKING_TEXT_TEMPLATE,
             bookingUrl,
             bookingUrl
         );
@@ -122,9 +122,8 @@ public class MailService {
         String subject = "Buchung bestätigt";
         String bookingUrl = String.format(BOOKING_URL_TEMPLATE, frontendBaseUrl, booking.getId());
         String message = String.format(
-            "<p>Ihre Buchung wurde bestätigt. Hier können Sie Ihre Buchung einsehen:</p>" +
-            "<a href=\"%s\">%s</a></p>",
-            frontendBaseUrl,
+            "<p>Ihre Buchung wurde bestätigt.</p>" +
+            VIEW_BOOKING_TEXT_TEMPLATE,
             bookingUrl,
             bookingUrl
         );
@@ -143,8 +142,7 @@ public class MailService {
         String bookingUrl = String.format(BOOKING_URL_TEMPLATE, frontendBaseUrl, booking.getId());
         String message = String.format(
             "<p>Ihre Buchung wurde storniert.</p>" +
-            "<p>Hier können Sie Ihre Buchung einsehen: <a href=\"%s\">%s</a></p>",
-            frontendBaseUrl,
+            VIEW_BOOKING_TEXT_TEMPLATE,
             bookingUrl,
             bookingUrl
         );
@@ -163,8 +161,7 @@ public class MailService {
         String bookingUrl = String.format(BOOKING_URL_TEMPLATE, frontendBaseUrl, booking.getId());
         String message = String.format(
             "<p>Ihre Buchung wurde bearbeitet.</p>" +
-            "<p>Hier können Sie Ihre Buchung einsehen: <a href=\"%s\">%s</a></p>",
-            frontendBaseUrl,
+            VIEW_BOOKING_TEXT_TEMPLATE,
             bookingUrl,
             bookingUrl
         );
@@ -183,7 +180,6 @@ public class MailService {
         String message = String.format(
             "<p>Eine neue Buchung wurde eröffnet.</p>" +
             "<p>Hier kann die Buchung eingesehen werden: <a href=\"%s\">%s</a></p>",
-            frontendBaseUrl,
             bookingUrl,
             bookingUrl
         );
