@@ -8,6 +8,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import ch.saunah.saunahbackend.exception.SaunahMailException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
@@ -23,6 +25,7 @@ import ch.saunah.saunahbackend.model.User;
  */
 @Service
 public class MailService {
+    protected final Log logger = LogFactory.getLog(getClass());
 
     private static final String DEFAULT_MAIL_ERROR_MESSAGE = "Error while sending the activation mail: %s%n";
 
@@ -70,20 +73,29 @@ public class MailService {
      * This method sends a message authentication link to the email of the user.
      *
      * @param email              The email of the user
-     * @param userID             The internal id of the user
      * @param resetPasswordToken This token will be used for the authentification for the reset
      * @exception SaunahMailException is thrown when the mail was not sent.
      */
     public void sendPasswordResetMail(String email, int userID , int resetPasswordToken) throws SaunahMailException {
         try {
+            String resetPasswordSubject = "Setzen Sie Ihr Passwort zurück";
+            String resetPasswordUrl = String.format("%s/reset-password/%s", frontendBaseUrl, resetPasswordToken);
+            String resetPasswordMessage = String.format(
+                "<p>Jemand hat das Zurücksetzen Ihres Passwortes auf %s angefordert.</p>" +
+                "<p>Falls das Sie waren, klicken Sie bitte innerhalb von einer Stunde auf den folgenden Link, " +
+                "um ein neues Passwort zu setzen: <a href=\"%s\">%s</a></p>",
+                frontendBaseUrl,
+                resetPasswordUrl,
+                resetPasswordUrl
+            );
+
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setFrom(new InternetAddress(senderEmail, senderName));
             helper.setReplyTo(new InternetAddress(replyToEmail, senderName));
             helper.setTo(email);
-            helper.setSubject("Password Reset SauNah");
-            helper.setText("<p>Ihr Reset Token lautet: <h1>" + resetPasswordToken + "</h1></p><p>Bitte klicken sie auf den Link, falls Sie Ihren Passwort vergessen haben : " +
-                "<br><a href=\"" + frontendBaseUrl + "/resetPassword/" + userID + "\">Hier klicken</a></p>", true);
+            helper.setSubject(resetPasswordSubject);
+            helper.setText(resetPasswordMessage, true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | MailException | UnsupportedEncodingException exception) {
             System.err.printf(DEFAULT_MAIL_ERROR_MESSAGE, exception.getMessage());

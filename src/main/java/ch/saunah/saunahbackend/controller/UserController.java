@@ -4,10 +4,10 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.management.BadAttributeValueExpException;
 import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -107,13 +107,13 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequestBody resetPasswordRequestBody) throws SaunahMailException {
         User user = userService.getUserByMail(resetPasswordRequestBody.getEmail());
-        int passwordToken = userService.createResetPasswordtoken(user);
-        mailService.sendPasswordResetMail(resetPasswordRequestBody.getEmail(), user.getId(), passwordToken);
+        String passwordToken = userService.createResetPasswordToken(user);
+        mailService.sendPasswordResetMail(resetPasswordRequestBody.getEmail(), passwordToken);
         return ResponseEntity.ok("success");
     }
 
     @Operation(description = "Reset the users password with the new one")
-    @PostMapping(value = "/reset-password/{userID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/reset-password/{token}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "User was successfully created"),
         @ApiResponse(responseCode = "400", description = "Bad request, new Password does not match the conditions", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
