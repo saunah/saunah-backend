@@ -1,6 +1,7 @@
 package ch.saunah.saunahbackend.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import javax.mail.Session;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import ch.saunah.saunahbackend.SaunahBackendApplication;
+import ch.saunah.saunahbackend.exception.SaunahMailException;
 import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.BookingPrice;
 import ch.saunah.saunahbackend.model.BookingSauna;
@@ -41,10 +43,10 @@ class MailServiceTest {
     }
 
     /**
-     * This method tests if the email is sent once to the correct user.
+     * Test that no exception is thrown if email address is in valid format.
      */
     @Test
-    void testSendMail() {
+    void testSendMailValidAddress() {
         Booking booking = new Booking();
         BookingPrice bookingPrice = new BookingPrice();
         BookingSauna bookingSauna = new BookingSauna();
@@ -61,5 +63,28 @@ class MailServiceTest {
         assertDoesNotThrow(() -> mailService.sendUserApprovedBookingMail(user.getEmail(), booking));
         assertDoesNotThrow(() -> mailService.sendUserCanceledBookingMail(user.getEmail(), booking));
         assertDoesNotThrow(() -> mailService.sendAdminOpenedBookingMail(user, booking));
+    }
+
+    /**
+     * Test that the correct exception is thrown if email address is in invalid format.
+     */
+    @Test
+    void testSendMailInvalidAddress() {
+        Booking booking = new Booking();
+        BookingPrice bookingPrice = new BookingPrice();
+        BookingSauna bookingSauna = new BookingSauna();
+        booking.setBookingPrice(bookingPrice);
+        booking.setBookingSauna(bookingSauna);
+        User user = new User();
+        user.setEmail("invalid email");
+        String verificationId = "1";
+        String resetToken = "12345";
+        assertThrows(SaunahMailException.class, () -> mailService.sendUserActivationMail(user.getEmail(), verificationId));
+        assertThrows(SaunahMailException.class, () -> mailService.sendPasswordResetMail(user.getEmail(), resetToken));
+        assertThrows(SaunahMailException.class, () -> mailService.sendPasswordResetMail(user.getEmail(), resetToken));
+        assertThrows(SaunahMailException.class, () -> mailService.sendUserOpenedBookingMail(user.getEmail(), booking));
+        assertThrows(SaunahMailException.class, () -> mailService.sendUserApprovedBookingMail(user.getEmail(), booking));
+        assertThrows(SaunahMailException.class, () -> mailService.sendUserCanceledBookingMail(user.getEmail(), booking));
+        assertThrows(SaunahMailException.class, () -> mailService.sendAdminOpenedBookingMail(user, booking));
     }
 }

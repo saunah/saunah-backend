@@ -1,6 +1,7 @@
 package ch.saunah.saunahbackend.exception;
 
-import ch.saunah.saunahbackend.dto.SaunahApiResponse;
+import javax.validation.ValidationException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ValidationException;
+import ch.saunah.saunahbackend.dto.SaunahApiResponse;
 
 /**
  * Handles exceptions during a Web Request
@@ -28,14 +29,14 @@ public class SaunaRestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers,
                                                                           HttpStatus status, WebRequest request) {
         SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
-        return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
+        return new ResponseEntity<>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
     @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, WebRequest request) {
         String error = ex.getName() + " is a wrong Argument type";
         SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.BAD_REQUEST, error);
-        return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
+        return new ResponseEntity<>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
     @Override
@@ -43,7 +44,7 @@ public class SaunaRestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                    HttpHeaders headers, HttpStatus status, WebRequest request) {
         String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
         SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.NOT_FOUND, error);
-        return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
+        return new ResponseEntity<>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
     @Override
@@ -51,7 +52,7 @@ public class SaunaRestExceptionHandler extends ResponseEntityExceptionHandler {
         HttpHeaders headers, HttpStatus status, WebRequest request) {
         String error = ex.getMethod() + " method is not supported for this request.";
         SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.METHOD_NOT_ALLOWED, error);
-        return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
+        return new ResponseEntity<>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
     @Override
@@ -63,14 +64,14 @@ public class SaunaRestExceptionHandler extends ResponseEntityExceptionHandler {
         ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
 
         SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ex.getLocalizedMessage());
-        return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
+        return new ResponseEntity<>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
                                                                      HttpStatus status, WebRequest request) {
         SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
-        return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
+        return new ResponseEntity<>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
     @ExceptionHandler({ Exception.class })
@@ -84,19 +85,19 @@ public class SaunaRestExceptionHandler extends ResponseEntityExceptionHandler {
         else{
             saunahApiResponse = new SaunahApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
-        return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
+        return new ResponseEntity<>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
     @ExceptionHandler({ SaunahMailException.class})
     public ResponseEntity<Object> handleMailException(SaunahMailException ex, WebRequest request) {
         SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
-        return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
+        return new ResponseEntity<>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
     @ExceptionHandler({ SaunahLoginException.class})
     public ResponseEntity<Object> handleSaunahLoginException(SaunahLoginException ex, WebRequest request) {
         SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
-        return new ResponseEntity<Object>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
+        return new ResponseEntity<>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
 }
