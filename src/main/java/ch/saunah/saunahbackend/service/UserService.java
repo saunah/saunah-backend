@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 import javax.management.BadAttributeValueExpException;
 import javax.validation.ValidationException;
 
+import org.apache.http.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -25,11 +25,13 @@ import org.webjars.NotFoundException;
 import ch.saunah.saunahbackend.dto.ResetPasswordBody;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.UserBody;
+import ch.saunah.saunahbackend.exception.SaunahLoginException;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.repository.UserRepository;
 import ch.saunah.saunahbackend.security.JwtResponse;
 import ch.saunah.saunahbackend.security.JwtTokenUtil;
+
 
 /**
  * This class contains registration, verification and login methods.
@@ -63,18 +65,18 @@ public class UserService {
      * @return createdUser
      * @throws Exception
      */
-    public User signUp(UserBody userBody) throws Exception {
+    public User signUp(UserBody userBody) throws IllegalArgumentException {
         User user = userRepository.findByEmail(userBody.getEmail());
         if (user != null) {
-            throw new Exception("Email already taken");
+            throw new IllegalArgumentException("Email already taken");
         }
 
         if (!Pattern.matches(EMAIL_PATTERN, userBody.getEmail())) {
-            throw new Exception("The email is not valid");
+            throw new IllegalArgumentException("The email is not valid");
         }
 
         if (!Pattern.matches(PWD_PATTERN, userBody.getPassword())) {
-            throw new Exception("Password does not require the conditions");
+            throw new IllegalArgumentException("Password does not require the conditions");
         }
 
         String hashedPassword = passwordEncoder.encode(userBody.getPassword());
@@ -104,7 +106,6 @@ public class UserService {
      */
     public User getUserByMail(String mail) {
         return userRepository.findByEmail(mail);
-
     }
 
     /**
@@ -149,17 +150,17 @@ public class UserService {
      */
     public void resetPassword (String token, ResetPasswordBody resetPasswordBody) throws BadAttributeValueExpException {
         User user = getUserByResetPasswordToken(token);
-        if(user == null) {
-            throw new IndexOutOfBoundsException("There is no User with the token:" + token);
+        if (user == null) {
+            throw new NotFoundException("There is no User found matching the token:" + token);
         }
-        if(user.getResetPasswordHash().isBlank()){
+        if (user.getResetPasswordHash().isBlank()){
             throw new BadAttributeValueExpException("This user didn't request a new password");
         }
         Date now = new Date(System.currentTimeMillis());
-        if(new Date(user.getTokenValidDate().getTime()).before(now)){
+        if (new Date(user.getTokenValidDate().getTime()).before(now)){
             throw new ValidationException("The Token is expired");
         }
-        if(!passwordEncoder.matches(token, user.getResetPasswordHash())){
+        if (!passwordEncoder.matches(token, user.getResetPasswordHash())){
             throw new BadCredentialsException("The Token doesn't match");
         }
 
@@ -169,7 +170,6 @@ public class UserService {
         user.setResetPasswordHash("");
         user.setPasswordHash(passwordEncoder.encode(resetPasswordBody.getNewPassword()));
         userRepository.save(user);
-
     }
 
     /**
@@ -178,14 +178,13 @@ public class UserService {
      * @param activationId userid
      * @return true if he provided id matches, false if it does not
      */
-    public boolean verifyUser(String activationId) {
+    public void verifyUser(String activationId) throws NotFoundException{
         User user = userRepository.findByActivationId(activationId);
-        if (user != null) {
-            user.setActivated(true);
-            userRepository.save(user);
-            return true;
+        if (user == null) {
+            throw new NotFoundException(String.format("User with the activation id %s not found!", activationId));
         }
-        return false;
+        user.setActivated(true);
+        userRepository.save(user);
     }
 
     /**
@@ -204,29 +203,26 @@ public class UserService {
      * @return if the login was successful
      * @throws Exception
      */
-    public ResponseEntity<JwtResponse> signIn(SignInBody signInBody) throws Exception {
+    public ResponseEntity<JwtResponse> signIn(SignInBody signInBody) throws SaunahLoginException {
         try {
             User foundUser = userRepository.findByEmail(signInBody.getEmail());
             if (foundUser == null) {
-                throw new Exception("No user found with this Email!");
+                throw new NotFoundException("No user found with this Email!");
             }
             if (!foundUser.isActivated()) {
-                throw new Exception("User has not been activated");
+                throw new IllegalAccessException("User has not been activated");
             }
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInBody.getEmail(), signInBody.getPassword()));
             if (authentication == null) {
-                throw new Exception("Authentication was not successful");
+                throw new AuthenticationException("Authentication was not successful");
             } else {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 context.setAuthentication(authentication);
             }
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
+        } catch (Exception e) {
+           throw new SaunahLoginException(e.getMessage());
         }
         String jwtToken = jwtTokenUtil.generateToken(userDetailsService.loadUserByUsername(signInBody.getEmail()));
-
         return ResponseEntity.ok(new JwtResponse(jwtToken));
     }
 
@@ -260,7 +256,7 @@ public class UserService {
      * @return list of users
      */
     public List<User> getAllVisibleUser() {
-        return (List<User>) userRepository.findByIsDeleted(false);
+        return userRepository.findByIsDeleted(false);
     }
 
 

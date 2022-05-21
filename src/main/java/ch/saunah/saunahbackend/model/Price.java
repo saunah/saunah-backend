@@ -1,6 +1,10 @@
 package ch.saunah.saunahbackend.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * Model of a price structure
@@ -29,10 +33,6 @@ public class Price {
 
     @Column(name = "wood", nullable = false)
     private float wood;
-
-    public Price() {
-
-    }
 
     public int getId() {
         return id;

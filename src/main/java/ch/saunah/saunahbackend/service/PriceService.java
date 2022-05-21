@@ -42,7 +42,7 @@ public class PriceService {
      * @return The price structure with the changed values
      * @throws NullPointerException if no price structure exists
      */
-    public Price editPrice(int id, PriceBody priceBody) throws NullPointerException {
+    public Price editPrice(int id, PriceBody priceBody) throws NotFoundException {
         Price editPrice = getPrice(id);
         setPriceFields(editPrice, priceBody);
         return priceRepository.save(editPrice);

@@ -125,14 +125,12 @@ class UserServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void verifyUser() throws Exception {
+    void verifyUser() {
         String wrongId = "100";
         userService.signUp(userBody);
         String userId = userRepository.findByEmail(userBody.getEmail()).getActivationId();
-        boolean returnValueFound = userService.verifyUser(userId);
-        boolean returnValueNull = userService.verifyUser(wrongId);
-        assertTrue(returnValueFound);
-        assertFalse(returnValueNull);
+        assertDoesNotThrow(() -> userService.verifyUser(userId));
+        assertThrows(NotFoundException.class, () -> userService.verifyUser(wrongId));
     }
 
     /**
