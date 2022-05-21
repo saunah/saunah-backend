@@ -59,10 +59,6 @@ public class Sauna {
     @Column(name = "google_calendar_id", nullable = true)
     private String googleCalendarId;
 
-    public Sauna() {
-
-    }
-
     public int getId() {
         return id;
     }

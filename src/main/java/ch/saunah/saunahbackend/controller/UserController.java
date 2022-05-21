@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ch.saunah.saunahbackend.dto.ResetPasswordBody;
 import ch.saunah.saunahbackend.dto.ResetPasswordRequestBody;
+import ch.saunah.saunahbackend.dto.SaunahApiResponse;
 import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.UserBody;
-import ch.saunah.saunahbackend.dto.SaunahApiResponse;
+import ch.saunah.saunahbackend.dto.UserResponse;
 import ch.saunah.saunahbackend.exception.SaunahLoginException;
 import ch.saunah.saunahbackend.exception.SaunahMailException;
-import ch.saunah.saunahbackend.dto.UserResponse;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.security.JwtResponse;
@@ -38,15 +38,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.naming.AuthenticationException;
-import java.security.Principal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controls the different operations of a user account.
@@ -54,6 +45,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping
 public class UserController {
+    private static final String RESPONSE_SUCCESS = "success";
 
     @Autowired
     private UserService userService;
@@ -72,7 +64,7 @@ public class UserController {
     public ResponseEntity<String> signUp(@RequestBody UserBody userBody) throws SaunahMailException {
         User createdUser = userService.signUp(userBody);
         mailService.sendUserActivationMail(createdUser.getEmail(), createdUser.getActivationId());
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok(RESPONSE_SUCCESS);
     }
 
     @Operation(description = "Logs the user in and returns the JWT token of the user.")
@@ -109,7 +101,7 @@ public class UserController {
         User user = userService.getUserByMail(resetPasswordRequestBody.getEmail());
         String passwordToken = userService.createResetPasswordToken(user);
         mailService.sendPasswordResetMail(resetPasswordRequestBody.getEmail(), passwordToken);
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok(RESPONSE_SUCCESS);
     }
 
     @Operation(description = "Reset the users password with the new one")
@@ -119,23 +111,23 @@ public class UserController {
         @ApiResponse(responseCode = "400", description = "Bad request, new Password does not match the conditions", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
     @ResponseBody
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordBody resetPasswordBody, @PathVariable Integer userID) throws Exception {
-        userService.resetPassword(userID, resetPasswordBody);
-        return ResponseEntity.ok("success");
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordBody resetPasswordBody, @PathVariable String token) throws BadAttributeValueExpException {
+        userService.resetPassword(token, resetPasswordBody);
+        return ResponseEntity.ok(RESPONSE_SUCCESS);
     }
 
     @Operation(description = "Returns a list of all Users.")
     @GetMapping(path = "users/all")
     public @ResponseBody
     List<UserResponse> getAllUsers() {
-        return userService.getAllUser().stream().map(x -> new UserResponse(x)).collect(Collectors.toList());
+        return userService.getAllUser().stream().map(UserResponse::new).collect(Collectors.toList());
     }
 
     @Operation(description = "Returns a list of all Users that have not been soft deleted.")
     @GetMapping(path = "users")
     public @ResponseBody
     List<UserResponse> getAllVisibleUsers() {
-        return userService.getAllVisibleUser().stream().map(x -> new UserResponse(x)).collect(Collectors.toList());
+        return userService.getAllVisibleUser().stream().map(UserResponse::new).collect(Collectors.toList());
     }
 
     @Operation(description = "Returns the user with the ID specified.")

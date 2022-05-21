@@ -1,16 +1,5 @@
 package ch.saunah.saunahbackend.service;
 
-import ch.saunah.saunahbackend.dto.ResetPasswordBody;
-import ch.saunah.saunahbackend.exception.SaunahLoginException;
-import ch.saunah.saunahbackend.model.User;
-import ch.saunah.saunahbackend.model.UserRole;
-import ch.saunah.saunahbackend.repository.UserRepository;
-import ch.saunah.saunahbackend.security.JwtResponse;
-import ch.saunah.saunahbackend.security.JwtTokenUtil;
-import ch.saunah.saunahbackend.dto.SignInBody;
-import ch.saunah.saunahbackend.dto.UserBody;
-import org.apache.http.auth.AuthenticationException;
-import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.management.BadAttributeValueExpException;
 import javax.validation.ValidationException;
 
+import org.apache.http.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +21,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
+
+import ch.saunah.saunahbackend.dto.ResetPasswordBody;
+import ch.saunah.saunahbackend.dto.SignInBody;
+import ch.saunah.saunahbackend.dto.UserBody;
+import ch.saunah.saunahbackend.exception.SaunahLoginException;
+import ch.saunah.saunahbackend.model.User;
+import ch.saunah.saunahbackend.model.UserRole;
+import ch.saunah.saunahbackend.repository.UserRepository;
+import ch.saunah.saunahbackend.security.JwtResponse;
+import ch.saunah.saunahbackend.security.JwtTokenUtil;
 
 
 /**
@@ -150,17 +150,17 @@ public class UserService {
      */
     public void resetPassword (String token, ResetPasswordBody resetPasswordBody) throws BadAttributeValueExpException {
         User user = getUserByResetPasswordToken(token);
-        if(user == null) {
-            throw new NotFoundException("There is no User matching the token:" + token);
+        if (user == null) {
+            throw new NotFoundException("There is no User found matching the token:" + token);
         }
-        if(user.getResetPasswordHash().isBlank()){
+        if (user.getResetPasswordHash().isBlank()){
             throw new BadAttributeValueExpException("This user didn't request a new password");
         }
         Date now = new Date(System.currentTimeMillis());
-        if(new Date(user.getTokenValidDate().getTime()).before(now)){
+        if (new Date(user.getTokenValidDate().getTime()).before(now)){
             throw new ValidationException("The Token is expired");
         }
-        if(!passwordEncoder.matches(token, user.getResetPasswordHash())){
+        if (!passwordEncoder.matches(token, user.getResetPasswordHash())){
             throw new BadCredentialsException("The Token doesn't match");
         }
 
@@ -256,7 +256,7 @@ public class UserService {
      * @return list of users
      */
     public List<User> getAllVisibleUser() {
-        return (List<User>) userRepository.findByIsDeleted(false);
+        return userRepository.findByIsDeleted(false);
     }
 
 

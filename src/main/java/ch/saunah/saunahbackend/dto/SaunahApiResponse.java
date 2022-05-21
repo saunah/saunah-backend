@@ -1,8 +1,8 @@
 package ch.saunah.saunahbackend.dto;
 
-import org.springframework.http.HttpStatus;
-
 import java.util.Date;
+
+import org.springframework.http.HttpStatus;
 
 /**
  * This class represents the response class when an error is occurred when a request was sent.
@@ -12,7 +12,6 @@ public class SaunahApiResponse {
     private Date timestamp;
     private HttpStatus status;
     private String message;
-    private String path;
 
     /**
      * Creates an instance and sets the fields.

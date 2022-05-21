@@ -27,6 +27,7 @@ import ch.saunah.saunahbackend.repository.PriceRepository;
  */
 @Service
 public class BookingService {
+    private static final String BOOKING_NOT_FOUND_TEMPLATE = "Booking with id %d not found!";
 
     @Autowired
     private BookingRepository bookingRepository;
@@ -246,7 +247,7 @@ public class BookingService {
     public Booking getBooking(Integer id) throws NotFoundException {
         Booking booking = bookingRepository.findById(id).orElse(null);
         if (booking == null) {
-            throw new NotFoundException(String.format("Booking with id %d not found!", id));
+            throw new NotFoundException(String.format(BOOKING_NOT_FOUND_TEMPLATE, id));
         }
         return booking;
     }
@@ -261,7 +262,7 @@ public class BookingService {
     public BookingPrice getBookingPrice(Integer id) throws NotFoundException {
         BookingPrice bookingPrice = bookingPriceRepository.findById(id).orElse(null);
         if (bookingPrice == null) {
-            throw new NotFoundException(String.format("Booking with id %d not found!", id));
+            throw new NotFoundException(String.format(BOOKING_NOT_FOUND_TEMPLATE, id));
         }
         return bookingPrice;
     }
@@ -276,7 +277,7 @@ public class BookingService {
     public BookingSauna getBookingSauna(Integer id) throws NotFoundException {
         BookingSauna bookingSauna = bookingSaunaRepository.findById(id).orElse(null);
         if (bookingSauna == null) {
-            throw new NotFoundException(String.format("Booking with id %d not found!", id));
+            throw new NotFoundException(String.format(BOOKING_NOT_FOUND_TEMPLATE, id));
         }
         return bookingSauna;
     }

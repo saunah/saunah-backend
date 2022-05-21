@@ -25,13 +25,6 @@ public class SaunaImage {
     @Column(name = "file_name", nullable = false, unique = true)
     private String fileName;
 
-    /**
-     * The default constructor for the SaunaImage.
-     */
-    public SaunaImage(){
-
-    }
-
     public Integer getId() {
         return id;
     }

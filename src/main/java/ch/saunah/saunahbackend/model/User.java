@@ -66,13 +66,6 @@ public class User {
     @Column(name = "tokenValidDate")
     private Date tokenValidDate;
 
-    /**
-     * The default constructor for the user.
-     */
-    public User(){
-
-    }
-
     public Integer getId() {
         return id;
     }

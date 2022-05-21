@@ -5,12 +5,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import ch.saunah.saunahbackend.dto.BookingResponse;
-import ch.saunah.saunahbackend.dto.SaunahApiResponse;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,16 +22,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
 
 import ch.saunah.saunahbackend.dto.SaunaImageResponse;
 import ch.saunah.saunahbackend.dto.SaunaResponse;
 import ch.saunah.saunahbackend.dto.SaunaTypeBody;
+import ch.saunah.saunahbackend.dto.SaunahApiResponse;
 import ch.saunah.saunahbackend.model.SaunaImage;
 import ch.saunah.saunahbackend.service.SaunaService;
 import ch.saunah.saunahbackend.util.ImageUpload;
 import ch.saunah.saunahbackend.util.ImageUploadLocal;
 import io.swagger.v3.oas.annotations.Operation;
-import org.webjars.NotFoundException;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 /**
  * Controls the different operation that can be done with sauna types
@@ -45,6 +44,8 @@ import org.webjars.NotFoundException;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class SaunaController {
+    private static final String RESPONSE_SUCCESS = "success";
+
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Autowired
@@ -69,7 +70,7 @@ public class SaunaController {
     @Operation(description = "Returns a list of saunas.")
     @GetMapping(path="saunas")
     public @ResponseBody List<SaunaResponse> getAllSauna() {
-        return saunaService.getAllSauna().stream().map(x -> new SaunaResponse(x)).collect(Collectors.toList());
+        return saunaService.getAllSauna().stream().map(SaunaResponse::new).collect(Collectors.toList());
     }
 
     @Operation(description = "Returns the sauna with the ID specified.")
@@ -86,7 +87,7 @@ public class SaunaController {
     })
     public @ResponseBody ResponseEntity<String> removeSauna(@PathVariable("id") int id) throws IllegalArgumentException {
         saunaService.removeSauna(id);
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok(RESPONSE_SUCCESS);
     }
 
     @Operation(description = "Allows editing an existing Sauna type.")
@@ -109,7 +110,7 @@ public class SaunaController {
     @ResponseBody
     public ResponseEntity<String> saveImages(@PathVariable("id") int saunaId, @RequestBody List<MultipartFile> images) throws NotFoundException, NullPointerException, IOException{
         saunaService.addSaunaImages(saunaId, images);
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok(RESPONSE_SUCCESS);
     }
 
 
@@ -122,7 +123,7 @@ public class SaunaController {
     @ResponseBody
     public ResponseEntity<String> removeImage(@PathVariable("id") int imageId) throws NotFoundException, IOException{
         saunaService.removeSaunaImage(imageId);
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok(RESPONSE_SUCCESS);
     }
 
     @Operation(description = "Returns the image file of the corresponding file name.")
