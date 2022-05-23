@@ -97,6 +97,11 @@ public class BookingController {
 
     @Operation(description = "Allows editing an existing Booking structure.")
     @PutMapping(path = "bookings/{id}")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Booking edit"),
+        @ApiResponse(responseCode = "400", description = "Booking does not exist", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
+        @ApiResponse(responseCode = "401", description = "Not authorized", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
+    })
     public @ResponseBody
     ResponseEntity<BookingResponse> editBooking(@PathVariable(value = "id", required = true) Integer id, @RequestBody BookingBody bookingBody) throws IOException, SaunahMailException {
         Booking booking = bookingService.editBooking(id, bookingBody);
