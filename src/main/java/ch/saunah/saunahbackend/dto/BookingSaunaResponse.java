@@ -12,7 +12,7 @@ public class BookingSaunaResponse {
     private String saunaName;
     private String saunaDescription;
     private boolean saunaIsMobile;
-    private int saunaPrice;
+    private float saunaPrice;
     private int saunaMaxTemp;
     private int saunaNumberOfPeople;
     private String saunaLocation;
@@ -58,7 +58,7 @@ public class BookingSaunaResponse {
         return saunaIsMobile;
     }
 
-    public int getSaunaPrice() {
+    public float getSaunaPrice() {
         return saunaPrice;
     }
 
