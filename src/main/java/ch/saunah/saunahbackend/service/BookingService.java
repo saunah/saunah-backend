@@ -204,7 +204,6 @@ public class BookingService {
         }
         booking.setState(BookingState.APPROVED);
 
-
         Sauna sauna = saunaService.getSauna(booking.getBookingSauna().getSaunaId());
 
         if (isValidId(sauna.getGoogleCalendarId()) && isValidId(booking.getGoogleEventID())) {
