@@ -25,6 +25,7 @@ dependencies {
     implementation 'com.google.apis:google-api-services-calendar:v3-rev20220422-1.32.1'
     implementation 'com.google.auth:google-auth-library-oauth2-http:1.6.0'
     implementation 'com.amazonaws:aws-java-sdk:1.11.163'
+    implementation 'org.flywaydb:flyway-maven-plugin:8.5.10'
     runtimeOnly 'org.postgresql:postgresql:42.3.3'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.5'
     testImplementation 'com.h2database:h2:2.1.210'
