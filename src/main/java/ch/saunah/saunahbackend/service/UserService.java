@@ -63,7 +63,7 @@ public class UserService {
      *
      * @param userBody contains all user credentials
      * @return createdUser
-     * @throws Exception
+     * @throws IllegalArgumentException when conditions don't match
      */
     public User signUp(UserBody userBody) throws IllegalArgumentException {
         User user = userRepository.findByEmail(userBody.getEmail());
@@ -124,7 +124,7 @@ public class UserService {
     }
 
     /**
-     * Create a cryptographically secure token to authenicate the user requesting
+     * Create a cryptographically secure token to authenticate the user requesting
      * a password reset and saves it on the user
      *
      * @param user The user that requested the password change
@@ -142,13 +142,14 @@ public class UserService {
     }
 
     /**
-     * Reset the users password if all conditons are met.
+     * Reset the users password if all conditions are met.
      *
      * @param token            token to identify the user
      * @param resetPasswordBody new Password
-     * @throws Exception
+     * @throws IllegalArgumentException when conditions don't match
+     * @throws BadAttributeValueExpException when the user didn't request a new password
      */
-    public void resetPassword (String token, ResetPasswordBody resetPasswordBody) throws BadAttributeValueExpException {
+    public void resetPassword (String token, ResetPasswordBody resetPasswordBody) throws IllegalArgumentException, BadAttributeValueExpException {
         User user = getUserByResetPasswordToken(token);
         if (user == null) {
             throw new NotFoundException("There is no User found matching the token:" + token);
@@ -176,7 +177,6 @@ public class UserService {
      * This method checks if the user's provided id matches the existing one in the database.
      *
      * @param activationId userid
-     * @return true if he provided id matches, false if it does not
      */
     public void verifyUser(String activationId) throws NotFoundException{
         User user = userRepository.findByActivationId(activationId);
@@ -201,7 +201,7 @@ public class UserService {
      *
      * @param signInBody contains login relevant user credentials
      * @return if the login was successful
-     * @throws Exception
+     * @throws SaunahLoginException when login was not successful
      */
     public ResponseEntity<JwtResponse> signIn(SignInBody signInBody) throws SaunahLoginException {
         try {
@@ -264,7 +264,7 @@ public class UserService {
      * Edit an already existing User
      * @param id the id of the user to be edited
      * @param userBody the parameters to be changed
-     * @return
+     * @return the edited user
      */
     public User editUser(int id, UserBody userBody) {
         User editUser = getUser(id);

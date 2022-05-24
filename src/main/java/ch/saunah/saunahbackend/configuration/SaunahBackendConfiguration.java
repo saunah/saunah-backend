@@ -72,7 +72,7 @@ public class SaunahBackendConfiguration {
     /**
      * Get all allowed CORS, which includes frontend URL
      * and extra allowed cors defined.
-     * @return
+     * @return the allowed cors strings
      */
     public static String[] getAllowedCors(String frontend, @Nullable String extra) {
         Stream<String> frontendStream = Stream.of(frontend.trim());

@@ -1,14 +1,7 @@
 package ch.saunah.saunahbackend.service;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.GeneralSecurityException;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
 
+import ch.saunah.saunahbackend.model.Booking;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.DateTime;
@@ -20,11 +13,16 @@ import com.google.api.services.calendar.model.Events;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import ch.saunah.saunahbackend.model.Booking;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.GeneralSecurityException;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Provides access the Google Calendar API.
@@ -38,9 +36,7 @@ public class GoogleCalendarService {
     private static final String TITLE_TENTATIVE = "Provisiorisch";
     private static final String TITLE_CONFIRMED = "Gebucht";
 
-    private final NetHttpTransport httpTransport;
-
-    private Calendar service;
+    private final Calendar service;
 
 
     /**
@@ -50,13 +46,10 @@ public class GoogleCalendarService {
      * @throws IOException In case of error when getting credentials.
      */
     public GoogleCalendarService(@Value("${saunah.credentials.google-service}") String serviceAccountJsonB64) throws GeneralSecurityException, IOException {
-        httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-
         ServiceAccountCredentials credentials = getCredentials(serviceAccountJsonB64);
         GoogleCredentials googleCredentials = credentials.createScoped(SCOPES);
-
         service = new Calendar.Builder(
-            httpTransport,
+            GoogleNetHttpTransport.newTrustedTransport(),
             JSON_FACTORY,
             new HttpCredentialsAdapter(googleCredentials)
         )
@@ -81,7 +74,7 @@ public class GoogleCalendarService {
      * Get the Next 10 events on the google calender
      * @param calenderID Id of the google Calender
      * @return The next ten events
-     * @throws IOException
+     * @throws IOException throws exception when calendar cant be accessed
      */
     public List<Event> getNextEvents(String calenderID) throws IOException {
         return getEvents(calenderID, new DateTime(System.currentTimeMillis()), 10 );
@@ -90,10 +83,10 @@ public class GoogleCalendarService {
     /**
      *  Get Events in a specific time period
      * @param calenderID Id of the google Calender
-     * @param startTime Specify the startrange
+     * @param startTime Specify the start range
      * @param maxResults Specify how many result are returned
      * @return List of events after the specific startTime
-     * @throws IOException
+     * @throws IOException throws exception when calendar cant be accessed
      */
     public List<Event> getEvents(String calenderID, DateTime startTime, int maxResults) throws IOException {
         Events events = service.events().list(calenderID)
@@ -110,7 +103,7 @@ public class GoogleCalendarService {
      * @param calenderID Id of the google Calender
      * @param eventID Id of the Event
      * @return Get the Event with the specified ID back
-     * @throws IOException
+     * @throws IOException throws exception when calendar cant be accessed
      */
     public Event getEvent(String calenderID, String eventID) throws IOException {
         return service.events().get(calenderID, eventID).execute();
@@ -122,7 +115,7 @@ public class GoogleCalendarService {
      * @param calenderID Id of the google Calender
      * @param event The event to insert in the google api
      * @return The id of the event
-     * @throws IOException
+     * @throws IOException throws exception when calendar cant be accessed
      */
     public String insertEvent(String calenderID, Event event) throws IOException {
         event = service.events().insert(calenderID, event).execute();
@@ -134,7 +127,7 @@ public class GoogleCalendarService {
      * @param calenderID Id of the google Calender
      * @param booking A booking from the sauna
      * @return The Google calender event id
-     * @throws IOException
+     * @throws IOException throws exception when calendar cant be accessed
      */
     public String createEvent(String calenderID, Booking booking) throws IOException{
         Event event = new Event()
@@ -156,19 +149,19 @@ public class GoogleCalendarService {
      * Delete an Event on the Google Api
      * @param calenderID Id of the google Calendar
      * @param eventID Id of the Event
-     * @throws IOException
+     * @throws IOException throws exception when calendar cant be accessed
      */
     public void deleteEvent(String calenderID, String eventID) throws IOException {
         service.events().delete(calenderID, eventID).execute();
     }
 
     /**
-     * Change start and endtime on the specified event
+     * Change start and end time on the specified event
      * @param calenderID Id of the google Calendar
      * @param eventID id of the event
-     * @param startDate Starttime to what it will be changed
-     * @param endDate Endtime to what it will be changed
-     * @throws IOException
+     * @param startDate Start time to what it will be changed
+     * @param endDate End time to what it will be changed
+     * @throws IOException throws exception when calendar cant be accessed
      */
     public void updateEvent(String calenderID, String eventID, DateTime startDate, DateTime endDate) throws IOException {
         Event event =service.events().get(calenderID, eventID).execute();
@@ -189,7 +182,7 @@ public class GoogleCalendarService {
      * Confirm a event on the google calender
      * @param calenderID Id of the google Calendar
      * @param eventID id of the event
-     * @throws IOException
+     * @throws IOException throws exception when calendar cant be accessed
      */
     public void approveEvent(String calenderID, String eventID) throws IOException{
         Event event = service.events().get(calenderID, eventID).execute();

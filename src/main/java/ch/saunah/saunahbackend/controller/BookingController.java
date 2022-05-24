@@ -23,7 +23,6 @@ import org.webjars.NotFoundException;
 import ch.saunah.saunahbackend.dto.BookingBody;
 import ch.saunah.saunahbackend.dto.BookingResponse;
 import ch.saunah.saunahbackend.dto.SaunahApiResponse;
-import ch.saunah.saunahbackend.exception.SaunahMailException;
 import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.BookingState;
 import ch.saunah.saunahbackend.model.User;
@@ -65,7 +64,7 @@ public class BookingController {
         @ApiResponse(responseCode = "500", description = "Unable to send Mail", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class)))
     })
     public @ResponseBody
-    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws SaunahMailException, IllegalArgumentException, IOException {
+    ResponseEntity<BookingResponse> createBooking(@RequestBody BookingBody bookingBody, Principal principal) throws IllegalArgumentException, IOException {
         User currentUser = userService.getUserByMail(principal.getName());
         Booking booking = bookingService.addBooking(bookingBody, currentUser.getId());
         for (User admin : userRepository.findByRole(UserRole.ADMIN)) {
@@ -86,7 +85,7 @@ public class BookingController {
     @Operation(description = "Returns the booking with the ID specified.")
     @GetMapping(path = "bookings/{id}")
     public @ResponseBody
-    ResponseEntity<BookingResponse> getBooking(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws NotFoundException, AuthenticationException {
+    ResponseEntity<BookingResponse> getBooking(@PathVariable(value = "id") Integer id, Principal principal) throws NotFoundException, AuthenticationException {
         Booking booking = bookingService.getBooking(id);
         User user = userService.getUserByMail(principal.getName());
         if (booking.getUserId() == user.getId() || UserRole.ADMIN.equals(user.getRole())) {
@@ -103,7 +102,7 @@ public class BookingController {
         @ApiResponse(responseCode = "401", description = "Not authorized", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
     public @ResponseBody
-    ResponseEntity<BookingResponse> editBooking(@PathVariable(value = "id", required = true) Integer id, @RequestBody BookingBody bookingBody) throws IOException, SaunahMailException {
+    ResponseEntity<BookingResponse> editBooking(@PathVariable(value = "id") Integer id, @RequestBody BookingBody bookingBody) throws IOException {
         Booking booking = bookingService.editBooking(id, bookingBody);
         if (booking.getState() == BookingState.APPROVED) {
             mailService.sendUserEditedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
@@ -118,7 +117,7 @@ public class BookingController {
         @ApiResponse(responseCode = "400", description = "Booking does not exist", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
     public @ResponseBody
-    ResponseEntity<String> approveBooking(@PathVariable(value = "id", required = true) Integer id) throws NotFoundException, IOException, SaunahMailException {
+    ResponseEntity<String> approveBooking(@PathVariable(value = "id") Integer id) throws NotFoundException, IOException {
         bookingService.approveBooking(id);
         Booking booking = bookingService.getBooking(id);
         mailService.sendUserApprovedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
@@ -133,7 +132,7 @@ public class BookingController {
         @ApiResponse(responseCode = "401", description = "Not authorized", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
     public @ResponseBody
-    ResponseEntity<String> cancelBooking(@PathVariable(value = "id", required = true) Integer id) throws IOException,SaunahMailException {
+    ResponseEntity<String> cancelBooking(@PathVariable(value = "id") Integer id) throws IOException {
         bookingService.cancelBooking(id);
         Booking booking = bookingService.getBooking(id);
         mailService.sendUserCanceledBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);

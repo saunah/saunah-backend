@@ -17,7 +17,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import ch.saunah.saunahbackend.exception.SaunahMailException;
 import ch.saunah.saunahbackend.model.Booking;
 import ch.saunah.saunahbackend.model.User;
 
@@ -54,7 +53,6 @@ public class MailService {
      *
      * @param email          The email of the user
      * @param verificationId The verification id of the user
-     * @throws SaunahMailException is thrown when the mail was not sent.
      */
     public void sendUserActivationMail(String email, String verificationId) {
         String subject = "Aktivieren Sie Ihren Account";
@@ -75,7 +73,6 @@ public class MailService {
      *
      * @param email              The email of the user
      * @param resetPasswordToken This token will be used for the authentification for the reset
-     * @throws SaunahMailException is thrown when the mail was not sent.
      */
     public void sendPasswordResetMail(String email, String resetPasswordToken) {
         String subject = "Setzen Sie Ihr Passwort zurück";

@@ -22,7 +22,7 @@ public class ImageUploadLocal implements ImageUpload {
     /**
      * Saves the image to the specified directory.
      *
-     * @param directory directory where image will be safed
+     * @param directory directory where image will be saved
      * @param fileName the fileName of the image
      * @param multipartFile the image object
      * @throws IOException throws when Path is not valid
@@ -53,7 +53,7 @@ public class ImageUploadLocal implements ImageUpload {
         Path filePath = uploadPath.resolve(fileName);
         File file = filePath.toFile();
         byte[] arr = new byte[(int) file.length()];
-        try (FileInputStream fl = new FileInputStream(file);) {
+        try (FileInputStream fl = new FileInputStream(file)) {
             int bytesRead = fl.read(arr);
             if (bytesRead != file.length()){
                 throw new IOException("Error while reading file! The bytes read are not equal to the file size!");

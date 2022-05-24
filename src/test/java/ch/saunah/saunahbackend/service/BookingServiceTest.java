@@ -102,6 +102,8 @@ class BookingServiceTest {
         bookingBody.setHandTowelAmount(2);
         bookingBody.setWoodAmount(3);
         bookingBody.setDeposit(true);
+        bookingBody.setDiscount(1);
+        bookingBody.setDiscountDescription("comment");
         bookingBody.setComment("very nice");
     }
 
@@ -157,7 +159,6 @@ class BookingServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void editBooking() throws Exception {
-        Booking booking = bookingService.addBooking(bookingBody, user.getId());
         BookingBody bookingBodyChange = new BookingBody();
         bookingBodyChange.setStartBookingDate(new GregorianCalendar(2023, Calendar.AUGUST, 20).getTime());
         bookingBodyChange.setEndBookingDate(new GregorianCalendar(2023, Calendar.SEPTEMBER, 1).getTime());
@@ -170,7 +171,7 @@ class BookingServiceTest {
         bookingBodyChange.setWoodAmount(3);
         bookingBodyChange.setDeposit(true);
         bookingBodyChange.setComment("very nice");
-        booking = bookingService.editBooking(user.getId(), bookingBodyChange);
+        Booking booking = bookingService.editBooking(user.getId(), bookingBodyChange);
         checkBookingFields(bookingBodyChange, booking);
     }
 
