@@ -1,0 +1,2 @@
+ALTER TABLE IF EXISTS bookingSauna ALTER COLUMN sauna_price TYPE float;
+ALTER TABLE IF EXISTS Sauna ALTER COLUMN price TYPE float;
