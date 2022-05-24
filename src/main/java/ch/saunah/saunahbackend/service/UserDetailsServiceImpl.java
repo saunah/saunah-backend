@@ -31,6 +31,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         ch.saunah.saunahbackend.model.User user = userRepository.findByEmail(email);
+        if (user == null) {
+            return null;
+        }
         Collection<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(user.getRole().toString()));
         return new User(user.getEmail(), user.getPasswordHash(), authorities);
     }
