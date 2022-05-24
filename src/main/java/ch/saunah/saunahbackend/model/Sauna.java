@@ -33,7 +33,7 @@ public class Sauna {
     private boolean isMobile;
 
     @Column(name = "price", nullable = false)
-    private int price;
+    private float price;
 
     @Column(name = "max_temp", nullable = false)
     private int maxTemp;
@@ -75,7 +75,7 @@ public class Sauna {
         return isMobile;
     }
 
-    public int getPrice() {
+    public float getPrice() {
         return price;
     }
 
@@ -123,7 +123,7 @@ public class Sauna {
         this.isMobile = isMobile;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 

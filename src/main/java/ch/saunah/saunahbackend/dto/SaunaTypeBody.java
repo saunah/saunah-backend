@@ -7,7 +7,7 @@ public class SaunaTypeBody {
     private String name;
     private String description;
     private boolean isMobile;
-    private int price;
+    private float price;
     private int maxTemp;
     private int numberOfPeople;
     private String location;
@@ -28,7 +28,7 @@ public class SaunaTypeBody {
         return isMobile;
     }
 
-    public int getPrice() {
+    public float getPrice() {
         return price;
     }
 
@@ -70,7 +70,7 @@ public class SaunaTypeBody {
         this.isMobile = isMobile;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
