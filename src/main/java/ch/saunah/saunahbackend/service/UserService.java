@@ -279,8 +279,17 @@ public class UserService {
         user.setPlace(userBody.getPlace());
         user.setZip(userBody.getZip());
         user.setStreet(userBody.getStreet());
-        if(user.getRole() != null) {
-            user.setRole(userBody.getRole());
+
+        if(userBody.getRole() != null) {
+            if (UserRole.USER.equals(userBody.getRole()) &&
+                UserRole.ADMIN.equals(user.getRole())){
+                if (getAllUser().stream().anyMatch(x -> user.getId() != x.getId() && UserRole.ADMIN.equals(x.getRole()))) {
+                    user.setRole(userBody.getRole());
+                }
+            }
+            else {
+                user.setRole(userBody.getRole());
+            }
         }
         return user;
     }
