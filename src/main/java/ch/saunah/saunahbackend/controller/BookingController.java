@@ -70,7 +70,7 @@ public class BookingController {
         for (User admin : userRepository.findByRole(UserRole.ADMIN)) {
             mailService.sendAdminOpenedBookingMail(admin, booking);
         }
-        mailService.sendUserOpenedBookingMail(userService.getUser(booking.getUserId()).getEmail(), booking);
+        mailService.sendUserOpenedBookingMail(currentUser.getEmail(), booking);
         return ResponseEntity.status(HttpStatus.CREATED).body(new BookingResponse(booking));
     }
 
