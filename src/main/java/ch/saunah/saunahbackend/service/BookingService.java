@@ -84,7 +84,8 @@ public class BookingService {
         }
 
         List<Booking> allBookings = getAllBooking().stream().filter(booking ->
-            booking.getBookingSauna().getSaunaId() == bookingBody.getSaunaId() &&
+            booking.getBookingSauna() != null &&
+                booking.getBookingSauna().getSaunaId() == bookingBody.getSaunaId() &&
                 booking.getId() != bookingId &&
                 booking.getState() != BookingState.CANCELED
         ).collect(Collectors.toList());
@@ -139,10 +140,11 @@ public class BookingService {
     }
 
     private BookingPrice createBookingPrice() {
-        Price price = priceRepository.findAll().iterator().next();
-        if (price == null) {
+        var priceIterator = priceRepository.findAll().iterator();
+        if (!priceIterator.hasNext()) {
             throw new NotFoundException("No Price available in the database!");
         }
+        Price price = priceIterator.next();
         BookingPrice bookingPrice = new BookingPrice();
         bookingPrice.setTransportServicePrice(price.getTransportService());
         bookingPrice.setWashServicePrice(price.getWashService());
