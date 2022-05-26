@@ -283,7 +283,7 @@ public class UserService {
         if(userBody.getRole() != null) {
             if (UserRole.USER.equals(userBody.getRole()) &&
                 UserRole.ADMIN.equals(user.getRole())){
-                if (getAllUser().stream().anyMatch(x -> user.getId() != x.getId() && UserRole.ADMIN.equals(x.getRole()))) {
+                if (getAllUser().stream().anyMatch(x -> !user.getId().equals(x.getId()) && UserRole.ADMIN.equals(x.getRole()))) {
                     user.setRole(userBody.getRole());
                 }
             }
