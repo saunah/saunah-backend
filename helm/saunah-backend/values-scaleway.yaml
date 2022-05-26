@@ -1,0 +1,130 @@
+# Default values for saunah-backend.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: default
+
+replicaCount: 1
+
+env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: prod
+  - name: SAUNAH_DB_HOST
+    value: "51.159.75.167"
+  - name: SAUNAH_DB_PORT
+    value: "46539"
+  - name: SAUNAH_DB_USER
+    value: saunah
+  - name: SAUNAH_DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-database
+        key: password
+        optional: false
+  - name: SAUNAH_DB_NAME
+    value: saunah
+  - name: SAUNAH_FRONTEND_BASE_URL
+    value: "https://booking.saunah.ch"
+  - name: SAUNAH_EXTRA_ALLOWED_CORS
+    value: "http://localhost:3000"
+  - name: SAUNAH_SMTP_HOST
+    value: smtp.mailtrap.io
+  - name: SAUNAH_SMTP_PORT
+    value: "2525"
+  - name: SAUNAH_SMTP_USER
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-smtp
+        key: username
+        optional: false
+  - name: SAUNAH_SMTP_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-smtp
+        key: password
+        optional: false
+  - name: SAUNAH_FROM_EMAIL_ADDRESS
+    value: noreply@saunah.ch
+  - name: SAUNAH_FROM_EMAIL_REPLY_TO
+    value: wearesaunah@gmail.com
+  - name: SAUNAH_FROM_EMAIL_NAME
+    value: SauNah
+  - name: SAUNAH_CREDENTIALS_GOOGLE_SERVICE
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-credentials
+        key: googleServiceAccount
+        optional: false
+  - name: SAUNAH_OBJECT_STORAGE_ENABLE
+    value: "true"
+  - name: SAUNAH_OBJECT_STORAGE_BUCKET_ID
+    value: saunah-data-prod
+  - name: SAUNAH_OBJECT_STORAGE_BUCKET_ENDPOINT
+    value: https://s3.fr-par.scw.cloud
+  - name: SAUNAH_OBJECT_STORAGE_BUCKET_REGION
+    value: fr-par
+  - name: SAUNAH_OBJECT_STORAGE_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-object-storage
+        key: accessKey
+        optional: false
+  - name: SAUNAH_OBJECT_STORAGE_SECRET_KEY
+    valueFrom:
+      secretKeyRef:
+        name: saunah-secrets-object-storage
+        key: secretKey
+        optional: false
+
+image:
+  repository: ghcr.io/saunah/saunah-backend
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v0.2.0"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: "saunah-backend"
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd # prefixed for namespace (default)
+  hosts:
+    - host: api.booking.saunah.ch
+      paths: []
+  tls:
+    - secretName: saunah-cert
+      hosts:
+        - api.booking.saunah.ch
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 800Mi
+  requests:
+    cpu: 1000m
+    memory: 800Mi
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
