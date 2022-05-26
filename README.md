@@ -94,11 +94,7 @@ If a tag is added to a commit which starts with `v`, the application is being de
 
 While the backend application is deployed on every push to the `main` branch, deployment of secrets and the database are not done automatically on each push, as a new deployment on each push is not needed, because those deployments usually do not change with a release.
 
-If a new Kubernetes environment needs to be set up, however, there are scripts in the repository to do so:
-
-1. Deploy the secrets to the namespace. To do so, copy the file in `helm/secrets-template.yaml` to `helm/secrets.yaml` and add the corresponding secret values to the file. (`helm/secrets.yaml` or any other secrets must never be commited to git, for obvious reasons!)
-2. Deploy the secrets to the cluster using `kubectl apply -f helm/secrets.yaml`.
-3. Deploy the database to the cluster using `helm install -f helm/saunah-database/values-staging.yaml saunah-database helm/saunah-database`. (Or use a different vlaues file, depending on the target of your deployment.) Make sure that the database depends on the secrets set in step 1. and 2., thus is need to be executed after these steps.
+More information on setting up secrets can be found in [docs/k8s-deployment-notes.md](./docs/k8s-deployment-notes.md)
 
 
 ## 👌🏼 Definition of Done

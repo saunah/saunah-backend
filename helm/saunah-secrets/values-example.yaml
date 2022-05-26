@@ -12,7 +12,14 @@ namespace: default
 
 secrets:
   database:
-    password: c2F1bmFo # saunah
+    password:
   smtp:
     username:
     password:
+  credentials:
+    googleServiceAccount:
+    googleCalendarApiKey:
+    jwtSecretToken:
+  objectStorage:
+    accessKey:
+    secretKey:
