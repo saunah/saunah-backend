@@ -88,12 +88,6 @@ public class SaunaRestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
     }
 
-    @ExceptionHandler({ SaunahMailException.class})
-    public ResponseEntity<Object> handleMailException(SaunahMailException ex, WebRequest request) {
-        SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
-        return new ResponseEntity<>(saunahApiResponse, new HttpHeaders(), saunahApiResponse.getStatus());
-    }
-
     @ExceptionHandler({ SaunahLoginException.class})
     public ResponseEntity<Object> handleSaunahLoginException(SaunahLoginException ex, WebRequest request) {
         SaunahApiResponse saunahApiResponse = new SaunahApiResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());

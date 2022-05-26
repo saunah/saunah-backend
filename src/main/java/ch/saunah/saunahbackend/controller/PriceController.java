@@ -68,12 +68,12 @@ public class PriceController {
     @GetMapping(path="prices")
     public @ResponseBody
     List<PriceResponse> getAllPrice() {
-        return priceService.getAllPrice().stream().map(x -> new PriceResponse(x)).collect(Collectors.toList());
+        return priceService.getAllPrice().stream().map(PriceResponse::new).collect(Collectors.toList());
     }
 
     @Operation(description = "Returns the price with the ID specified.")
     @GetMapping(path="prices/{id}")
-    public @ResponseBody ResponseEntity<PriceResponse> getPrice(@PathVariable(value = "id", required = true) Integer id) throws NotFoundException {
+    public @ResponseBody ResponseEntity<PriceResponse> getPrice(@PathVariable(value = "id") Integer id) throws NotFoundException {
         return ResponseEntity.ok(new PriceResponse(priceService.getPrice(id)));
     }
 }

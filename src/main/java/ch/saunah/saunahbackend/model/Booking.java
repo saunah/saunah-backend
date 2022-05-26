@@ -68,19 +68,19 @@ public class Booking {
     @Column(name = "woodAmount", nullable = false)
     private int woodAmount;
 
-    @Column(name = "comment", nullable = true)
+    @Column(name = "comment")
     private String comment;
 
     @Column(name = "endPrice", nullable = false)
     private double endPrice;
 
-    @Column(name = "google_event_id", nullable = true)
+    @Column(name = "google_event_id")
     private String googleEventID;
 
-    @Column(name = "discount", nullable = true)
+    @Column(name = "discount")
     private double discount;
 
-    @Column(name = "discountDescription", nullable = true)
+    @Column(name = "discountDescription")
     private String discountDescription;
 
     public int getId() {

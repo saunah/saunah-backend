@@ -7,13 +7,13 @@ import ch.saunah.saunahbackend.model.BookingPrice;
  */
 public class BookingPriceResponse {
 
-    private int id;
-    private double transportServicePrice;
-    private double washServicePrice;
-    private double saunahImpPrice;
-    private double depositPrice;
-    private double handTowelPrice;
-    private double woodPrice;
+    private final int id;
+    private final double transportServicePrice;
+    private final double washServicePrice;
+    private final double saunahImpPrice;
+    private final double depositPrice;
+    private final double handTowelPrice;
+    private final double woodPrice;
 
     /**
      * This constructor sets all the fields of this object.

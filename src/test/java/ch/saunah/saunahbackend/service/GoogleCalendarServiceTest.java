@@ -45,8 +45,6 @@ class GoogleCalendarServiceTest {
     @Autowired
     private GoogleCalendarService calendarService;
 
-    private BookingBody bookingBody;
-
     private static final String TEST_CALENDAR_ID = "cs85d7fer742u5v5r4v6e7jink@group.calendar.google.com";
 
 
@@ -116,8 +114,7 @@ class GoogleCalendarServiceTest {
         user.setActivated(true);
         user.setRole(UserRole.USER);
         userRepository.save(user);
-
-        bookingBody = new BookingBody();
+        BookingBody bookingBody = new BookingBody();
         bookingBody.setStartBookingDate(new Date(System.currentTimeMillis() + 40000));
         bookingBody.setEndBookingDate(new Date(System.currentTimeMillis() + 50000));
         bookingBody.setSaunaId(sauna.getId());

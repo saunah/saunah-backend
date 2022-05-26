@@ -61,11 +61,9 @@ class UserServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void signUpThrowCheck() throws Exception {
-        userService.signUp(userBody); //create first one
-        Exception exception = assertThrows(Exception.class, () -> {
-            userService.signUp(userBody);
-        });
+    void signUpThrowCheck() {
+        userService.signUp(userBody);
+        Exception exception = assertThrows(Exception.class, () -> userService.signUp(userBody));
         String expectedMessage = "Email already taken";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
@@ -76,7 +74,7 @@ class UserServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void signUpEmailCheck() throws Exception {
+    void signUpEmailCheck() {
         userBody.setEmail("bademail");
         assertThrows(Exception.class, () -> userService.signUp(userBody));
         userBody.setEmail("goodemail@hotmail.com");
@@ -88,7 +86,7 @@ class UserServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void signUpPasswordCheck() throws Exception {
+    void signUpPasswordCheck() {
         userBody.setPassword("badpassword");
         assertThrows(Exception.class, () -> userService.signUp(userBody));
         userBody.setPassword("Badpassword");
@@ -103,12 +101,10 @@ class UserServiceTest {
 
     /**
      * This test checks if the user successfully registered an account.
-     *
-     * @throws Exception
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void signUp() throws Exception {
+    void signUp() {
         assertNull(userRepository.findByEmail(userBody.getEmail()));
         userService.signUp(userBody);
         User user = userRepository.findByEmail(userBody.getEmail());
@@ -166,12 +162,10 @@ class UserServiceTest {
     }
     /**
      * Test if a user can sign in with the right and with the wrong credentials
-     *
-     * @throws Exception throws an exception when the login does not work with the right credentials
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void passwordreset() throws Exception {
+    void passwordreset() {
         userService.signUp(userBody);
         User user = userRepository.findByEmail("hans.muster@mustermail.ch");
         user.setActivated(true);
@@ -196,7 +190,7 @@ class UserServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getUser() throws Exception {
+    void getUser() {
         assertThrows(NotFoundException.class, () -> userService.getUser(1));
         userService.signUp(userBody);
         assertNotNull(userService.getUser(1));
@@ -207,7 +201,7 @@ class UserServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getAllUser() throws Exception {
+    void getAllUser() {
         userService.signUp(userBody);
         userBody.setEmail("test1@gmail.com");
         userService.signUp(userBody);
@@ -224,7 +218,7 @@ class UserServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getAllVisibleUser() throws Exception {
+    void getAllVisibleUser() {
         userService.signUp(userBody);
         userBody.setEmail("test1@gmail.com");
         userService.signUp(userBody);
@@ -234,9 +228,9 @@ class UserServiceTest {
         userService.signUp(userBody);
         assertEquals(4,userRepository.count());
         userService.deleteUser(4);
-        assertEquals(3,userRepository.findByIsDeleted(false).stream().count());
+        assertEquals(3,userRepository.findByIsDeleted(false).size());
         userService.deleteUser(3);
-        assertEquals(2,userRepository.findByIsDeleted(false).stream().count());
+        assertEquals(2,userRepository.findByIsDeleted(false).size());
     }
 
 
@@ -245,7 +239,7 @@ class UserServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void editUser() throws Exception {
+    void editUser() {
         User userAdmin = userService.signUp(userBody);
         userBody.setEmail("test1@gmail.com");
         User userNotAdmin = userService.signUp(userBody);
@@ -292,7 +286,7 @@ class UserServiceTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void deleteUser() throws Exception {
+    void deleteUser() {
         User userAdmin = userService.signUp(userBody);
         assertTrue(userAdmin.getInitialAdmin());
         assertFalse(userAdmin.getIsDeleted());

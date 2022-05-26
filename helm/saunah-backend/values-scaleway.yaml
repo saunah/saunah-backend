@@ -2,17 +2,17 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-namespace: class-pm4-2022-7-staging
+namespace: default
 
 replicaCount: 1
 
 env:
   - name: SPRING_PROFILES_ACTIVE
-    value: staging
+    value: prod
   - name: SAUNAH_DB_HOST
-    value: saunah-database-postgresql-primary.class-pm4-2022-7-staging.svc.cluster.local
+    value: "51.159.75.167"
   - name: SAUNAH_DB_PORT
-    value: "5432"
+    value: "46539"
   - name: SAUNAH_DB_USER
     value: saunah
   - name: SAUNAH_DB_PASSWORD
@@ -24,7 +24,7 @@ env:
   - name: SAUNAH_DB_NAME
     value: saunah
   - name: SAUNAH_FRONTEND_BASE_URL
-    value: "https://saunah-staging.k8s.init-lab.ch"
+    value: "https://booking.saunah.ch"
   - name: SAUNAH_EXTRA_ALLOWED_CORS
     value: "http://localhost:3000"
   - name: SAUNAH_JWT_SECRET_TOKEN
@@ -64,7 +64,7 @@ env:
   - name: SAUNAH_OBJECT_STORAGE_ENABLE
     value: "true"
   - name: SAUNAH_OBJECT_STORAGE_BUCKET_ID
-    value: saunah-storage-staging
+    value: saunah-data-prod
   - name: SAUNAH_OBJECT_STORAGE_BUCKET_ENDPOINT
     value: https://s3.fr-par.scw.cloud
   - name: SAUNAH_OBJECT_STORAGE_BUCKET_REGION
@@ -86,7 +86,7 @@ image:
   repository: ghcr.io/saunah/saunah-backend
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.2.0"
+  tag: "v0.2.0"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -98,16 +98,16 @@ service:
 
 ingress:
   enabled: true
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd # prefixed for namespace (default)
   hosts:
-    - host: saunah-backend-staging.k8s.init-lab.ch
+    - host: api.booking.saunah.ch
       paths: []
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+    - secretName: saunah-cert
+      hosts:
+        - api.booking.saunah.ch
 
 resources:
   limits:

@@ -102,6 +102,8 @@ class BookingServiceTest {
         bookingBody.setHandTowelAmount(2);
         bookingBody.setWoodAmount(3);
         bookingBody.setDeposit(true);
+        bookingBody.setDiscount(1);
+        bookingBody.setDiscountDescription("comment");
         bookingBody.setComment("very nice");
     }
 
@@ -170,7 +172,7 @@ class BookingServiceTest {
         bookingBodyChange.setWoodAmount(3);
         bookingBodyChange.setDeposit(true);
         bookingBodyChange.setComment("very nice");
-        booking = bookingService.editBooking(user.getId(), bookingBodyChange);
+        booking = bookingService.editBooking(booking.getId(), bookingBodyChange);
         checkBookingFields(bookingBodyChange, booking);
     }
 

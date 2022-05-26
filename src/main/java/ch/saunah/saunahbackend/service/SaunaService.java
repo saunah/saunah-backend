@@ -49,7 +49,7 @@ public class SaunaService {
      * Add a new Sauna to the database
      * @param saunaTypeBody the required parameters for creating a sauna
      * @return the newly created sauna object
-     * @throws NullPointerException
+     * @throws NullPointerException when sauna type body has null values, which are not allowed to be null
      */
     public Sauna addSauna(SaunaTypeBody saunaTypeBody) throws NullPointerException {
         Objects.requireNonNull(saunaTypeBody, "SaunaTypeBody must not be null!");
@@ -57,21 +57,17 @@ public class SaunaService {
         Objects.requireNonNull(saunaTypeBody.getDescription(), "Description must not be null!");
         Objects.requireNonNull(saunaTypeBody.getLocation(), "Location must not be null!");
         Objects.requireNonNull(saunaTypeBody.getStreet(), "Street must not be null!");
-
         Sauna sauna = new Sauna();
         setSaunaFields(sauna, saunaTypeBody);
-
         return saunaRepository.save(sauna);
     }
 
     /**
      * Delete an existing sauna from the database
      * @param id The id of the sauna that will be deleted
-     * @return if the sauna has been successfully been deleted
      */
-    public String removeSauna(int id) {
+    public void removeSauna(int id) {
         saunaRepository.deleteById(id);
-        return String.format("The sauna was with id %s has been removed", id);
     }
 
     /**
@@ -210,7 +206,7 @@ public class SaunaService {
 
         String mimeType = image.getContentType();
         Optional<MimeMappings.Mapping> mimeMaping = MimeMappings.DEFAULT.getAll().stream().filter(m -> m.getMimeType().equals(mimeType)).findFirst();
-        if (!mimeMaping.isPresent()) {
+        if (mimeMaping.isEmpty()) {
             throw new IOException(String.format("No matching extension found for the mime type %s", mimeType));
         }
 

@@ -27,7 +27,6 @@ import ch.saunah.saunahbackend.dto.SignInBody;
 import ch.saunah.saunahbackend.dto.UserBody;
 import ch.saunah.saunahbackend.dto.UserResponse;
 import ch.saunah.saunahbackend.exception.SaunahLoginException;
-import ch.saunah.saunahbackend.exception.SaunahMailException;
 import ch.saunah.saunahbackend.model.User;
 import ch.saunah.saunahbackend.model.UserRole;
 import ch.saunah.saunahbackend.security.JwtResponse;
@@ -61,7 +60,7 @@ public class UserController {
         @ApiResponse(responseCode = "500", description = "Unable to send Mail", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class)))
     })
     @ResponseBody
-    public ResponseEntity<String> signUp(@RequestBody UserBody userBody) throws SaunahMailException {
+    public ResponseEntity<String> signUp(@RequestBody UserBody userBody) {
         User createdUser = userService.signUp(userBody);
         mailService.sendUserActivationMail(createdUser.getEmail(), createdUser.getActivationId());
         return ResponseEntity.ok(RESPONSE_SUCCESS);
@@ -97,7 +96,7 @@ public class UserController {
         @ApiResponse(responseCode = "500", description = "Unable to send Mail", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class)))
     })
     @ResponseBody
-    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequestBody resetPasswordRequestBody) throws SaunahMailException {
+    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequestBody resetPasswordRequestBody) {
         User user = userService.getUserByMail(resetPasswordRequestBody.getEmail());
         String passwordToken = userService.createResetPasswordToken(user);
         mailService.sendPasswordResetMail(resetPasswordRequestBody.getEmail(), passwordToken);
@@ -137,7 +136,7 @@ public class UserController {
         @ApiResponse(responseCode = "400", description = "User not found", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
         @ApiResponse(responseCode = "401", description = "Not authorized", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
-    public @ResponseBody ResponseEntity<UserResponse> getUser(@PathVariable(value = "id", required = true) Integer id, Principal principal) throws AuthenticationException {
+    public @ResponseBody ResponseEntity<UserResponse> getUser(@PathVariable(value = "id") Integer id, Principal principal) throws AuthenticationException {
         User currentUser = userService.getUserByMail(principal.getName());
         if (currentUser.getRole().equals(UserRole.ADMIN) || currentUser.getId().equals(id)) {
             return ResponseEntity.ok(new UserResponse(userService.getUser(id)));
@@ -152,7 +151,7 @@ public class UserController {
         @ApiResponse(responseCode = "400", description = "Bad request, set fields do not match with the conditions", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
         @ApiResponse(responseCode = "401", description = "Not authorized", content = @Content(schema = @Schema(implementation = SaunahApiResponse.class))),
     })
-    public @ResponseBody ResponseEntity<UserResponse> editUser(@PathVariable(value = "id", required = true) Integer id, Principal principal, @RequestBody UserBody userBody) throws AuthenticationException {
+    public @ResponseBody ResponseEntity<UserResponse> editUser(@PathVariable(value = "id") Integer id, Principal principal, @RequestBody UserBody userBody) throws AuthenticationException {
         User currentUser = userService.getUserByMail(principal.getName());
         if (currentUser.getRole().equals(UserRole.ADMIN) || currentUser.getId().equals(id)) {
             sanitizeUserBodyForRole(currentUser.getRole(), userBody);
@@ -177,7 +176,7 @@ public class UserController {
     @Operation(description = "Soft deletes a User.")
     @DeleteMapping(path = "users/{id}")
     public @ResponseBody
-    ResponseEntity<UserResponse> deleteUser(@PathVariable(value = "id", required = true) Integer id) {
+    ResponseEntity<UserResponse> deleteUser(@PathVariable(value = "id") Integer id) {
         return ResponseEntity.ok(new UserResponse(userService.deleteUser(id)));
     }
 }

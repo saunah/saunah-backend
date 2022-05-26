@@ -137,7 +137,7 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
      * This method returns the authenticationManagerBean.
      *
      * @return authenticationManagerBean
-     * @throws Exception
+     * @throws Exception when AuthenticationManager could not be localized
      */
     @Bean
     @Override
@@ -149,7 +149,6 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
      * This method returns the BCryptPasswordEncoder.
      *
      * @return BCryptPasswordEncoder
-     * @throws Exception
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -160,7 +159,7 @@ public class SaunahBackendApplication extends WebSecurityConfigurerAdapter {
      * This method configures authenticationManagerBuilder.
      *
      * @param authenticationManagerBuilder used to create an {@link AuthenticationManager}
-     * @throws Exception
+     * @throws Exception if an error occurs when adding the UserDetailsService based authentication
      */
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {

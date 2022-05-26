@@ -75,7 +75,7 @@ public class SaunaController {
 
     @Operation(description = "Returns the sauna with the ID specified.")
     @GetMapping(path="saunas/{id}")
-    public @ResponseBody ResponseEntity<SaunaResponse> getSauna(@PathVariable(value = "id", required = true) Integer id) throws NotFoundException {
+    public @ResponseBody ResponseEntity<SaunaResponse> getSauna(@PathVariable(value = "id") Integer id) throws NotFoundException {
         return ResponseEntity.ok(new SaunaResponse(saunaService.getSauna(id)));
     }
 
@@ -150,7 +150,6 @@ public class SaunaController {
      * Retrieves the URL for the image passed image and returns it.
      * @param saunaImage the image to get the URL for.
      * @return the URL of the image.
-     * @throws IOException
      */
     @Nullable
     private URL getImageUrl(SaunaImage saunaImage) {

@@ -1,9 +1,7 @@
 package ch.saunah.saunahbackend.model;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -56,7 +54,7 @@ public class Sauna {
     @OneToMany(mappedBy = "sauna", cascade = CascadeType.ALL)
     private Set<SaunaImage> saunaImages = new HashSet<>();
 
-    @Column(name = "google_calendar_id", nullable = true)
+    @Column(name = "google_calendar_id")
     private String googleCalendarId;
 
     public int getId() {
@@ -107,10 +105,6 @@ public class Sauna {
         return googleCalendarId;
     }
 
-    public List<SaunaImage> getSaunaImages() {
-        return saunaImages.stream().collect(Collectors.toList());
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -153,10 +147,6 @@ public class Sauna {
 
     public void setGoogleCalendarId(String googleCalendarId) {
         this.googleCalendarId = googleCalendarId;
-    }
-
-    public void addSaunaImage(SaunaImage saunaImage) {
-        this.saunaImages.add(saunaImage);
     }
 }
 
