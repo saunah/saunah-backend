@@ -54,9 +54,6 @@ public class BookingSauna {
     @Column(name = "sauna_type", nullable = false)
     private String saunaType;
 
-    public BookingSauna() {
-    }
-
     public int getId() {
         return id;
     }
