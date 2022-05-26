@@ -10,7 +10,7 @@
     "description": "Version of the application."
   },
   {
-    "name": "jwt.secret",
+    "name": "jwt.secret.token",
     "type": "java.lang.String",
     "description": "Secret for JWT."
   },
