@@ -90,9 +90,6 @@ public class ImageUploadS3 implements ImageUpload {
     @Override
     public URL getImageURL(String directory, String filename) throws IOException {
         AmazonS3 client = getObjectStorageClient();
-        if (!client.doesBucketExist(bucket)) {
-            throw new IOException("Bucket does not exist and no image can be found!");
-        }
         return client.getUrl(bucket, getObjectPath(directory, filename));
     }
 
@@ -105,9 +102,6 @@ public class ImageUploadS3 implements ImageUpload {
     public void removeImage(String directory, String fileName) throws IOException {
         try {
         AmazonS3 client = getObjectStorageClient();
-        if (!client.doesBucketExist(bucket)) {
-            throw new IOException("Bucket does not exist and no image can be found!");
-        }
         client.deleteObject(bucket, getObjectPath(directory, fileName));
         } catch (AmazonClientException e) {
             throw new IOException(e.getMessage());
